@@ -1,0 +1,383 @@
+\documentclass[5p,authoryear]{elsarticle}
+
+\journal{SoftwareX}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{orange},
+  language=Python,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{MOLEKUL: A Pure-Python Ab Initio Quantum Chemistry Platform for
+       Education and Reproducible Benchmarking}
+
+\author{Enis Yazici}
+\ead{yazicienis@gmail.com}
+\address{SRH University of Applied Sciences Heidelberg,
+         School of Engineering and Architecture,
+         Heidelberg, Germany}
+\cortext[cor1]{Corresponding author}
+
+\begin{abstract}
+MOLEKUL is an open-source, pure-Python implementation of Restricted
+Hartree--Fock (RHF) self-consistent field theory and second-order
+M{\o}ller--Plesset perturbation theory (MP2) for closed-shell molecules.
+Starting from an XYZ-format molecular geometry and a contracted Gaussian basis
+set, MOLEKUL evaluates all one- and two-electron integrals analytically, solves
+the Roothaan--Hall equations iteratively, and reports the total RHF and MP2
+energies.
+Built-in basis data cover hydrogen through fluorine for STO-3G, 6-31G*, and
+cc-pVDZ.
+Additional modules provide a geometry optimizer, Mulliken and L{\"o}wdin
+population analysis, experimental excited-state infrastructure, and numerical
+Hessian-based harmonic frequency workflows.
+Validated against PySCF on a 14-molecule benchmark suite, MOLEKUL achieves
+RHF/STO-3G total-energy agreement within $5\times10^{-8}$~hartree and MP2
+correlation-energy agreement within $2\times10^{-7}$~hartree.
+The codebase comprises 606 automated tests and is designed for advanced
+undergraduate and graduate courses in quantum chemistry, as well as for
+reproducible hardware benchmarking.
+\end{abstract}
+
+\begin{keyword}
+quantum chemistry \sep
+Hartree--Fock \sep
+MP2 \sep
+ab initio \sep
+Gaussian basis sets \sep
+Python \sep
+education \sep
+benchmarking
+\end{keyword}
+
+\end{frontmatter}
+
+% ============================================================
+\section*{Code Metadata}
+% ============================================================
+
+\begin{table}[h]
+\caption{Code metadata}
+\begin{tabular}{lp{0.55\textwidth}}
+\toprule
+\textbf{Nr.} & \textbf{Code metadata description} \\
+\midrule
+C1 & Current code version: v0.1.1 \\
+C2 & Permanent link to code/repository:
+     \url{https://github.com/yazicienis/molekul} \\
+C3 & Permanent link to reproducible capsule (Zenodo):
+     \url{https://doi.org/10.5281/zenodo.19743306} \\
+C4 & Legal code license: MIT \\
+C5 & Code versioning system: git \\
+C6 & Software languages and tools: Python~$\ge$~3.10, NumPy \\
+C7 & Dependencies: \texttt{numpy}; \texttt{pytest} (development) \\
+C8 & Developer documentation:
+     \url{https://github.com/yazicienis/molekul} \\
+C9 & Support contact: \texttt{yazicienis@gmail.com} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Motivation and Significance}
+% ============================================================
+
+Production electronic-structure packages such as PySCF~\citep{sun2020},
+Psi4~\citep{smith2020}, and ORCA~\citep{neese2020} provide broad functionality
+and optimized implementations, but their internal complexity can obscure the
+connection between textbook equations and executable algorithms.
+Earlier educational codes such as PyQuante~\citep{quante2004} demonstrated the
+value of readable implementations, but they are no longer as actively maintained
+or systematically validated against modern reference packages.
+
+MOLEKUL occupies the space between textbook equations and production code.
+Every algorithmic step---from primitive integral evaluation to Fock matrix
+diagonalization---traces directly to a named Python function with clear
+correspondence to standard quantum-chemistry references~\citep{szabo1989,
+helgaker2000}.
+The 606-test suite and deterministic NumPy implementation ensure that every
+numerical claim is automatically reproducible.
+
+Beyond pedagogy, the Python/NumPy implementation provides a self-contained
+baseline for hardware benchmarking, because quantum-chemistry algorithms are
+implemented explicitly rather than delegated to compiled electronic-structure
+kernels, allowing clean isolation of NumPy/BLAS performance characteristics.
+
+% ============================================================
+\section{Software Description}
+% ============================================================
+
+\subsection{Architecture}
+
+MOLEKUL is organized as an installable Python package (\texttt{src/molekul/}).
+Table~\ref{tab:modules} lists the main modules.
+The package is installed with \texttt{pip install -e ".[dev]"} and tested with
+\texttt{pytest tests/}.
+
+\begin{table}[h]
+\caption{Main modules of MOLEKUL.}
+\label{tab:modules}
+\begin{tabular}{ll}
+\toprule
+\textbf{Module} & \textbf{Responsibility} \\
+\midrule
+\texttt{molecule.py}, \texttt{atoms.py}       & Molecular geometry and atomic data \\
+\texttt{basis\_sto3g.py}, \texttt{basis\_631gstar.py}, \texttt{basis\_ccpvdz.py}
+                                               & Contracted Gaussian basis sets \\
+\texttt{integrals.py}                          & One-electron integrals (overlap, kinetic,
+                                                 nuclear, dipole) \\
+\texttt{eri.py}                                & Two-electron repulsion integrals \\
+\texttt{rhf.py}                                & RHF SCF driver (DIIS, SAD guess) \\
+\texttt{mp2.py}                                & MP2 correlation energy \\
+\texttt{population.py}                         & Mulliken and L{\"o}wdin population analysis \\
+\texttt{optimizer.py}                          & Geometry optimizer (numerical gradients) \\
+\texttt{harmonic.py}                           & Harmonic frequency analysis \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Integral Engine}
+
+One- and two-electron integrals are evaluated analytically using the
+McMurchie--Davidson (MD) scheme~\citep{mcmurchie1978,helgaker2000}.
+The MD scheme expresses products of Cartesian Gaussians as a linear combination
+of Hermite Gaussians via expansion coefficients, reducing all integral
+evaluation to a Boys-function call
+$F_n(x) = \int_0^1 t^{2n} e^{-xt^2}\,\mathrm{d}t$~\citep{boys1950}.
+
+The Boys function is evaluated using a pure-Python combination of
+\texttt{math.erf} for the analytic $F_0$ expression, recurrence relations, and
+small-$x$ Taylor expansions, with the branch selected to maintain numerical
+stability over the argument range used in the validation suite.
+No SciPy dependency is required; a dedicated test confirms relative errors below
+$5\times10^{-14}$ for the $n$ and $x$ values encountered in STO-3G through
+cc-pVDZ bases.
+
+Two-electron repulsion integrals (ERIs) are stored in a full $N_\mathrm{AO}^4$
+double-precision array.
+Dense storage is intentional---it keeps the Fock-build loop transparent and
+inspectable.
+At $N_\mathrm{AO}=100$ this requires approximately 800~MB; practical use is
+therefore limited to small molecules and teaching-scale basis sets.
+Integral screening, density fitting, and integral-direct algorithms are
+documented extension points.
+
+Contracted Gaussian shells are explicitly renormalized to unit overlap,
+correcting for cross-primitive overlap contributions commonly omitted in
+introductory treatments.
+
+\subsection{SCF Driver}
+
+The RHF SCF driver~\citep{roothaan1951,hall1951} implements three convergence
+features:
+\begin{itemize}
+  \item \textbf{SAD initial guess}: a Superposition of Atomic Densities density
+        matrix with spherically-averaged neutral-atom occupations, avoiding
+        wrong-state convergence traps from the core-Hamiltonian guess.
+  \item \textbf{DIIS acceleration}: Pulay's Direct Inversion in the Iterative
+        Subspace~\citep{pulay1980,pulay1982} using the error vector
+        $\mathbf{e}=\mathbf{FPS}-\mathbf{SPF}$.
+  \item \textbf{Level shift}: an optional virtual-orbital energy
+        shift~\citep{saunders1973} that stabilizes early iterations and is
+        disabled once the DIIS subspace is populated.
+\end{itemize}
+Default convergence thresholds: $|\Delta E|<10^{-10}$~E$_h$ and
+$\max|\Delta\mathbf{P}|<10^{-8}$.
+
+\subsection{Post-HF and Analysis}
+
+The MP2~\citep{moller1934} correlation energy is computed from the converged RHF
+molecular orbitals via a four-index integral transformation.
+Mulliken and L{\"o}wdin~\citep{lowdin1950} population analysis, electric dipole
+moments, and a geometry optimizer based on numerical nuclear gradients are also
+implemented.
+Excited-state and harmonic frequency analysis modules are available as
+experimental pedagogical infrastructure.
+
+\subsection{Basis Sets}
+
+Built-in basis data cover hydrogen through fluorine.
+Exponents and contraction coefficients are taken directly from PySCF's
+built-in basis-set data~\citep{pritchard2019} to ensure reproducibility.
+
+\begin{table}[h]
+\caption{Built-in basis sets.}
+\label{tab:basis}
+\begin{tabular}{lll}
+\toprule
+\textbf{Basis} & \textbf{Reference} & \textbf{AO per heavy atom} \\
+\midrule
+STO-3G  & \citet{hehre1969}                        & 5  \\
+6-31G*  & \citet{hehre1972}; \citet{hariharan1973} & 15 \\
+cc-pVDZ & \citet{dunning1989}                      & 15 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Illustrative Example}
+% ============================================================
+
+The following example computes the RHF and MP2 energies of water at a standard
+STO-3G geometry:
+
+\begin{lstlisting}[language=Python, caption={RHF and MP2 energies of H$_2$O.}]
+from molekul.molecule import Molecule
+from molekul.atoms import Atom
+from molekul.basis_sto3g import get_sto3g
+from molekul.rhf import rhf_scf
+from molekul.mp2 import mp2_energy
+import numpy as np
+
+ANG2BOHR = 1.8897259886
+
+mol = Molecule([
+    Atom('O', np.array([ 0.000,  0.000,  0.117]) * ANG2BOHR),
+    Atom('H', np.array([ 0.000,  0.757, -0.469]) * ANG2BOHR),
+    Atom('H', np.array([ 0.000, -0.757, -0.469]) * ANG2BOHR),
+])
+
+basis = get_sto3g()
+rhf_result  = rhf_scf(mol, basis)
+print(f"RHF energy: {rhf_result.energy_total:.8f} Eh")  # -74.96258854 Eh
+
+mp2_result  = mp2_energy(mol, basis, rhf_result)
+print(f"MP2 energy: {mp2_result.energy_total:.8f} Eh")  # -74.99844967 Eh
+\end{lstlisting}
+
+% ============================================================
+\section{Validation}
+% ============================================================
+
+\subsection{RHF/STO-3G Benchmark}
+
+The benchmark script \texttt{scripts/benchmark\_14mol.py} compares MOLEKUL
+RHF/STO-3G total energies against PySCF~\citep{sun2020} for 14 closed-shell
+molecules spanning H$_2$ through formaldehyde (CH$_2$O).
+All 14 molecules pass with maximum absolute deviation $4.9\times10^{-8}$~E$_h$
+(C$_2$H$_2$), consistent with floating-point differences in integral
+evaluation.
+Complete results are logged in \texttt{outputs/logs/benchmark\_14mol.json}.
+
+\subsection{MP2 Correlation Energy}
+
+Table~\ref{tab:mp2} compares MP2 correlation energies against PySCF for eight
+STO-3G molecules spanning polar hydrides, homonuclear diatomics, and polyatomic
+systems.
+All eight molecules agree within $2\times10^{-7}$~E$_h$.
+
+\begin{table}[h]
+\caption{MP2 correlation energies: MOLEKUL vs.\ PySCF (STO-3G).}
+\label{tab:mp2}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Molecule} &
+\textbf{$E_\mathrm{corr}^\mathrm{PySCF}$ / E$_h$} &
+\textbf{$|\Delta E_\mathrm{corr}|$ / E$_h$} \\
+\midrule
+H$_2$  & $-0.01313807$ & $8.1\times10^{-10}$ \\
+HF     & $-0.01734432$ & $2.6\times10^{-9}$  \\
+H$_2$O & $-0.03550283$ & $1.4\times10^{-8}$  \\
+N$_2$  & $-0.15419856$ & $2.2\times10^{-8}$  \\
+CO     & $-0.12852242$ & $1.2\times10^{-7}$  \\
+NH$_3$ & $-0.04704176$ & $5.6\times10^{-9}$  \\
+CH$_4$ & $-0.05650741$ & $6.1\times10^{-9}$  \\
+HCN    & $-0.12997898$ & $5.4\times10^{-9}$  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Known Limitations}
+% ============================================================
+
+\begin{itemize}
+  \item \textbf{Memory}: dense $N_\mathrm{AO}^4$ ERI storage limits practical
+        use to small molecules ($N_\mathrm{AO}\lesssim50$).
+  \item \textbf{Single-threaded}: no explicit parallelism; single NumPy/BLAS
+        thread by default.
+  \item \textbf{Closed-shell RHF only}: UHF and ROHF are not supported.
+  \item \textbf{Element coverage}: H--F only; heavier elements are not
+        parametrized.
+  \item \textbf{Numerical derivatives}: geometry optimization and
+        harmonic-frequency workflows use finite differences, not analytic
+        gradients.
+  \item \textbf{Experimental modules}: excited-state and frequency-analysis
+        workflows are pedagogical infrastructure, not production-validated.
+  \item No integral screening, effective core potentials, or relativistic
+        corrections.
+\end{itemize}
+
+% ============================================================
+\section{Impact}
+% ============================================================
+
+MOLEKUL serves two complementary purposes.
+As a teaching tool, all algorithms trace to named functions in readable Python,
+making it suitable for advanced undergraduate and graduate courses in quantum
+chemistry and computational physics.
+As a reproducible benchmarking baseline, the 606-test suite and deterministic
+NumPy~\citep{harris2020} implementation allow hardware and software comparisons
+without delegating quantum-chemistry algorithms to compiled electronic-structure
+kernels.
+Benchmark timings and energies are logged to version-controlled JSON files for
+full reproducibility.
+
+% ============================================================
+\section*{Software Availability}
+% ============================================================
+
+\begin{itemize}
+  \item \textbf{Repository:} \url{https://github.com/yazicienis/molekul}
+  \item \textbf{Archive DOI:} \url{https://doi.org/10.5281/zenodo.19743306}
+  \item \textbf{License:} MIT
+  \item \textbf{Version:} v0.1.1
+  \item \textbf{Installation:} \texttt{pip install -e ".[dev]"}
+  \item \textbf{Tests:} \texttt{pytest tests/}
+\end{itemize}
+
+% ============================================================
+\section*{AI Usage Disclosure}
+% ============================================================
+
+Generative AI tools, including Claude (Anthropic) and ChatGPT (OpenAI), were
+used during software development for code drafting, refactoring assistance,
+documentation support, test-generation suggestions, and editorial review of
+the manuscript.
+All scientific algorithms, numerical reference values, validation criteria, and
+reported results were reviewed and verified by the author, who made the primary
+design decisions and remains responsible for the correctness, originality, and
+scientific content of the submission.
+Reference values were not modified to fit the implementation.
+
+% ============================================================
+\section*{Acknowledgements}
+% ============================================================
+
+The author thanks the developers of PySCF, whose reference calculations were
+used throughout validation, and the EMSL Basis Set Exchange~\citep{pritchard2019}
+for tabulated basis-set parameters.
+
+% ============================================================
+\bibliographystyle{elsarticle-harv}
+\bibliography{paper}
+% ============================================================
+
+\end{document}
