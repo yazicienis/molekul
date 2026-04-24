@@ -61,9 +61,10 @@ algorithmic step traces directly to a named Python function documented in the
 repository, and core RHF total energies and MP2 correlation energies are compared
 automatically against PySCF in the validation suite.
 
-Beyond pedagogy, the pure NumPy [@harris2020] implementation provides a
+Beyond pedagogy, the Python/NumPy [@harris2020] implementation provides a
 self-contained baseline for hardware benchmarking, because performance profiles
-isolate NumPy/BLAS behaviour without delegating the quantum-chemistry algorithms to compiled electronic-structure kernels.
+isolate NumPy/BLAS behaviour without delegating the quantum-chemistry algorithms
+to compiled electronic-structure kernels.
 
 # Software design
 
@@ -150,8 +151,8 @@ trace to named functions in readable Python, making it suitable for advanced
 undergraduate and graduate courses in quantum chemistry and computational
 physics.  As a reproducible benchmarking baseline, the 606-test suite and
 deterministic NumPy implementation allow hardware and software comparisons
-(e.g.\ evaluating Numba or CuPy back-ends) without hidden compiled-kernel
-overhead.  Benchmark timings and energies are logged to version-controlled JSON
+(e.g.\ evaluating Numba or CuPy back-ends) without delegating the
+quantum-chemistry algorithms to compiled electronic-structure kernels.  Benchmark timings and energies are logged to version-controlled JSON
 files for full reproducibility.
 
 # AI usage disclosure
