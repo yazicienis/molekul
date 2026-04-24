@@ -1,0 +1,32 @@
+MOLEKUL Experiment Report
+Phase    : phase4
+Name     : rhf
+Time     : 2026-04-01T10:36:13
+Git SHA  : n/a
+Status   : PASS  (5/5 checks passed)
+Elapsed  : 0.00 s
+────────────────────────────────────────────────────────────
+Method: RHF/STO-3G, DIIS, symmetric orthogonalisation
+Molecules: H2 (R=1.4 bohr), HeH+ (R=1.4632 bohr), H2O (C2v)
+References: PySCF 2.x at identical geometries
+────────────────────────────────────────────────────────────
+Metrics:
+  h2_energy_ha = -1.116714319
+  h2_enuc_ha = 0.7142857143
+  h2_converged = True
+  h2_n_iter = 2
+  h2_pyscf_ref_ha = -1.1167143251
+  h2_pyscf_diff_ha = 6.125e-09
+  hehplus_energy_ha = -2.8418365268
+  hehplus_enuc_ha = 1.3668671405
+  hehplus_converged = True
+  hehplus_n_iter = 12
+  h2o_energy_ha = -74.9629466659
+  h2o_enuc_ha = 9.1939138221
+  h2o_converged = True
+  h2o_n_iter = 9
+  h2o_pyscf_ref_ha = -74.9629466405
+  h2o_pyscf_diff_ha = -2.5368e-08
+
+Artifacts:
+  outputs/phase4_rhf.txt

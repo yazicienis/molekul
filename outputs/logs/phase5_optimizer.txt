@@ -1,0 +1,32 @@
+MOLEKUL Experiment Report
+Phase    : phase5
+Name     : optimizer
+Time     : 2026-04-01T10:36:17
+Git SHA  : n/a
+Status   : PASS  (5/5 checks passed)
+Elapsed  : 0.00 s
+────────────────────────────────────────────────────────────
+Method: RHF/STO-3G, BFGS, numerical gradient (central diff, h=1e-3 bohr)
+Start geometry: H2 R=1.7 bohr (stretched)
+PySCF reference: fine scan 51 pts R=1.30..1.40 bohr, R_eq=1.3460 bohr
+────────────────────────────────────────────────────────────
+Metrics:
+  h2_start_R_bohr = 1.7
+  h2_start_energy_ha = -1.0920058374
+  h2_opt_R_bohr = 1.345981
+  h2_opt_R_ang = 0.712262
+  h2_opt_energy_ha = -1.1175058792
+  h2_opt_grad_max_ha_bohr = 3.484e-05
+  h2_opt_n_steps = 6
+  pyscf_ref_R_bohr = 1.346
+  pyscf_ref_energy_ha = -1.1175058833
+  delta_R_vs_pyscf_bohr = -1.9e-05
+  delta_E_vs_pyscf_ha = 4.1e-09
+  scan_min_R_bohr = 1.34
+  scan_min_energy_ha = -1.1174957793
+  grad_h_bohr = 0.001
+
+Artifacts:
+  outputs/h2_opt_traj.xyz
+  outputs/h2_opt_history.json
+  outputs/phase5_optimizer.txt

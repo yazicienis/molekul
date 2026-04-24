@@ -1,0 +1,32 @@
+{
+  "phase": "phase4",
+  "name": "rhf",
+  "timestamp": "2026-04-01T10:36:13",
+  "git_sha": null,
+  "status": "PASS",
+  "n_passed": 5,
+  "n_failed": 0,
+  "elapsed_s": 0.0,
+  "metrics": {
+    "h2_energy_ha": -1.116714319,
+    "h2_enuc_ha": 0.7142857143,
+    "h2_converged": true,
+    "h2_n_iter": 2,
+    "h2_pyscf_ref_ha": -1.1167143251,
+    "h2_pyscf_diff_ha": 6.125e-09,
+    "hehplus_energy_ha": -2.8418365268,
+    "hehplus_enuc_ha": 1.3668671405,
+    "hehplus_converged": true,
+    "hehplus_n_iter": 12,
+    "h2o_energy_ha": -74.9629466659,
+    "h2o_enuc_ha": 9.1939138221,
+    "h2o_converged": true,
+    "h2o_n_iter": 9,
+    "h2o_pyscf_ref_ha": -74.9629466405,
+    "h2o_pyscf_diff_ha": -2.5368e-08
+  },
+  "artifacts": [
+    "outputs/phase4_rhf.txt"
+  ],
+  "details": {}
+}

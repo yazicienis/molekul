@@ -1,0 +1,32 @@
+{
+  "phase": "phase5",
+  "name": "optimizer",
+  "timestamp": "2026-04-01T10:36:17",
+  "git_sha": null,
+  "status": "PASS",
+  "n_passed": 5,
+  "n_failed": 0,
+  "elapsed_s": 0.0,
+  "metrics": {
+    "h2_start_R_bohr": 1.7,
+    "h2_start_energy_ha": -1.0920058374,
+    "h2_opt_R_bohr": 1.345981,
+    "h2_opt_R_ang": 0.712262,
+    "h2_opt_energy_ha": -1.1175058792,
+    "h2_opt_grad_max_ha_bohr": 3.484e-05,
+    "h2_opt_n_steps": 6,
+    "pyscf_ref_R_bohr": 1.346,
+    "pyscf_ref_energy_ha": -1.1175058833,
+    "delta_R_vs_pyscf_bohr": -1.9e-05,
+    "delta_E_vs_pyscf_ha": 4.1e-09,
+    "scan_min_R_bohr": 1.34,
+    "scan_min_energy_ha": -1.1174957793,
+    "grad_h_bohr": 0.001
+  },
+  "artifacts": [
+    "outputs/h2_opt_traj.xyz",
+    "outputs/h2_opt_history.json",
+    "outputs/phase5_optimizer.txt"
+  ],
+  "details": {}
+}

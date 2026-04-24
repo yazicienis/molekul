@@ -1,0 +1,15 @@
+=== Phase 2: One-Electron Integrals (STO-3G) ===
+
+H2 at R=1.4 bohr (STO-3G):
+  S12=0.659318  ref=0.6593
+  T11=0.760032  ref=0.7600
+  T12=0.236455  ref=0.2365
+  H11=-1.120409  ref=-1.1204
+  H12=-0.958380  ref=-0.9577
+
+H2O STO-3G (7 basis functions):
+  n_basis=7
+  S diagonal=[1. 1. 1. 1. 1. 1. 1.]
+  S eigvals=[0.346247 0.421557 0.884995 1.       1.094272 1.326762 1.926166]
+  H_core diagonal=[-32.7137  -9.3283  -7.4523  -7.6044  -7.5466  -5.0529  -5.0529]
+  All tests: PASS

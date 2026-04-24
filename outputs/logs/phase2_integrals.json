@@ -1,0 +1,28 @@
+{
+  "phase": "phase2",
+  "name": "integrals",
+  "timestamp": "2026-04-01T10:36:09",
+  "git_sha": null,
+  "status": "PASS",
+  "n_passed": 5,
+  "n_failed": 0,
+  "elapsed_s": 0.001,
+  "metrics": {
+    "h2_S12": 0.659318121165982,
+    "h2_T11": 0.7600318509722125,
+    "h2_T12": 0.23645462441542445,
+    "h2_H11": -1.1204088694062198,
+    "h2_H12": -0.9583798544793718,
+    "h2_S12_ref_so": 0.6593182,
+    "h2_S12_err": 7.883401798025602e-08,
+    "h2_T11_ref_so": 0.7600319,
+    "h2_T11_err": 4.9027787496491726e-08,
+    "n_checks_run": 73,
+    "n_checks_failed": 0,
+    "h2o_n_basis": 7
+  },
+  "artifacts": [
+    "outputs/phase2_integrals.txt"
+  ],
+  "details": {}
+}

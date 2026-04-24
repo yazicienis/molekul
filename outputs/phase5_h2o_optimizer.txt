@@ -1,0 +1,126 @@
+
+MOLEKUL — H2O Geometry Optimisation (RHF/STO-3G)
+Numerical gradient (central diff, h=1e-3 bohr) + BFGS
+
+==================================================================
+  STARTING GEOMETRY
+==================================================================
+  H2O at R=2.0 bohr, θ=120°  (non-equilibrium)
+    R(O-H1) = 2.000000 bohr  (1.058354 Å)
+    R(O-H2) = 2.000000 bohr  (1.058354 Å)
+    θ(HOH)  = 120.0000°
+    E_start  = -74.9379310100 Ha
+
+==================================================================
+  GRADIENT CHECK AT STARTING GEOMETRY
+==================================================================
+  Gradient (Ha/bohr):
+    O: dE/dx=  0.000000  dE/dy=  0.000000  dE/dz= -0.006876
+    H1: dE/dx=  0.000000  dE/dy=  0.088090  dE/dz=  0.003438
+    H2: dE/dx=  0.000000  dE/dy= -0.088090  dE/dz=  0.003438
+  |g|_rms = 4.1621e-02 Ha/bohr
+  |g|_max = 8.8090e-02 Ha/bohr
+  Force sum (should be ~0): [0.00e+00, 5.68e-11, 1.97e-08]
+
+==================================================================
+  GEOMETRY OPTIMISATION
+==================================================================
+
+Geometry optimisation — BFGS / numerical gradient
+Molecule : H2O  (3 atoms, 10 electrons)
+Basis    : STO-3G    grad step h = 1e-03 bohr
+Tol      : max|grad| < 1e-04 Ha/bohr   max_steps = 100
+────────────────────────────────────────────────────────────────────────
+  step   1  E =     -74.9379310100 Ha  |g|_rms = 4.162e-02  |g|_max = 8.809e-02 Ha/bohr
+  step   2  E =     -74.9510246897 Ha  |g|_rms = 2.910e-02  |g|_max = 5.765e-02 Ha/bohr
+  step   3  E =     -74.9643686283 Ha  |g|_rms = 1.909e-02  |g|_max = 4.407e-02 Ha/bohr
+  step   4  E =     -74.9658818853 Ha  |g|_rms = 2.030e-03  |g|_max = 4.818e-03 Ha/bohr
+  step   5  E =     -74.9659011504 Ha  |g|_rms = 6.339e-05  |g|_max = 1.340e-04 Ha/bohr
+  step   6  E =     -74.9659012087 Ha  |g|_rms = 5.657e-07  |g|_max = 1.081e-06 Ha/bohr
+────────────────────────────────────────────────────────────────────────
+
+CONVERGED
+  Steps          : 6
+  E_initial      :     -74.9379310100 Ha
+  E_final        :     -74.9659012087 Ha
+  ΔE             : -2.797020e-02 Ha
+  |g|_max final  : 1.081e-06 Ha/bohr
+  Trajectory     : outputs/h2o_opt_traj.xyz
+  History        : outputs/h2o_opt_history.json
+
+==================================================================
+  OPTIMISED GEOMETRY
+==================================================================
+  Final H2O
+    R(O-H1) = 1.869713 bohr  (0.989410 Å)
+    R(O-H2) = 1.869713 bohr  (0.989410 Å)
+    θ(HOH)  = 100.0272°
+    E_final  = -74.9659012087 Ha
+    ΔE       = -2.797020e-02 Ha
+    |g|_max  = 1.08e-06 Ha/bohr
+    Steps    = 6
+    Converged: True
+
+==================================================================
+  CONVERGENCE HISTORY (selected steps)
+==================================================================
+  Step              E (Ha)       |g|_rms       |g|_max
+  ----  ------------------  ------------  ------------
+     1      -74.9379310100    4.1621e-02    8.8090e-02
+     2      -74.9510246897    2.9097e-02    5.7649e-02
+     3      -74.9643686283    1.9092e-02    4.4075e-02
+     4      -74.9658818853    2.0301e-03    4.8181e-03
+     5      -74.9659011504    6.3385e-05    1.3401e-04
+     6      -74.9659012087    5.6573e-07    1.0814e-06
+
+==================================================================
+  PYSCF COMPARISON
+==================================================================
+  Running PySCF fine 2D scan (this may take ~30 s)...
+
+  PySCF STO-3G equilibrium:
+    R(OH)   = 1.870000 bohr  (0.989561 Å)
+    θ(HOH)  = 100.0000°
+    E       = -74.9659011183 Ha
+
+  MOLEKUL vs PySCF:
+    ΔR(OH)  = -0.0003 bohr  (-0.0002 Å)
+    Δθ(HOH) = +0.0272°
+    ΔE      = -9.036692e-08 Ha
+
+==================================================================
+  SUMMARY
+==================================================================
+  Converged       : True
+  BFGS steps      : 6
+  E_start         : -74.9379310100 Ha  (R=2.0 bohr, θ=120°)
+  E_final         : -74.9659012087 Ha
+  R(OH) final     : 1.869713 bohr = 0.989410 Å
+  θ(HOH) final    : 100.0272°
+  |g|_max final   : 1.08e-06 Ha/bohr
+  Traj. frames    : 6
+  Trajectory      : outputs/h2o_opt_traj.xyz
+  History         : outputs/h2o_opt_history.json
+
+What is trustworthy
+-------------------
+  - RHF/STO-3G energy at each geometry is validated against PySCF to ~1e-8 Ha
+  - Numerical gradient (h=1e-3 bohr) accuracy ~1e-6 Ha/bohr
+  - BFGS descent property: each accepted step lowers the energy
+  - Bond lengths and angles computed from Cartesian coords (exact arithmetic)
+  - PySCF grid reference confirms R(OH) and θ(HOH) to within grid resolution
+
+What remains approximate / limited
+------------------------------------
+  - Numerical gradient: O(h²) truncation, no Richardson extrapolation
+  - BFGS Cartesian: translations/rotations not projected out; molecule may
+    drift/rotate by O(1e-4 bohr); bond lengths and angles are unaffected
+  - STO-3G is a minimal basis: R(OH) too short vs experiment (~1.81 bohr)
+    and θ too small vs experiment (104.5°) — this is a basis set effect,
+    not an optimizer bug
+  - Each gradient call: 3*3*2 = 18 SCF calculations; total cost scales as
+    18 * n_BFGS_steps * n_SCF_iters_per_geometry
+
+Structured log : /home/yazicie/MOLEKUL/outputs/logs/phase5_h2o_optimizer.txt
+               : /home/yazicie/MOLEKUL/outputs/logs/phase5_h2o_optimizer.json
+

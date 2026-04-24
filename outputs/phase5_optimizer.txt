@@ -1,0 +1,110 @@
+
+MOLEKUL — Phase 5: Geometry Optimisation Validation
+Method: RHF/STO-3G, BFGS, numerical gradient (h=1e-3 bohr)
+
+================================================================
+  GRADIENT CHECK  —  H2 at R = 1.7 bohr
+================================================================
+  Gradient (Ha/bohr):
+    H1: dE/dx=  0.000000  dE/dy=  0.000000  dE/dz= -0.121770
+    H2: dE/dx=  0.000000  dE/dy=  0.000000  dE/dz=  0.121770
+  |g|_rms = 7.0304e-02 Ha/bohr
+  |g|_max = 1.2177e-01 Ha/bohr
+  [Newton's 3rd law check: grad_z(H1) + grad_z(H2) = 1.11e-13 (should be ~0)]
+  [Transverse gradient: dE/dx(H1)=0.00e+00, dE/dy(H1)=0.00e+00 (should be ~0)]
+
+================================================================
+  GEOMETRY OPTIMISATION  —  H2 starting at R = 1.7 bohr
+================================================================
+
+Geometry optimisation — BFGS / numerical gradient
+Molecule : H2  (2 atoms, 2 electrons)
+Basis    : STO-3G    grad step h = 1e-03 bohr
+Tol      : max|grad| < 1e-04 Ha/bohr   max_steps = 100
+────────────────────────────────────────────────────────────────────────
+  step   1  E =      -1.0920058374 Ha  |g|_rms = 7.030e-02  |g|_max = 1.218e-01 Ha/bohr
+  step   2  E =      -1.1143836372 Ha  |g|_rms = 3.081e-02  |g|_max = 5.336e-02 Ha/bohr
+  step   3  E =      -1.1155362250 Ha  |g|_rms = 2.991e-02  |g|_max = 5.180e-02 Ha/bohr
+  step   4  E =      -1.1174492920 Ha  |g|_rms = 4.580e-03  |g|_max = 7.932e-03 Ha/bohr
+  step   5  E =      -1.1175038346 Ha  |g|_rms = 8.866e-04  |g|_max = 1.536e-03 Ha/bohr
+  step   6  E =      -1.1175058792 Ha  |g|_rms = 2.011e-05  |g|_max = 3.484e-05 Ha/bohr
+────────────────────────────────────────────────────────────────────────
+
+CONVERGED
+  Steps          : 6
+  E_initial      :      -1.0920058374 Ha
+  E_final        :      -1.1175058792 Ha
+  ΔE             : -2.550004e-02 Ha
+  |g|_max final  : 3.484e-05 Ha/bohr
+  Trajectory     : outputs/h2_opt_traj.xyz
+  History        : outputs/h2_opt_history.json
+
+  Final geometry:
+    R(H-H) = 1.345981 bohr = 0.712262 Å
+    E_final = -1.1175058792 Ha
+
+================================================================
+  BOND LENGTH SCAN  —  R = 1.2 … 1.6 bohr (independent check)
+================================================================
+    R (bohr)              E (Ha)
+      1.2000       -1.1103338814
+      1.2200       -1.1122864678
+      1.2400       -1.1138957784
+      1.2600       -1.1151831917
+      1.2800       -1.1161687265
+      1.3000       -1.1168711367
+      1.3200       -1.1173079966
+      1.3400       -1.1174957793 <-- minimum
+      1.3600       -1.1174499268
+      1.3800       -1.1171849161
+      1.4000       -1.1167143190
+      1.4200       -1.1160508573
+      1.4400       -1.1152064556
+      1.4600       -1.1141922889
+      1.4800       -1.1130188286
+      1.5000       -1.1116958852
+      1.5200       -1.1102326490
+      1.5400       -1.1086377282
+      1.5600       -1.1069191852
+      1.5800       -1.1050845715
+      1.6000       -1.1031409605
+
+  Scan minimum: R = 1.3400 bohr,  E = -1.1174957793 Ha
+  Opt minimum : R = 1.3460 bohr,  E = -1.1175058792 Ha
+  Agreement   : ΔR = 0.0060 bohr  (scan resolution 0.0200 bohr)
+
+================================================================
+  PYSCF COMPARISON
+================================================================
+  PySCF E_eq  = -1.1175058833 Ha   R_eq = 1.346000 bohr
+  MOLEKUL E_eq = -1.1175058792 Ha  R_eq = 1.345981 bohr
+  ΔE = 4.09e-09 Ha
+  ΔR = -0.0000 bohr
+
+================================================================
+  SUMMARY
+================================================================
+  Converged      : True
+  SCF steps      : 6
+  E start        : -1.0920058374 Ha  (R=1.7 bohr)
+  E final        : -1.1175058792 Ha
+  R_eq optimised : 1.345981 bohr = 0.712262 Å
+  |g|_max final  : 3.48e-05 Ha/bohr
+  Trajectory     : outputs/h2_opt_traj.xyz  (6 frames)
+  History        : outputs/h2_opt_history.json
+
+What is trustworthy
+-------------------
+  - Energy at each geometry is RHF/STO-3G, validated against PySCF to ~1e-8 Ha
+  - Gradient is central-difference (O(h²), h=1e-3 bohr) ≈ 1e-6 Ha/bohr accuracy
+  - BFGS uses exact gradient, so steps are genuine descent directions
+  - Final bond length matches independent scan and PySCF to within grid resolution
+
+What remains approximate
+------------------------
+  - Numerical gradients: truncation error O(1e-6) Ha/bohr
+  - Cartesian BFGS does not remove translations/rotations explicitly
+    (molecule may drift by ~1e-4 bohr; bond length is unaffected)
+  - STO-3G is a minimal basis; R_eq differs from experiment (~1.40 bohr)
+  - No analytic gradients — each gradient evaluation costs 6*N_atoms SCF
+

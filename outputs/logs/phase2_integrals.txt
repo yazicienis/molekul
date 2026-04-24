@@ -1,0 +1,28 @@
+MOLEKUL Experiment Report
+Phase    : phase2
+Name     : integrals
+Time     : 2026-04-01T10:36:09
+Git SHA  : n/a
+Status   : PASS  (5/5 checks passed)
+Elapsed  : 0.00 s
+────────────────────────────────────────────────────────────
+Checks run: 73  passed: 73  failed: 0
+Molecules: H2 (R=1.4 bohr), HeH+ (R=1.4632 bohr), H2O (C2v)  — STO-3G
+References: Szabo & Ostlund / PySCF 2.x
+────────────────────────────────────────────────────────────
+Metrics:
+  h2_S12 = 0.659318121165982
+  h2_T11 = 0.7600318509722125
+  h2_T12 = 0.23645462441542445
+  h2_H11 = -1.1204088694062198
+  h2_H12 = -0.9583798544793718
+  h2_S12_ref_so = 0.6593182
+  h2_S12_err = 7.883401798025602e-08
+  h2_T11_ref_so = 0.7600319
+  h2_T11_err = 4.9027787496491726e-08
+  n_checks_run = 73
+  n_checks_failed = 0
+  h2o_n_basis = 7
+
+Artifacts:
+  outputs/phase2_integrals.txt

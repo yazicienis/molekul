@@ -1,0 +1,36 @@
+MOLEKUL Experiment Report
+Phase    : phase5
+Name     : h2o_optimizer
+Time     : 2026-04-01T10:55:52
+Git SHA  : n/a
+Status   : PASS  (7/7 checks passed)
+Elapsed  : 0.00 s
+────────────────────────────────────────────────────────────
+Method: RHF/STO-3G, BFGS, numerical gradient (h=1e-3 bohr)
+Start: R(OH)=2.0 bohr, θ(HOH)=120° (non-equilibrium)
+Final: R(OH)=1.8697 bohr, θ=100.03°, E=-74.96590121 Ha
+PySCF ref: R(OH)=1.8700 bohr, θ=100.0°, E=-74.96590112 Ha
+────────────────────────────────────────────────────────────
+Metrics:
+  start_R_OH_bohr = 2.0
+  start_theta_hoh_deg = 120.0
+  start_energy_ha = -74.93793101
+  final_R_OH1_bohr = 1.869713
+  final_R_OH2_bohr = 1.869713
+  final_R_OH_mean_bohr = 1.869713
+  final_R_OH_ang = 0.98941
+  final_theta_hoh_deg = 100.0272
+  final_energy_ha = -74.9659012087
+  n_bfgs_steps = 6
+  grad_max_final_ha_bohr = 1.08e-06
+  pyscf_ref_R_OH_bohr = 1.87
+  pyscf_ref_theta_deg = 100.0
+  pyscf_ref_energy_ha = -74.9659011183
+  delta_R_OH_vs_pyscf_bohr = -0.000287
+  delta_theta_vs_pyscf_deg = 0.0272
+  delta_E_vs_pyscf_ha = -9.04e-08
+  grad_h_bohr = 0.001
+
+Artifacts:
+  outputs/h2o_opt_traj.xyz
+  outputs/h2o_opt_history.json

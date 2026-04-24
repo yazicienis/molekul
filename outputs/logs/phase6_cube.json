@@ -1,0 +1,40 @@
+{
+  "phase": "phase6",
+  "name": "cube",
+  "timestamp": "2026-04-01T11:07:32",
+  "git_sha": null,
+  "status": "PASS",
+  "n_passed": 6,
+  "n_failed": 0,
+  "elapsed_s": 0.642,
+  "metrics": {
+    "scf_energy_ha": -74.96590113470005,
+    "scf_n_iter": 9,
+    "n_occ": 5,
+    "n_virt": 2,
+    "n_basis": 7,
+    "step_bohr": 0.2,
+    "margin_bohr": 4.0,
+    "n_electrons_integrated": 10.579577801138306,
+    "rho_max_e_bohr3": 167.65976198438673,
+    "rho_min_e_bohr3": 3.2184318722733675e-12,
+    "grid_nx": 41,
+    "grid_ny": 56,
+    "grid_nz": 48,
+    "grid_n_points": 110208,
+    "homo_energy_ev": -10.683942527379964,
+    "homo_norm_integrated": 0.9999982956369208,
+    "lumo_energy_ev": 15.828610958170541,
+    "lumo_norm_integrated": 1.00335198064675,
+    "mo1_energy_ev": -551.0750777932162,
+    "mo1_norm_integrated": 1.274272617443924,
+    "elapsed_s": 0.6414749622344971
+  },
+  "artifacts": [
+    "/home/yazicie/MOLEKUL/outputs/h2o_density.cube",
+    "/home/yazicie/MOLEKUL/outputs/h2o_homo.cube",
+    "/home/yazicie/MOLEKUL/outputs/h2o_lumo.cube",
+    "/home/yazicie/MOLEKUL/outputs/h2o_mo1.cube"
+  ],
+  "details": {}
+}

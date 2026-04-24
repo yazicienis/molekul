@@ -1,0 +1,24 @@
+MOLEKUL Experiment Report
+Phase    : phase1
+Name     : molecules
+Time     : 2026-04-01T10:36:05
+Git SHA  : n/a
+Status   : PASS  (1/1 checks passed)
+Elapsed  : 0.00 s
+────────────────────────────────────────────────────────────
+Molecules processed: H2, Water, HeH+
+Roundtrip max coord diff: 0.00e+00 bohr
+────────────────────────────────────────────────────────────
+Metrics:
+  n_molecules = 3
+  h2_n_electrons = 2
+  h2_enuc_ha = 0.7151043905325648
+  water_n_electrons = 10
+  water_enuc_ha = 9.192215602598017
+  hehplus_n_electrons = 2
+  hehplus_enuc_ha = 1.3673830723361702
+  roundtrip_max_diff_bohr = 0.0
+
+Artifacts:
+  /home/yazicie/MOLEKUL/outputs/phase1_molecules.json
+  /home/yazicie/MOLEKUL/outputs/h2_roundtrip.xyz
