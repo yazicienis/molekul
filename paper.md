@@ -13,7 +13,7 @@ authors:
     orcid: 0000-0001-7573-6344
     affiliation: 1
 affiliations:
-  - name: Independent Researcher
+  - name: SRH University of Applied Sciences Heidelberg, School of Engineering and Architecture, Heidelberg, Germany
     index: 1
 date: 24 April 2026
 bibliography: paper.bib
