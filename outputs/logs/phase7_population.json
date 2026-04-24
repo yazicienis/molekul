@@ -1,0 +1,28 @@
+{
+  "phase": "phase7",
+  "name": "population",
+  "timestamp": "2026-04-02T07:10:09",
+  "git_sha": null,
+  "status": "PASS",
+  "n_passed": 23,
+  "n_failed": 0,
+  "elapsed_s": 0.579,
+  "metrics": {
+    "pyscf_available": true,
+    "h2o_scf_energy_ha": -74.96590113470005,
+    "h2o_dipole_magnitude_debye": 1.7091463995637386,
+    "h2o_dipole_z_debye": -1.7091463995637386,
+    "h2o_q_O": -0.3303617393554923,
+    "h2o_q_H": 0.16518086967774404,
+    "h2o_total_electrons": 10.000000000000004,
+    "heh_scf_energy_ha": -2.8418365268089643,
+    "heh_dipole_magnitude_debye": 2.8381071658708885,
+    "heh_dipole_z_debye": 2.8381071658708885,
+    "heh_q_He": 0.27256419597790527,
+    "heh_q_H": 0.727435804022096,
+    "heh_total_electrons": 1.9999999999999987,
+    "elapsed_s": 0.5788974761962891
+  },
+  "artifacts": [],
+  "details": {}
+}

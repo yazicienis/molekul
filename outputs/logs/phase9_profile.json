@@ -1,0 +1,524 @@
+{
+  "timestamp": "2026-04-02T08:03:07.932637",
+  "status": "PASS",
+  "git_sha": null,
+  "elapsed_s": 15.84,
+  "n_passed": 0,
+  "n_failed": 0,
+  "metrics": {
+    "cprofile_eri": {
+      "H2O": {
+        "n_basis": 7,
+        "n_unique_eri": 406,
+        "top_functions": [
+          {
+            "function": "eri_primitive:47(/home/yazicie/MOLEKUL/src/molekul/eri.py)",
+            "ncalls": 32886,
+            "tottime_s": 0.229632,
+            "cumtime_s": 0.517697,
+            "tottime_per_call_us": 6.983
+          },
+          {
+            "function": "_R:174(/home/yazicie/MOLEKUL/src/molekul/integrals.py)",
+            "ncalls": 228906,
+            "tottime_s": 0.162367,
+            "cumtime_s": 0.276187,
+            "tottime_per_call_us": 0.709
+          },
+          {
+            "function": "_boys:42(/home/yazicie/MOLEKUL/src/molekul/integrals.py)",
+            "ncalls": 110727,
+            "tottime_s": 0.085433,
+            "cumtime_s": 0.10387,
+            "tottime_per_call_us": 0.772
+          },
+          {
+            "function": "_contracted_eri:119(/home/yazicie/MOLEKUL/src/molekul/eri.py)",
+            "ncalls": 406,
+            "tottime_s": 0.02608,
+            "cumtime_s": 0.549881,
+            "tottime_per_call_us": 64.236
+          },
+          {
+            "function": "<built-in method builtins.abs>:0(~)",
+            "ncalls": 296492,
+            "tottime_s": 0.011871,
+            "cumtime_s": 0.011871,
+            "tottime_per_call_us": 0.04
+          },
+          {
+            "function": "dot:748(/home/yazicie/miniconda3/lib/python3.13/site-packages/numpy/_core/multiarray.py)",
+            "ncalls": 228906,
+            "tottime_s": 0.00995,
+            "cumtime_s": 0.00995,
+            "tottime_per_call_us": 0.043
+          },
+          {
+            "function": "<built-in method numpy.asarray>:0(~)",
+            "ncalls": 131544,
+            "tottime_s": 0.009718,
+            "cumtime_s": 0.009718,
+            "tottime_per_call_us": 0.074
+          },
+          {
+            "function": "<built-in method math.sqrt>:0(~)",
+            "ncalls": 77878,
+            "tottime_s": 0.004105,
+            "cumtime_s": 0.004105,
+            "tottime_per_call_us": 0.053
+          },
+          {
+            "function": "norm_primitive:34(/home/yazicie/MOLEKUL/src/molekul/basis.py)",
+            "ncalls": 4872,
+            "tottime_s": 0.00315,
+            "cumtime_s": 0.004208,
+            "tottime_per_call_us": 0.647
+          },
+          {
+            "function": "<built-in method math.erf>:0(~)",
+            "ncalls": 40120,
+            "tottime_s": 0.002908,
+            "cumtime_s": 0.002908,
+            "tottime_per_call_us": 0.072
+          },
+          {
+            "function": "<built-in method math.exp>:0(~)",
+            "ncalls": 28644,
+            "tottime_s": 0.001739,
+            "cumtime_s": 0.001739,
+            "tottime_per_call_us": 0.061
+          },
+          {
+            "function": "norms:97(/home/yazicie/MOLEKUL/src/molekul/basis.py)",
+            "ncalls": 1624,
+            "tottime_s": 0.001517,
+            "cumtime_s": 0.006103,
+            "tottime_per_call_us": 0.934
+          },
+          {
+            "function": "_dfact:24(/home/yazicie/MOLEKUL/src/molekul/basis.py)",
+            "ncalls": 14616,
+            "tottime_s": 0.000784,
+            "cumtime_s": 0.000784,
+            "tottime_per_call_us": 0.054
+          },
+          {
+            "function": "build_eri:156(/home/yazicie/MOLEKUL/src/molekul/eri.py)",
+            "ncalls": 1,
+            "tottime_s": 0.000444,
+            "cumtime_s": 0.550349,
+            "tottime_per_call_us": 443.86
+          },
+          {
+            "function": "<built-in method numpy.array>:0(~)",
+            "ncalls": 1625,
+            "tottime_s": 0.000389,
+            "cumtime_s": 0.000389,
+            "tottime_per_call_us": 0.24
+          }
+        ]
+      },
+      "CH4": {
+        "n_basis": 9,
+        "n_unique_eri": 1035,
+        "top_functions": [
+          {
+            "function": "eri_primitive:47(/home/yazicie/MOLEKUL/src/molekul/eri.py)",
+            "ncalls": 83835,
+            "tottime_s": 0.552735,
+            "cumtime_s": 1.212859,
+            "tottime_per_call_us": 6.593
+          },
+          {
+            "function": "_R:174(/home/yazicie/MOLEKUL/src/molekul/integrals.py)",
+            "ncalls": 479682,
+            "tottime_s": 0.330815,
+            "cumtime_s": 0.631623,
+            "tottime_per_call_us": 0.69
+          },
+          {
+            "function": "_boys:42(/home/yazicie/MOLEKUL/src/molekul/integrals.py)",
+            "ncalls": 254907,
+            "tottime_s": 0.227128,
+            "cumtime_s": 0.280461,
+            "tottime_per_call_us": 0.891
+          },
+          {
+            "function": "_contracted_eri:119(/home/yazicie/MOLEKUL/src/molekul/eri.py)",
+            "ncalls": 1035,
+            "tottime_s": 0.063979,
+            "cumtime_s": 1.29164,
+            "tottime_per_call_us": 61.815
+          },
+          {
+            "function": "<built-in method builtins.abs>:0(~)",
+            "ncalls": 770058,
+            "tottime_s": 0.031002,
+            "cumtime_s": 0.031002,
+            "tottime_per_call_us": 0.04
+          },
+          {
+            "function": "<built-in method numpy.asarray>:0(~)",
+            "ncalls": 335340,
+            "tottime_s": 0.023692,
+            "cumtime_s": 0.023692,
+            "tottime_per_call_us": 0.071
+          },
+          {
+            "function": "dot:748(/home/yazicie/miniconda3/lib/python3.13/site-packages/numpy/_core/multiarray.py)",
+            "ncalls": 479682,
+            "tottime_s": 0.020347,
+            "cumtime_s": 0.020347,
+            "tottime_per_call_us": 0.042
+          },
+          {
+            "function": "<built-in method math.sqrt>:0(~)",
+            "ncalls": 237090,
+            "tottime_s": 0.012045,
+            "cumtime_s": 0.012045,
+            "tottime_per_call_us": 0.051
+          },
+          {
+            "function": "<built-in method math.erf>:0(~)",
+            "ncalls": 140835,
+            "tottime_s": 0.010234,
+            "cumtime_s": 0.010234,
+            "tottime_per_call_us": 0.073
+          },
+          {
+            "function": "norm_primitive:34(/home/yazicie/MOLEKUL/src/molekul/basis.py)",
+            "ncalls": 12420,
+            "tottime_s": 0.007645,
+            "cumtime_s": 0.010184,
+            "tottime_per_call_us": 0.616
+          },
+          {
+            "function": "<built-in method math.exp>:0(~)",
+            "ncalls": 89259,
+            "tottime_s": 0.005414,
+            "cumtime_s": 0.005414,
+            "tottime_per_call_us": 0.061
+          },
+          {
+            "function": "norms:97(/home/yazicie/MOLEKUL/src/molekul/basis.py)",
+            "ncalls": 4140,
+            "tottime_s": 0.003687,
+            "cumtime_s": 0.014802,
+            "tottime_per_call_us": 0.891
+          },
+          {
+            "function": "_dfact:24(/home/yazicie/MOLEKUL/src/molekul/basis.py)",
+            "ncalls": 37260,
+            "tottime_s": 0.001834,
+            "cumtime_s": 0.001834,
+            "tottime_per_call_us": 0.049
+          },
+          {
+            "function": "build_eri:156(/home/yazicie/MOLEKUL/src/molekul/eri.py)",
+            "ncalls": 1,
+            "tottime_s": 0.00101,
+            "cumtime_s": 1.292673,
+            "tottime_per_call_us": 1010.361
+          },
+          {
+            "function": "<built-in method numpy.array>:0(~)",
+            "ncalls": 4141,
+            "tottime_s": 0.000939,
+            "cumtime_s": 0.000939,
+            "tottime_per_call_us": 0.227
+          }
+        ]
+      }
+    },
+    "cprofile_scf": {
+      "n_basis": 7,
+      "n_iter": 9,
+      "top_functions": [
+        {
+          "function": "eri_primitive:47(/home/yazicie/MOLEKUL/src/molekul/eri.py)",
+          "ncalls": 32886,
+          "tottime_s": 0.219308,
+          "cumtime_s": 0.501943,
+          "tottime_per_call_us": 6.669
+        },
+        {
+          "function": "_R:174(/home/yazicie/MOLEKUL/src/molekul/integrals.py)",
+          "ncalls": 231363,
+          "tottime_s": 0.159817,
+          "cumtime_s": 0.273826,
+          "tottime_per_call_us": 0.691
+        },
+        {
+          "function": "_boys:42(/home/yazicie/MOLEKUL/src/molekul/integrals.py)",
+          "ncalls": 112293,
+          "tottime_s": 0.08591,
+          "cumtime_s": 0.104464,
+          "tottime_per_call_us": 0.765
+        },
+        {
+          "function": "_contracted_eri:119(/home/yazicie/MOLEKUL/src/molekul/eri.py)",
+          "ncalls": 406,
+          "tottime_s": 0.025136,
+          "cumtime_s": 0.532955,
+          "tottime_per_call_us": 61.911
+        },
+        {
+          "function": "<built-in method builtins.abs>:0(~)",
+          "ncalls": 297400,
+          "tottime_s": 0.011888,
+          "cumtime_s": 0.011888,
+          "tottime_per_call_us": 0.04
+        },
+        {
+          "function": "<built-in method numpy.asarray>:0(~)",
+          "ncalls": 135355,
+          "tottime_s": 0.009935,
+          "cumtime_s": 0.009935,
+          "tottime_per_call_us": 0.073
+        },
+        {
+          "function": "dot:748(/home/yazicie/miniconda3/lib/python3.13/site-packages/numpy/_core/multiarray.py)",
+          "ncalls": 231363,
+          "tottime_s": 0.009545,
+          "cumtime_s": 0.009545,
+          "tottime_per_call_us": 0.041
+        },
+        {
+          "function": "<built-in method math.sqrt>:0(~)",
+          "ncalls": 85874,
+          "tottime_s": 0.004323,
+          "cumtime_s": 0.004323,
+          "tottime_per_call_us": 0.05
+        },
+        {
+          "function": "nuclear_primitive:198(/home/yazicie/MOLEKUL/src/molekul/integrals.py)",
+          "ncalls": 756,
+          "tottime_s": 0.004036,
+          "cumtime_s": 0.007417,
+          "tottime_per_call_us": 5.338
+        },
+        {
+          "function": "norm_primitive:34(/home/yazicie/MOLEKUL/src/molekul/basis.py)",
+          "ncalls": 5712,
+          "tottime_s": 0.003563,
+          "cumtime_s": 0.004735,
+          "tottime_per_call_us": 0.624
+        },
+        {
+          "function": "<built-in method math.erf>:0(~)",
+          "ncalls": 41228,
+          "tottime_s": 0.002957,
+          "cumtime_s": 0.002957,
+          "tottime_per_call_us": 0.072
+        },
+        {
+          "function": "<built-in method math.exp>:0(~)",
+          "ncalls": 29181,
+          "tottime_s": 0.001763,
+          "cumtime_s": 0.001763,
+          "tottime_per_call_us": 0.06
+        },
+        {
+          "function": "norms:97(/home/yazicie/MOLEKUL/src/molekul/basis.py)",
+          "ncalls": 1904,
+          "tottime_s": 0.001723,
+          "cumtime_s": 0.006891,
+          "tottime_per_call_us": 0.905
+        },
+        {
+          "function": "_overlap_1d:118(/home/yazicie/MOLEKUL/src/molekul/integrals.py)",
+          "ncalls": 6048,
+          "tottime_s": 0.001661,
+          "cumtime_s": 0.002473,
+          "tottime_per_call_us": 0.275
+        },
+        {
+          "function": "overlap_primitive:123(/home/yazicie/MOLEKUL/src/molekul/integrals.py)",
+          "ncalls": 2016,
+          "tottime_s": 0.001081,
+          "cumtime_s": 0.003553,
+          "tottime_per_call_us": 0.536
+        },
+        {
+          "function": "_contracted_integral:227(/home/yazicie/MOLEKUL/src/molekul/integrals.py)",
+          "ncalls": 140,
+          "tottime_s": 0.000953,
+          "cumtime_s": 0.013506,
+          "tottime_per_call_us": 6.81
+        },
+        {
+          "function": "_dfact:24(/home/yazicie/MOLEKUL/src/molekul/basis.py)",
+          "ncalls": 17136,
+          "tottime_s": 0.000862,
+          "cumtime_s": 0.000862,
+          "tottime_per_call_us": 0.05
+        },
+        {
+          "function": "<built-in method numpy.array>:0(~)",
+          "ncalls": 4176,
+          "tottime_s": 0.000855,
+          "cumtime_s": 0.000855,
+          "tottime_per_call_us": 0.205
+        },
+        {
+          "function": "_E:88(/home/yazicie/MOLEKUL/src/molekul/integrals.py)",
+          "ncalls": 1386,
+          "tottime_s": 0.000588,
+          "cumtime_s": 0.000594,
+          "tottime_per_call_us": 0.424
+        },
+        {
+          "function": "build_eri:156(/home/yazicie/MOLEKUL/src/molekul/eri.py)",
+          "ncalls": 1,
+          "tottime_s": 0.000406,
+          "cumtime_s": 0.533366,
+          "tottime_per_call_us": 405.94
+        }
+      ]
+    },
+    "cprofile_grad": {
+      "n_basis": 7,
+      "n_scf_calls": 18,
+      "grad_max_ha_bohr": 0.00030383635163389044,
+      "top_functions": [
+        {
+          "function": "eri_primitive:47(/home/yazicie/MOLEKUL/src/molekul/eri.py)",
+          "ncalls": 591948,
+          "tottime_s": 4.031684,
+          "cumtime_s": 9.218658,
+          "tottime_per_call_us": 6.811
+        },
+        {
+          "function": "_R:174(/home/yazicie/MOLEKUL/src/molekul/integrals.py)",
+          "ncalls": 4214430,
+          "tottime_s": 2.929513,
+          "cumtime_s": 5.031186,
+          "tottime_per_call_us": 0.695
+        },
+        {
+          "function": "_boys:42(/home/yazicie/MOLEKUL/src/molekul/integrals.py)",
+          "ncalls": 2052054,
+          "tottime_s": 1.585234,
+          "cumtime_s": 1.929342,
+          "tottime_per_call_us": 0.773
+        },
+        {
+          "function": "_contracted_eri:119(/home/yazicie/MOLEKUL/src/molekul/eri.py)",
+          "ncalls": 7308,
+          "tottime_s": 0.458836,
+          "cumtime_s": 9.781906,
+          "tottime_per_call_us": 62.785
+        },
+        {
+          "function": "<built-in method builtins.abs>:0(~)",
+          "ncalls": 5492813,
+          "tottime_s": 0.221466,
+          "cumtime_s": 0.221466,
+          "tottime_per_call_us": 0.04
+        },
+        {
+          "function": "<built-in method numpy.asarray>:0(~)",
+          "ncalls": 2436450,
+          "tottime_s": 0.175203,
+          "cumtime_s": 0.175203,
+          "tottime_per_call_us": 0.072
+        },
+        {
+          "function": "dot:748(/home/yazicie/miniconda3/lib/python3.13/site-packages/numpy/_core/multiarray.py)",
+          "ncalls": 4214430,
+          "tottime_s": 0.172331,
+          "cumtime_s": 0.172331,
+          "tottime_per_call_us": 0.041
+        },
+        {
+          "function": "<built-in method math.sqrt>:0(~)",
+          "ncalls": 1561816,
+          "tottime_s": 0.080105,
+          "cumtime_s": 0.080105,
+          "tottime_per_call_us": 0.051
+        },
+        {
+          "function": "nuclear_primitive:198(/home/yazicie/MOLEKUL/src/molekul/integrals.py)",
+          "ncalls": 13608,
+          "tottime_s": 0.073283,
+          "cumtime_s": 0.134296,
+          "tottime_per_call_us": 5.385
+        },
+        {
+          "function": "norm_primitive:34(/home/yazicie/MOLEKUL/src/molekul/basis.py)",
+          "ncalls": 102816,
+          "tottime_s": 0.06341,
+          "cumtime_s": 0.084495,
+          "tottime_per_call_us": 0.617
+        },
+        {
+          "function": "<built-in method math.erf>:0(~)",
+          "ncalls": 758188,
+          "tottime_s": 0.054568,
+          "cumtime_s": 0.054568,
+          "tottime_per_call_us": 0.072
+        },
+        {
+          "function": "<built-in method math.exp>:0(~)",
+          "ncalls": 532770,
+          "tottime_s": 0.031833,
+          "cumtime_s": 0.031833,
+          "tottime_per_call_us": 0.06
+        },
+        {
+          "function": "norms:97(/home/yazicie/MOLEKUL/src/molekul/basis.py)",
+          "ncalls": 34272,
+          "tottime_s": 0.030218,
+          "cumtime_s": 0.122581,
+          "tottime_per_call_us": 0.882
+        },
+        {
+          "function": "_overlap_1d:118(/home/yazicie/MOLEKUL/src/molekul/integrals.py)",
+          "ncalls": 108864,
+          "tottime_s": 0.029206,
+          "cumtime_s": 0.036136,
+          "tottime_per_call_us": 0.268
+        },
+        {
+          "function": "overlap_primitive:123(/home/yazicie/MOLEKUL/src/molekul/integrals.py)",
+          "ncalls": 36288,
+          "tottime_s": 0.019159,
+          "cumtime_s": 0.055294,
+          "tottime_per_call_us": 0.528
+        }
+      ]
+    },
+    "subphase": {
+      "n_basis": 7,
+      "n_unique_eri": 406,
+      "n_primitive_calls": 32886,
+      "n_prim_per_contracted": 81,
+      "t_E_cold_us": 0.058,
+      "t_E_warm_us": 0.0538,
+      "t_R_us": 2.5996,
+      "t_eri_prim_ss_us": 5.87,
+      "t_eri_prim_pp_us": 33.12,
+      "t_eri_estimated_s": 0.193,
+      "t_eri_actual_s": 0.3704,
+      "eri_overhead_pct": 47.9,
+      "scf_iter_timings_ms": {
+        "fock_build": 0.0069,
+        "energy_einsum": 0.0014,
+        "diis_error": 0.0026,
+        "diis_extrap": 0.0352,
+        "diagonalise": 0.0065,
+        "density_update": 0.0018
+      },
+      "grad_n_displacements": 18,
+      "grad_t_eri_per_disp_ms": 368.56,
+      "grad_t_scf_per_disp_ms": 375.74,
+      "grad_eri_fraction_pct": 98.1
+    },
+    "cache_analysis": {
+      "cache_hits": 253692,
+      "cache_misses": 459,
+      "cache_size": 459,
+      "hit_rate_pct": 99.8
+    }
+  }
+}

@@ -1,0 +1,183 @@
+line_profiler: ERI hot path (H2O)
+========================================================================
+Timer unit: 1e-09 s
+
+Total time: 0.991992 s
+File: /home/yazicie/MOLEKUL/src/molekul/eri.py
+Function: eri_primitive at line 47
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    47                                           def eri_primitive(
+    48                                                   lx1: int, ly1: int, lz1: int, A, a: float,
+    49                                                   lx2: int, ly2: int, lz2: int, B, b: float,
+    50                                                   lx3: int, ly3: int, lz3: int, C, c: float,
+    51                                                   lx4: int, ly4: int, lz4: int, D, d: float,
+    52                                           ) -> float:
+    53                                               """
+    54                                               (g₁g₂|g₃g₄) for four UN-normalized Cartesian Gaussian primitives.
+    55                                           
+    56                                               Parameters
+    57                                               ----------
+    58                                               lx1, ly1, lz1 : angular momentum of primitive 1
+    59                                               A             : centre of primitive 1, shape (3,), in bohr
+    60                                               a             : exponent of primitive 1
+    61                                               (and so on for primitives 2, 3, 4)
+    62                                           
+    63                                               Returns
+    64                                               -------
+    65                                               float : integral value in atomic units (Hartree·bohr^{-1} collapsed)
+    66                                               """
+    67     32886    6949756.0    211.3      0.7      A = np.asarray(A, dtype=float)
+    68     32886    5338267.0    162.3      0.5      B = np.asarray(B, dtype=float)
+    69     32886    6051526.0    184.0      0.6      C = np.asarray(C, dtype=float)
+    70     32886    5554615.0    168.9      0.6      D = np.asarray(D, dtype=float)
+    71                                           
+    72     32886    4832204.0    146.9      0.5      p = a + b
+    73     32886    4396872.0    133.7      0.4      q = c + d
+    74     32886    6087294.0    185.1      0.6      alpha = p * q / (p + q)
+    75                                           
+    76     32886   44084695.0   1340.5      4.4      P = (a * A + b * B) / p
+    77     32886   44549585.0   1354.7      4.5      Q = (c * C + d * D) / q
+    78     32886   12732449.0    387.2      1.3      PQ = P - Q          # vector from Q to P (argument of R)
+    79                                           
+    80                                               # Coordinate separations for E-coefficient recurrences
+    81     32886    8513896.0    258.9      0.9      ABx = float(A[0] - B[0])
+    82     32886    7219886.0    219.5      0.7      ABy = float(A[1] - B[1])
+    83     32886    7483075.0    227.5      0.8      ABz = float(A[2] - B[2])
+    84     32886    6861238.0    208.6      0.7      CDx = float(C[0] - D[0])
+    85     32886    6728254.0    204.6      0.7      CDy = float(C[1] - D[1])
+    86     32886    6616618.0    201.2      0.7      CDz = float(C[2] - D[2])
+    87                                           
+    88                                               # E coefficients for the bra pair (functions 1 and 2)
+    89     32886   10266589.0    312.2      1.0      Ex1 = [_E(lx1, lx2, t, ABx, a, b) for t in range(lx1 + lx2 + 1)]
+    90     32886    9282867.0    282.3      0.9      Ey1 = [_E(ly1, ly2, u, ABy, a, b) for u in range(ly1 + ly2 + 1)]
+    91     32886    9911324.0    301.4      1.0      Ez1 = [_E(lz1, lz2, v, ABz, a, b) for v in range(lz1 + lz2 + 1)]
+    92                                           
+    93                                               # E coefficients for the ket pair (functions 3 and 4)
+    94     32886    9496897.0    288.8      1.0      Ex2 = [_E(lx3, lx4, t, CDx, c, d) for t in range(lx3 + lx4 + 1)]
+    95     32886    9787929.0    297.6      1.0      Ey2 = [_E(ly3, ly4, u, CDy, c, d) for u in range(ly3 + ly4 + 1)]
+    96     32886    9458483.0    287.6      1.0      Ez2 = [_E(lz3, lz4, v, CDz, c, d) for v in range(lz3 + lz4 + 1)]
+    97                                           
+    98     32886    4067375.0    123.7      0.4      total = 0.0
+    99     72657   10593839.0    145.8      1.1      for t, ex in enumerate(Ex1):
+   100     88533   11496983.0    129.9      1.2          for u, ey in enumerate(Ey1):
+   101    109917   14504932.0    132.0      1.5              for v, ez in enumerate(Ez1):
+   102     61155    9633941.0    157.5      1.0                  bra = ex * ey * ez
+   103     61155    8282406.0    135.4      0.8                  if bra == 0.0:
+   104     18468    1840591.0     99.7      0.2                      continue
+   105    100926   13421802.0    133.0      1.4                  for tau, fx in enumerate(Ex2):
+   106    132435   16901452.0    127.6      1.7                      for nu, fy in enumerate(Ey2):
+   107    163053   23699245.0    145.3      2.4                          for phi, fz in enumerate(Ez2):
+   108     88857   12546281.0    141.2      1.3                              sign = (-1) ** (tau + nu + phi)
+   109    177714   34904884.0    196.4      3.5                              total += (bra * sign * fx * fy * fz
+   110     88857  578431476.0   6509.7     58.3                                        * _R(t + tau, u + nu, v + phi, 0, alpha, PQ))
+   111                                           
+   112     32886    9462754.0    287.7      1.0      return 2.0 * pi**2.5 / (p * q * sqrt(p + q)) * total
+
+Total time: 1.13539 s
+File: /home/yazicie/MOLEKUL/src/molekul/eri.py
+Function: _contracted_eri at line 119
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   119                                           def _contracted_eri(bf1, A, bf2, B, bf3, C, bf4, D) -> float:
+   120                                               """
+   121                                               Contracted (ab|cd) for four basis functions.
+   122                                           
+   123                                               Parameters
+   124                                               ----------
+   125                                               bf1 = (lx, ly, lz, Shell), A = centre  [and similarly for bf2, bf3, bf4]
+   126                                               """
+   127       406      56600.0    139.4      0.0      lx1, ly1, lz1, sh1 = bf1
+   128       406      48920.0    120.5      0.0      lx2, ly2, lz2, sh2 = bf2
+   129       406      47600.0    117.2      0.0      lx3, ly3, lz3, sh3 = bf3
+   130       406      49220.0    121.2      0.0      lx4, ly4, lz4, sh4 = bf4
+   131                                           
+   132       406    2724554.0   6710.7      0.2      N1 = sh1.norms(lx1, ly1, lz1)
+   133       406    2741423.0   6752.3      0.2      N2 = sh2.norms(lx2, ly2, lz2)
+   134       406    2769991.0   6822.6      0.2      N3 = sh3.norms(lx3, ly3, lz3)
+   135       406    2621691.0   6457.4      0.2      N4 = sh4.norms(lx4, ly4, lz4)
+   136                                           
+   137       406      54830.0    135.0      0.0      result = 0.0
+   138      1624     450730.0    277.5      0.0      for a_exp, c1, n1 in zip(sh1.exponents, sh1.coefficients, N1):
+   139      4872    1284510.0    263.7      0.1          for b_exp, c2, n2 in zip(sh2.exponents, sh2.coefficients, N2):
+   140     14616    3785601.0    259.0      0.3              for c_exp, c3, n3 in zip(sh3.exponents, sh3.coefficients, N3):
+   141     43848   11436705.0    260.8      1.0                  for d_exp, c4, n4 in zip(sh4.exponents, sh4.coefficients, N4):
+   142     65772   15656628.0    238.0      1.4                      result += (n1 * c1 * n2 * c2 * n3 * c3 * n4 * c4
+   143     65772 1076611662.0  16368.8     94.8                                 * eri_primitive(
+   144     32886    4202783.0    127.8      0.4                                     lx1, ly1, lz1, A, a_exp,
+   145     32886    3680053.0    111.9      0.3                                     lx2, ly2, lz2, B, b_exp,
+   146     32886    3651211.0    111.0      0.3                                     lx3, ly3, lz3, C, c_exp,
+   147     32886    3455891.0    105.1      0.3                                     lx4, ly4, lz4, D, d_exp,
+   148                                                                          ))
+   149       406      55490.0    136.7      0.0      return result
+
+Total time: 1.14828 s
+File: /home/yazicie/MOLEKUL/src/molekul/eri.py
+Function: build_eri at line 156
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   156                                           def build_eri(basis: BasisSet, molecule) -> np.ndarray:
+   157                                               """
+   158                                               Build the N×N×N×N ERI tensor (ab|cd) in chemists' notation.
+   159                                           
+   160                                               Exploits the 8-fold permutation symmetry:
+   161                                                   (ab|cd) = (ba|cd) = (ab|dc) = (ba|dc)
+   162                                                           = (cd|ab) = (dc|ab) = (cd|ba) = (dc|ba)
+   163                                           
+   164                                               Unique elements (those with compound index ij ≥ kl, where
+   165                                               ij = i(i+1)/2+j for j≤i) are computed once and broadcast
+   166                                               to all eight permuted positions.
+   167                                           
+   168                                               Parameters
+   169                                               ----------
+   170                                               basis    : BasisSet object (e.g. STO3G)
+   171                                               molecule : Molecule object
+   172                                           
+   173                                               Returns
+   174                                               -------
+   175                                               np.ndarray, shape (n, n, n, n), all ERIs in atomic units.
+   176                                               """
+   177         1      11730.0  11730.0      0.0      bfs = basis.basis_functions(molecule)
+   178         1       4730.0   4730.0      0.0      coords = np.array([atom.coords for atom in molecule.atoms])
+   179         1        380.0    380.0      0.0      n = len(bfs)
+   180         1       1570.0   1570.0      0.0      eri = np.zeros((n, n, n, n))
+   181                                           
+   182         8       1430.0    178.8      0.0      for i in range(n):
+   183         7       1510.0    215.7      0.0          ai, lx1, ly1, lz1, sh1 = bfs[i]
+   184         7       1850.0    264.3      0.0          A = coords[ai]
+   185        35       4150.0    118.6      0.0          for j in range(i + 1):           # j ≤ i
+   186        28       4240.0    151.4      0.0              aj, lx2, ly2, lz2, sh2 = bfs[j]
+   187        28       5680.0    202.9      0.0              B = coords[aj]
+   188        28       4210.0    150.4      0.0              ij = i * (i + 1) // 2 + j
+   189       224      25710.0    114.8      0.0              for k in range(n):
+   190       196      24100.0    123.0      0.0                  ak, lx3, ly3, lz3, sh3 = bfs[k]
+   191       196      38500.0    196.4      0.0                  C = coords[ak]
+   192       980     123200.0    125.7      0.0                  for l in range(k + 1):   # l ≤ k
+   193       784      97730.0    124.7      0.0                      kl = k * (k + 1) // 2 + l
+   194       784      85780.0    109.4      0.0                      if ij < kl:           # unique pair condition
+   195       378      31620.0     83.7      0.0                          continue
+   196       406      48420.0    119.3      0.0                      al, lx4, ly4, lz4, sh4 = bfs[l]
+   197       406      77610.0    191.2      0.0                      D = coords[al]
+   198                                           
+   199       812 1147004180.0 1.41e+06     99.9                      val = _contracted_eri(
+   200       406      50140.0    123.5      0.0                          (lx1, ly1, lz1, sh1), A,
+   201       406      44550.0    109.7      0.0                          (lx2, ly2, lz2, sh2), B,
+   202       406      41520.0    102.3      0.0                          (lx3, ly3, lz3, sh3), C,
+   203       406      38810.0     95.6      0.0                          (lx4, ly4, lz4, sh4), D,
+   204                                                               )
+   205                                           
+   206                                                               # Broadcast 8-fold symmetry
+   207       406      80260.0    197.7      0.0                      eri[i, j, k, l] = val
+   208       406      61980.0    152.7      0.0                      eri[j, i, k, l] = val
+   209       406      60010.0    147.8      0.0                      eri[i, j, l, k] = val
+   210       406      60060.0    147.9      0.0                      eri[j, i, l, k] = val
+   211       406      61120.0    150.5      0.0                      eri[k, l, i, j] = val
+   212       406      60310.0    148.5      0.0                      eri[l, k, i, j] = val
+   213       406      58140.0    143.2      0.0                      eri[k, l, j, i] = val
+   214       406      60440.0    148.9      0.0                      eri[l, k, j, i] = val
+   215                                           
+   216         1        110.0    110.0      0.0      return eri
+

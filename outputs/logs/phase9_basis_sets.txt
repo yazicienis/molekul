@@ -1,0 +1,36 @@
+MOLEKUL Experiment Report
+Phase    : phase9
+Name     : basis_sets
+Time     : 2026-04-11T17:59:29
+Git SHA  : n/a
+Status   : PASS  (30/30 checks passed)
+Elapsed  : 87.53 s
+────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────
+Metrics:
+  pyscf_available = True
+  h2_STO3G_n_basis = 2
+  h2_STO3G_e_hf = -1.1167143189752626
+  h2_STO3G_e_mp2 = -0.013157870482981325
+  h2_STO3G_e_total = -1.129872189458244
+  h2_ccpVDZ_n_basis = 10
+  h2_ccpVDZ_e_hf = -1.1287094489798837
+  h2_ccpVDZ_e_mp2 = -0.02637923928782007
+  h2_ccpVDZ_e_total = -1.1550886882677038
+  h2_631Gs_n_basis = 4
+  h2_631Gs_e_hf = -1.1267427044518645
+  h2_631Gs_e_mp2 = -0.01739045734602725
+  h2_631Gs_e_total = -1.1441331617978918
+  h2o_STO3G_n_basis = 7
+  h2o_STO3G_e_hf = -74.96590113470005
+  h2o_STO3G_e_mp2 = -0.03897199227125609
+  h2o_STO3G_e_total = -75.0048731269713
+  h2o_ccpVDZ_n_basis = 25
+  h2o_ccpVDZ_e_hf = -76.02347667987166
+  h2o_ccpVDZ_e_mp2 = -0.21026285067580183
+  h2o_ccpVDZ_e_total = -76.23373953054747
+  h2o_631Gs_n_basis = 19
+  h2o_631Gs_e_hf = -76.00677042122642
+  h2o_631Gs_e_mp2 = -0.19142087828693083
+  h2o_631Gs_e_total = -76.19819129951335
+  elapsed_s = 87.53146839141846

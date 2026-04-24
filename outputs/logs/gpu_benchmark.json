@@ -1,0 +1,94 @@
+{
+  "phase": "GPU_benchmark",
+  "date": "2026-04-18",
+  "hardware": {
+    "gpu": "NVIDIA RTX 5090",
+    "cuda": "12.8"
+  },
+  "results": [
+    {
+      "molecule": "H2",
+      "basis": "STO-3G",
+      "n_basis": 2,
+      "n_electrons": 2,
+      "cpu_eri_ms": 3.18,
+      "cpu_scf_ms": 0.05,
+      "gpu_transfer_ms": 0.04,
+      "gpu_scf_ms": 0.55,
+      "speedup_scf": 0.09,
+      "cpu_energy": -1.116759285916194,
+      "gpu_energy": -1.1167592859161943,
+      "energy_diff": 2.220446049250313e-16
+    },
+    {
+      "molecule": "H2O",
+      "basis": "STO-3G",
+      "n_basis": 7,
+      "n_electrons": 10,
+      "cpu_eri_ms": 378.64,
+      "cpu_scf_ms": 0.36,
+      "gpu_transfer_ms": 0.08,
+      "gpu_scf_ms": 5.52,
+      "speedup_scf": 0.07,
+      "cpu_energy": -74.96309810397102,
+      "gpu_energy": -74.9630981039709,
+      "energy_diff": 1.1368683772161603e-13
+    },
+    {
+      "molecule": "H2O",
+      "basis": "6-31G*",
+      "n_basis": 19,
+      "n_electrons": 10,
+      "cpu_eri_ms": 4815.42,
+      "cpu_scf_ms": 1.9,
+      "gpu_transfer_ms": 0.35,
+      "gpu_scf_ms": 14.54,
+      "speedup_scf": 0.13,
+      "cpu_energy": -76.01047962785228,
+      "gpu_energy": -76.01047962785219,
+      "energy_diff": 8.526512829121202e-14
+    },
+    {
+      "molecule": "H2O",
+      "basis": "cc-pVDZ",
+      "n_basis": 25,
+      "n_electrons": 10,
+      "cpu_eri_ms": 16509.12,
+      "cpu_scf_ms": 3.94,
+      "gpu_transfer_ms": 1.63,
+      "gpu_scf_ms": 17.36,
+      "speedup_scf": 0.23,
+      "cpu_energy": -76.02708111407372,
+      "gpu_energy": -76.02708111407364,
+      "energy_diff": 8.526512829121202e-14
+    },
+    {
+      "molecule": "Ethanol",
+      "basis": "STO-3G",
+      "n_basis": 21,
+      "n_electrons": 26,
+      "cpu_eri_ms": 26535.82,
+      "cpu_scf_ms": 2.83,
+      "gpu_transfer_ms": 7.31,
+      "gpu_scf_ms": 19.11,
+      "speedup_scf": 0.15,
+      "cpu_energy": -152.09024733474627,
+      "gpu_energy": -152.09024733474627,
+      "energy_diff": 0.0
+    },
+    {
+      "molecule": "Butane",
+      "basis": "STO-3G",
+      "n_basis": 30,
+      "n_electrons": 34,
+      "cpu_eri_ms": 100532.62,
+      "cpu_scf_ms": 6.72,
+      "gpu_transfer_ms": 14.07,
+      "gpu_scf_ms": 19.91,
+      "speedup_scf": 0.34,
+      "cpu_energy": -155.45365245663547,
+      "gpu_energy": -155.4536524566354,
+      "energy_diff": 5.684341886080802e-14
+    }
+  ]
+}

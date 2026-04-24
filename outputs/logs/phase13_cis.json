@@ -1,0 +1,53 @@
+{
+  "phase": 13,
+  "description": "CIS excited states",
+  "date": "2026-04-18",
+  "results": [
+    {
+      "molecule": "H2",
+      "state": 1,
+      "dE_Ha": 0.948407,
+      "dE_eV": 25.8075,
+      "f": 0.547506,
+      "ref_pyscf_Ha": 0.948407,
+      "diff": 7.6e-09
+    },
+    {
+      "molecule": "H2O",
+      "state": 1,
+      "dE_Ha": 0.485074,
+      "dE_eV": 13.1995,
+      "f": 0.003548,
+      "ref_pyscf_Ha": 0.485074,
+      "diff": 7.9e-08
+    },
+    {
+      "molecule": "H2O",
+      "state": 2,
+      "dE_Ha": 0.557134,
+      "dE_eV": 15.1604,
+      "f": 0.0,
+      "ref_pyscf_Ha": 0.557134,
+      "diff": 1.7e-07
+    },
+    {
+      "molecule": "H2O",
+      "state": 3,
+      "dE_Ha": 0.616592,
+      "dE_eV": 16.7783,
+      "f": 0.077168,
+      "ref_pyscf_Ha": 0.616592,
+      "diff": 3.6e-08
+    },
+    {
+      "molecule": "H2O",
+      "state": 5,
+      "dE_Ha": 0.811445,
+      "dE_eV": 22.0805,
+      "f": 1.167016,
+      "ref_pyscf_Ha": 0.811445,
+      "diff": 2.7e-08
+    }
+  ],
+  "notes": "Singlet CIS via full diagonalisation of A_{ia,jb}. Energies match PySCF TDA to < 1e-7 Ha. Oscillator strengths match to < 1e-4."
+}

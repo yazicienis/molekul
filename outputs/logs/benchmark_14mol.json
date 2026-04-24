@@ -1,0 +1,147 @@
+{
+  "tolerance_hartree": 1e-06,
+  "n_molecules": 14,
+  "n_pass": 14,
+  "rows": [
+    {
+      "molecule": "H2",
+      "E_molekul": -1.116714318975263,
+      "E_pyscf": -1.116714325062551,
+      "delta_E": 6.087288006995095e-09,
+      "n_iter": 3,
+      "converged_mol": true,
+      "converged_pyscf": true,
+      "pass": true
+    },
+    {
+      "molecule": "HeH+",
+      "E_molekul": -2.841836526808967,
+      "E_pyscf": -2.8418364992873757,
+      "delta_E": 2.7521591228207853e-08,
+      "n_iter": 18,
+      "converged_mol": true,
+      "converged_pyscf": true,
+      "pass": true
+    },
+    {
+      "molecule": "LiH",
+      "E_molekul": -7.862002670016315,
+      "E_pyscf": -7.8620026688737354,
+      "delta_E": 1.142579364454832e-09,
+      "n_iter": 11,
+      "converged_mol": true,
+      "converged_pyscf": true,
+      "pass": true
+    },
+    {
+      "molecule": "HF",
+      "E_molekul": -98.57078129339052,
+      "E_pyscf": -98.57078123502018,
+      "delta_E": 5.837034677824704e-08,
+      "n_iter": 8,
+      "converged_mol": true,
+      "converged_pyscf": true,
+      "pass": true
+    },
+    {
+      "molecule": "N2",
+      "E_molekul": -107.49590020060366,
+      "E_pyscf": -107.49590020352439,
+      "delta_E": 2.9207285479060374e-09,
+      "n_iter": 6,
+      "converged_mol": true,
+      "converged_pyscf": true,
+      "pass": true
+    },
+    {
+      "molecule": "CO",
+      "E_molekul": -111.22455809354867,
+      "E_pyscf": -111.2245580875111,
+      "delta_E": 6.0375668908818625e-09,
+      "n_iter": 10,
+      "converged_mol": true,
+      "converged_pyscf": true,
+      "pass": true
+    },
+    {
+      "molecule": "H2O",
+      "E_molekul": -74.96291418058689,
+      "E_pyscf": -74.96291416131714,
+      "delta_E": 1.9269748463557335e-08,
+      "n_iter": 9,
+      "converged_mol": true,
+      "converged_pyscf": true,
+      "pass": true
+    },
+    {
+      "molecule": "NH3",
+      "E_molekul": -55.45434663714068,
+      "E_pyscf": -55.4543466407432,
+      "delta_E": 3.602522724577284e-09,
+      "n_iter": 9,
+      "converged_mol": true,
+      "converged_pyscf": true,
+      "pass": true
+    },
+    {
+      "molecule": "CH4",
+      "E_molekul": -39.726748243794354,
+      "E_pyscf": -39.726748263260944,
+      "delta_E": 1.9466590117644955e-08,
+      "n_iter": 10,
+      "converged_mol": true,
+      "converged_pyscf": true,
+      "pass": true
+    },
+    {
+      "molecule": "BH3",
+      "E_molekul": -26.067688815959972,
+      "E_pyscf": -26.06768883945613,
+      "delta_E": 2.3496159684555096e-08,
+      "n_iter": 9,
+      "converged_mol": true,
+      "converged_pyscf": true,
+      "pass": true
+    },
+    {
+      "molecule": "HCN",
+      "E_molekul": -91.67409976053648,
+      "E_pyscf": -91.67409977516219,
+      "delta_E": 1.4625712196902896e-08,
+      "n_iter": 11,
+      "converged_mol": true,
+      "converged_pyscf": true,
+      "pass": true
+    },
+    {
+      "molecule": "C2H2",
+      "E_molekul": -75.27255957581163,
+      "E_pyscf": -75.27255962450101,
+      "delta_E": 4.868938674462697e-08,
+      "n_iter": 9,
+      "converged_mol": true,
+      "converged_pyscf": true,
+      "pass": true
+    },
+    {
+      "molecule": "C2H4",
+      "E_molekul": -77.07252758182807,
+      "E_pyscf": -77.07252761197063,
+      "delta_E": 3.014255867128668e-08,
+      "n_iter": 10,
+      "converged_mol": true,
+      "converged_pyscf": true,
+      "pass": true
+    },
+    {
+      "molecule": "CH2O",
+      "E_molekul": -112.3120293687357,
+      "E_pyscf": -112.31202936045543,
+      "delta_E": 8.280267138616182e-09,
+      "n_iter": 12,
+      "converged_mol": true,
+      "converged_pyscf": true,
+      "pass": true
+    }
+  ]
+}

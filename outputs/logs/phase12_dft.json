@@ -1,0 +1,40 @@
+{
+  "phase": 12,
+  "description": "KS-DFT (LDA/PBE)",
+  "date": "2026-04-15",
+  "results": [
+    {
+      "molecule": "H2",
+      "functional": "LDA",
+      "E_total": -1.121201,
+      "E_xc": -0.6792,
+      "ref_pyscf": -1.121206,
+      "diff": 4.69e-06
+    },
+    {
+      "molecule": "H2",
+      "functional": "PBE",
+      "E_total": -1.152258,
+      "E_xc": -0.7103,
+      "ref_pyscf": -1.152073,
+      "diff": 0.000185
+    },
+    {
+      "molecule": "H2O",
+      "functional": "LDA",
+      "E_total": -74.731874,
+      "E_xc": -8.8763,
+      "ref_pyscf": -74.731897,
+      "diff": 2.26e-05
+    },
+    {
+      "molecule": "H2O",
+      "functional": "PBE",
+      "E_total": -75.22795,
+      "E_xc": -9.3685,
+      "ref_pyscf": -75.225413,
+      "diff": 0.00254
+    }
+  ],
+  "notes": "Bugs fixed: v_x_rho formula (wrong factor), v_x_sigma (combined formula), GGA Fock factor-of-2, density threshold masking. Remaining errors are grid integration (n_rad=75, n_ang=302)."
+}

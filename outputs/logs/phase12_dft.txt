@@ -1,0 +1,8 @@
+Phase 12: KS-DFT (LDA/PBE)
+==================================================
+H2 LDA: E=-1.121201  E_xc=-0.6792  ref=-1.121206  diff=4.69e-06
+H2 PBE: E=-1.152258  E_xc=-0.7103  ref=-1.152073  diff=1.85e-04
+H2O LDA: E=-74.731874  E_xc=-8.8763  ref=-74.731897  diff=2.26e-05
+H2O PBE: E=-75.227950  E_xc=-9.3685  ref=-75.225413  diff=2.54e-03
+
+Notes: Bugs fixed: v_x_rho formula (wrong factor), v_x_sigma (combined formula), GGA Fock factor-of-2, density threshold masking. Remaining errors are grid integration (n_rad=75, n_ang=302).

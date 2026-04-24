@@ -1,0 +1,40 @@
+cProfile: numerical_gradient(H2O)  n_basis=7  n_scf_calls=18
+========================================================================
+         22624640 function calls (20063582 primitive calls) in 10.043 seconds
+
+   Ordered by: internal time
+   List reduced from 93 to 30 due to restriction <30>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+   591948    4.032    0.000    9.219    0.000 /home/yazicie/MOLEKUL/src/molekul/eri.py:47(eri_primitive)
+4214430/1654992    2.930    0.000    5.031    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:174(_R)
+  2052054    1.585    0.000    1.929    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:42(_boys)
+     7308    0.459    0.000    9.782    0.001 /home/yazicie/MOLEKUL/src/molekul/eri.py:119(_contracted_eri)
+  5492813    0.221    0.000    0.221    0.000 {built-in method builtins.abs}
+  2436450    0.175    0.000    0.175    0.000 {built-in method numpy.asarray}
+  4214430    0.172    0.000    0.172    0.000 /home/yazicie/miniconda3/lib/python3.13/site-packages/numpy/_core/multiarray.py:748(dot)
+  1561816    0.080    0.000    0.080    0.000 {built-in method math.sqrt}
+    13608    0.073    0.000    0.134    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:198(nuclear_primitive)
+   102816    0.063    0.000    0.084    0.000 /home/yazicie/MOLEKUL/src/molekul/basis.py:34(norm_primitive)
+   758188    0.055    0.000    0.055    0.000 {built-in method math.erf}
+   532770    0.032    0.000    0.032    0.000 {built-in method math.exp}
+    34272    0.030    0.000    0.123    0.000 /home/yazicie/MOLEKUL/src/molekul/basis.py:97(norms)
+   108864    0.029    0.000    0.036    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:118(_overlap_1d)
+    36288    0.019    0.000    0.055    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:123(overlap_primitive)
+     2520    0.017    0.000    0.235    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:227(_contracted_integral)
+    75168    0.016    0.000    0.016    0.000 {built-in method numpy.array}
+   308448    0.015    0.000    0.015    0.000 /home/yazicie/MOLEKUL/src/molekul/basis.py:24(_dfact)
+       18    0.007    0.000    9.789    0.544 /home/yazicie/MOLEKUL/src/molekul/eri.py:156(build_eri)
+     4536    0.005    0.000    0.058    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:142(kinetic_primitive)
+    31752    0.005    0.000    0.053    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:147(S)
+      146    0.003    0.000    0.007    0.000 /home/yazicie/MOLEKUL/src/molekul/rhf.py:85(_diis_extrapolate)
+2808/1188    0.003    0.000    0.003    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:88(_E)
+     3408    0.003    0.000    0.003    0.000 {built-in method numpy._core._multiarray_umath.c_einsum}
+       18    0.002    0.000   10.042    0.558 /home/yazicie/MOLEKUL/src/molekul/rhf.py:135(rhf_scf)
+      218    0.002    0.000    0.003    0.000 /home/yazicie/miniconda3/lib/python3.13/site-packages/numpy/linalg/_linalg.py:1515(eigh)
+       18    0.001    0.000    0.158    0.009 /home/yazicie/MOLEKUL/src/molekul/integrals.py:298(build_nuclear)
+    17040    0.001    0.000    0.001    0.000 /home/yazicie/miniconda3/lib/python3.13/site-packages/numpy/_core/einsumfunc.py:1236(_einsum_dispatcher)
+      146    0.001    0.000    0.001    0.000 /home/yazicie/miniconda3/lib/python3.13/site-packages/numpy/linalg/_linalg.py:363(solve)
+      182    0.001    0.000    0.002    0.000 /home/yazicie/MOLEKUL/src/molekul/rhf.py:68(_build_fock)
+
+

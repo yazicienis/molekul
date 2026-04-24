@@ -1,0 +1,28 @@
+MOLEKUL Phase 9 — Sub-phase timing decomposition
+Molecule: H2O,  n_basis=7,  STO-3G
+
+ERI PRIMITIVES
+  Unique (ij|kl) integrals : 406
+  Primitive quartets (×81) : 32,886
+  _E call cost (cold)       : 0.058 µs
+  _E call cost (warm cache) : 0.054 µs
+  _R call cost (Boys fn)    : 2.600 µs
+  eri_primitive (s-s-s-s)  : 5.9 µs
+  eri_primitive (p-p-p-p)  : 33.1 µs
+  Predicted ERI from prim  : 0.193s
+  Actual ERI time           : 0.370s
+  Python loop overhead      : 47.9%
+
+SCF ITERATION (averaged over 20 reps)
+  fock_build                 0.007ms   12.7%
+  energy_einsum              0.001ms    2.6%
+  diis_error                 0.003ms    4.7%
+  diis_extrap                0.035ms   64.7%
+  diagonalise                0.007ms   12.0%
+  density_update             0.002ms    3.3%
+
+GRADIENT (finite differences)
+  Displacements        : 18
+  ERI per displacement : 368.6ms
+  SCF per displacement : 375.7ms
+  ERI fraction of grad : 98.1%

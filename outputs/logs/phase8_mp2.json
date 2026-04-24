@@ -1,0 +1,25 @@
+{
+  "phase": "phase8",
+  "name": "mp2",
+  "timestamp": "2026-04-11T17:02:30",
+  "git_sha": null,
+  "status": "PASS",
+  "n_passed": 15,
+  "n_failed": 0,
+  "elapsed_s": 1.282,
+  "metrics": {
+    "pyscf_available": true,
+    "h2_e_hf": -1.1167143189752626,
+    "h2_e_mp2": -0.013157870482981325,
+    "h2_e_total": -1.129872189458244,
+    "hehp_e_hf": -2.8418365268089643,
+    "hehp_e_mp2": -0.0072382678446502036,
+    "hehp_e_total": -2.8490747946536144,
+    "h2o_e_hf": -74.96590113470003,
+    "h2o_e_mp2": -0.03897199227125534,
+    "h2o_e_total": -75.00487312697129,
+    "elapsed_s": 1.28177809715271
+  },
+  "artifacts": [],
+  "details": {}
+}

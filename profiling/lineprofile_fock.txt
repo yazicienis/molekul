@@ -1,0 +1,26 @@
+line_profiler: _build_fock (10 calls, H2O)
+========================================================================
+Timer unit: 1e-09 s
+
+Total time: 0.00012229 s
+File: /home/yazicie/MOLEKUL/src/molekul/rhf.py
+Function: _build_fock at line 68
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    68                                           def _build_fock(H_core: np.ndarray, P: np.ndarray, eri: np.ndarray) -> np.ndarray:
+    69                                               """
+    70                                               Build the Fock matrix in the AO basis.
+    71                                           
+    72                                               F_μν = H_μν + J_μν - ½ K_μν
+    73                                           
+    74                                               where:
+    75                                                 J_μν = Σ_{λσ} P_{λσ} (μν|λσ)   [Coulomb]
+    76                                                 K_μν = Σ_{λσ} P_{λσ} (μλ|νσ)   [Exchange]
+    77                                           
+    78                                               ERI tensor convention: eri[μ,ν,λ,σ] = (μν|λσ)  (chemists' notation)
+    79                                               """
+    80        10      61930.0   6193.0     50.6      J = np.einsum("ls,mnls->mn", P, eri)
+    81        10      47810.0   4781.0     39.1      K = np.einsum("ls,mlns->mn", P, eri)
+    82        10      12550.0   1255.0     10.3      return H_core + J - 0.5 * K
+

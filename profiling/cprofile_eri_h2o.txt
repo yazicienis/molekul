@@ -1,0 +1,31 @@
+cProfile: build_eri(H2O)  n_basis=7
+========================================================================
+         1199722 function calls (1059466 primitive calls) in 0.550 seconds
+
+   Ordered by: internal time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+    32886    0.230    0.000    0.518    0.000 /home/yazicie/MOLEKUL/src/molekul/eri.py:47(eri_primitive)
+228906/88857    0.162    0.000    0.276    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:174(_R)
+   110727    0.085    0.000    0.104    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:42(_boys)
+      406    0.026    0.000    0.550    0.001 /home/yazicie/MOLEKUL/src/molekul/eri.py:119(_contracted_eri)
+   296492    0.012    0.000    0.012    0.000 {built-in method builtins.abs}
+   228906    0.010    0.000    0.010    0.000 /home/yazicie/miniconda3/lib/python3.13/site-packages/numpy/_core/multiarray.py:748(dot)
+   131544    0.010    0.000    0.010    0.000 {built-in method numpy.asarray}
+    77878    0.004    0.000    0.004    0.000 {built-in method math.sqrt}
+     4872    0.003    0.000    0.004    0.000 /home/yazicie/MOLEKUL/src/molekul/basis.py:34(norm_primitive)
+    40120    0.003    0.000    0.003    0.000 {built-in method math.erf}
+    28644    0.002    0.000    0.002    0.000 {built-in method math.exp}
+     1624    0.002    0.000    0.006    0.000 /home/yazicie/MOLEKUL/src/molekul/basis.py:97(norms)
+    14616    0.001    0.000    0.001    0.000 /home/yazicie/MOLEKUL/src/molekul/basis.py:24(_dfact)
+        1    0.000    0.000    0.550    0.550 /home/yazicie/MOLEKUL/src/molekul/eri.py:156(build_eri)
+     1625    0.000    0.000    0.000    0.000 {built-in method numpy.array}
+  459/252    0.000    0.000    0.000    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:88(_E)
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        1    0.000    0.000    0.000    0.000 /home/yazicie/MOLEKUL/src/molekul/basis.py:131(basis_functions)
+        1    0.000    0.000    0.000    0.000 {built-in method numpy.zeros}
+        5    0.000    0.000    0.000    0.000 /home/yazicie/MOLEKUL/src/molekul/basis.py:88(angular_components)
+        7    0.000    0.000    0.000    0.000 {method 'append' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+
+

@@ -1,0 +1,20 @@
+MOLEKUL Phase 8 — CPU Performance Benchmark
+Date: 2026-04-02
+Basis: STO-3G
+skip_large: False
+
+Molecule  n_bas  n_elec   n_basis^4   ERI_MB    1e-int         ERI         SCF  iter        Grad         Opt
+────────────────────────────────────────────────────────────────────────────────────────────────────
+H2            2       2          16    0.000    0.78ms       3.3ms       3.9ms     2      44.3ms     246.9ms
+HeH+          2       2          16    0.000    0.64ms       3.1ms       4.2ms    12      52.8ms     350.5ms
+H2O           7      10        2401    0.019    10.5ms     364.1ms     371.6ms     9       6.77s      21.64s
+NH3           8      10        4096    0.033    14.0ms     592.6ms     602.1ms     9      14.39s     skipped
+CH4           9      10        6561    0.052    19.6ms     884.4ms     902.7ms    10      27.19s     skipped
+C6H6         36      42     1679616   13.437   697.8ms      4.2min      4.2min    10     skipped     skipped
+
+Scaling notes:
+  ERI  ~ O(n^4)        — dominant cost
+  SCF  ~ O(n^4 * N_iter) — Fock build uses stored ERI
+  Grad ~ O(6*N_atoms * n^4) — finite differences, many SCF calls
+
+Total benchmark wall time: 9.6min

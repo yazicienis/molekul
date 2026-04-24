@@ -1,0 +1,45 @@
+cProfile: rhf_scf(H2O)  n_basis=7  iters=9
+========================================================================
+         1240878 function calls (1099020 primitive calls) in 0.548 seconds
+
+   Ordered by: internal time
+   List reduced from 89 to 35 due to restriction <35>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+    32886    0.219    0.000    0.502    0.000 /home/yazicie/MOLEKUL/src/molekul/eri.py:47(eri_primitive)
+231363/90342    0.160    0.000    0.274    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:174(_R)
+   112293    0.086    0.000    0.104    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:42(_boys)
+      406    0.025    0.000    0.533    0.001 /home/yazicie/MOLEKUL/src/molekul/eri.py:119(_contracted_eri)
+   297400    0.012    0.000    0.012    0.000 {built-in method builtins.abs}
+   135355    0.010    0.000    0.010    0.000 {built-in method numpy.asarray}
+   231363    0.010    0.000    0.010    0.000 /home/yazicie/miniconda3/lib/python3.13/site-packages/numpy/_core/multiarray.py:748(dot)
+    85874    0.004    0.000    0.004    0.000 {built-in method math.sqrt}
+      756    0.004    0.000    0.007    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:198(nuclear_primitive)
+     5712    0.004    0.000    0.005    0.000 /home/yazicie/MOLEKUL/src/molekul/basis.py:34(norm_primitive)
+    41228    0.003    0.000    0.003    0.000 {built-in method math.erf}
+    29181    0.002    0.000    0.002    0.000 {built-in method math.exp}
+     1904    0.002    0.000    0.007    0.000 /home/yazicie/MOLEKUL/src/molekul/basis.py:97(norms)
+     6048    0.002    0.000    0.002    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:118(_overlap_1d)
+     2016    0.001    0.000    0.004    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:123(overlap_primitive)
+      140    0.001    0.000    0.014    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:227(_contracted_integral)
+    17136    0.001    0.000    0.001    0.000 /home/yazicie/MOLEKUL/src/molekul/basis.py:24(_dfact)
+     4176    0.001    0.000    0.001    0.000 {built-in method numpy.array}
+ 1386/549    0.001    0.000    0.001    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:88(_E)
+        1    0.000    0.000    0.533    0.533 /home/yazicie/MOLEKUL/src/molekul/eri.py:156(build_eri)
+      252    0.000    0.000    0.004    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:142(kinetic_primitive)
+     1764    0.000    0.000    0.003    0.000 /home/yazicie/MOLEKUL/src/molekul/integrals.py:147(S)
+        8    0.000    0.000    0.000    0.000 /home/yazicie/MOLEKUL/src/molekul/rhf.py:85(_diis_extrapolate)
+       12    0.000    0.000    0.000    0.000 /home/yazicie/miniconda3/lib/python3.13/site-packages/numpy/linalg/_linalg.py:1515(eigh)
+      185    0.000    0.000    0.000    0.000 {built-in method numpy._core._multiarray_umath.c_einsum}
+        1    0.000    0.000    0.548    0.548 /home/yazicie/MOLEKUL/src/molekul/rhf.py:135(rhf_scf)
+        1    0.000    0.000    0.009    0.009 /home/yazicie/MOLEKUL/src/molekul/integrals.py:298(build_nuclear)
+        1    0.000    0.000    0.000    0.000 /home/yazicie/MOLEKUL/src/molekul/rhf.py:120(_symmetric_orthogonalizer)
+      925    0.000    0.000    0.000    0.000 /home/yazicie/miniconda3/lib/python3.13/site-packages/numpy/_core/einsumfunc.py:1236(_einsum_dispatcher)
+        8    0.000    0.000    0.000    0.000 /home/yazicie/miniconda3/lib/python3.13/site-packages/numpy/linalg/_linalg.py:363(solve)
+       10    0.000    0.000    0.000    0.000 /home/yazicie/MOLEKUL/src/molekul/rhf.py:68(_build_fock)
+      185    0.000    0.000    0.000    0.000 /home/yazicie/miniconda3/lib/python3.13/site-packages/numpy/_core/einsumfunc.py:1244(einsum)
+        1    0.000    0.000    0.001    0.001 /home/yazicie/MOLEKUL/src/molekul/integrals.py:252(build_overlap)
+        1    0.000    0.000    0.004    0.004 /home/yazicie/MOLEKUL/src/molekul/integrals.py:275(build_kinetic)
+        3    0.000    0.000    0.000    0.000 /home/yazicie/miniconda3/lib/python3.13/site-packages/numpy/linalg/_linalg.py:2598(norm)
+
+
