@@ -4,6 +4,9 @@
 SRH University of Applied Sciences Heidelberg, School of Engineering and Architecture, Heidelberg, Germany  
 ORCID: 0000-0001-7573-6344
 
+**Software repository:** https://github.com/yazicienis/molekul  
+**Archive DOI:** https://doi.org/10.5281/zenodo.19743306
+
 ---
 
 ## Abstract
