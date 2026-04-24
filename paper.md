@@ -25,24 +25,36 @@ MOLEKUL is an open-source, pure-Python implementation of Restricted Hartree–Fo
 (RHF) self-consistent field (SCF) theory for closed-shell molecules.
 Starting from a molecular geometry and a contracted Gaussian basis set, MOLEKUL
 evaluates all one- and two-electron integrals analytically, solves the
-Roothaan–Hall equations iteratively, and reports the total RHF energy.
-The library ships with STO-3G [@hehre1969], 6-31G\*, and cc-pVDZ basis sets and
-includes a geometry optimizer, Mulliken and Löwdin population analysis,
-a rudimentary MP2 and CIS layer, and infrastructure for harmonic frequency
-analysis.
+Roothaan–Hall equations [@roothaan1951; @hall1951] iteratively, and reports
+the total RHF energy.
+The library ships with built-in basis data for H–F: STO-3G [@hehre1969], 6-31G\* [@hehre1972; @hariharan1973], and cc-pVDZ [@dunning1989].  The code also
+includes a geometry optimizer, Mulliken and Löwdin [@lowdin1950] population
+analysis, an MP2 [@moller1934] correlation-energy layer, experimental CIS infrastructure,
+and numerical Hessian-based harmonic frequency workflows.
 
 Validated against PySCF [@sun2020] on a 14-molecule test suite spanning H$_2$
 through formaldehyde (CH$_2$O), MOLEKUL achieves total-energy agreement within
-$5 \times 10^{-8}$ hartree for every molecule using STO-3G, with no
-hand-tuned parameters.
+$5 \times 10^{-8}$ hartree for every molecule using STO-3G, with fixed default SCF settings.
+
+# State of the Field
+
+Production quantum-chemistry packages such as PySCF [@sun2020], Psi4
+[@smith2020], and ORCA [@neese2020] provide broad functionality and highly
+optimized implementations, but their internal complexity can obscure the
+connection between textbook equations and executable algorithms.
+PyQuante [@quante2004] and similar educational codes demonstrate the
+pedagogical value of readable implementations, but most are no longer
+actively maintained or validated against modern reference data.  MOLEKUL
+provides a validated, actively tested alternative: every algorithm maps
+directly to a named Python function, and every numerical result is checked
+automatically against PySCF.
 
 # Statement of Need
 
 Production quantum-chemistry packages such as PySCF [@sun2020], Psi4
 [@smith2020], and ORCA [@neese2020] are indispensable research tools, but
-their complexity—millions of lines of C, C++, and Fortran—makes them
-opaque for students and researchers who want to understand *how* ab initio
-calculations actually work.  Szabo and Ostlund's textbook [@szabo1989]
+their internal complexity can obscure the connection between textbook
+equations and executable algorithms.  Szabo and Ostlund's textbook [@szabo1989]
 provides the equations, yet the gap between a textbook derivation and a
 working SCF program capable of reproducing published numbers is substantial.
 
@@ -53,14 +65,14 @@ function in readable Python:
   one-electron integrals via McMurchie–Davidson recursion [@mcmurchie1978];
 - `eri_primitive` — electron repulsion integrals (ERIs) via the same recursion
   with Boys-function evaluation [@boys1950];
-- `rhf_scf` — Roothaan–Hall SCF with DIIS acceleration [@pulay1980;@pulay1982]
+- `rhf_scf` — Roothaan–Hall SCF [@roothaan1951; @hall1951] with DIIS acceleration [@pulay1980; @pulay1982]
   and a Superposition of Atomic Densities (SAD) initial guess;
 - `contracted_norm` — explicit renormalization of contracted Gaussian shells,
   a subtlety omitted from many introductory treatments.
 
 Beyond pedagogy, MOLEKUL provides a self-contained Python baseline for
-hardware benchmarking.  Because every floating-point operation is in NumPy
-[@harris2020], performance profiles isolate NumPy/BLAS behaviour cleanly,
+hardware benchmarking.  Because the implementation relies only on Python, NumPy [@harris2020], and
+the standard library, performance profiles isolate NumPy/BLAS behaviour cleanly,
 making MOLEKUL a useful reference point when evaluating accelerated
 back-ends (Numba, CuPy) or heterogeneous hardware.
 
@@ -74,16 +86,20 @@ scheme expresses products of Cartesian Gaussians as a linear combination of
 Hermite Gaussians, allowing recurrence relations to reduce every integral to
 a Boys-function call $F_n(x)$ [@boys1950].
 
-The Boys function is evaluated via a degree-14 Taylor expansion for
-$x < 27$ and the asymptotic formula $F_n(x) \approx (2n-1)!!/(2^{n+1}) \cdot
-(\pi/x)^{1/2}$ for $x \ge 27$, which keeps relative error below $10^{-12}$
-across the argument range encountered in STO-3G through triple-zeta bases.
+The Boys function is evaluated using `math.erf` (exact $F_0$), upward
+recurrence for $n > 0$, and a finite Taylor series in the small-$x$ regime.
+The asymptotic form for large $x$ is
+$F_n(x) \approx \tfrac{(2n-1)!!}{2^{n+1}} \sqrt{\pi}\, x^{-(n+1/2)}$.
+Validation against high-precision reference values gives relative errors
+below $5 \times 10^{-14}$ over the argument range encountered in STO-3G
+through cc-pVDZ bases; no dependency on SciPy is required.
 
-Two-electron repulsion integrals (ERIs) are stored in a full $N^4$ array for
-simplicity; symmetry screening and integral-direct techniques are left as
-documented extension points.  For the 14 STO-3G benchmark molecules
-($N_\text{AO} \le 14$) wall-clock time per SCF is under one second on a
-single CPU core.
+Two-electron repulsion integrals (ERIs) are stored in a full $N_\text{AO}^4$
+double-precision array for simplicity; at $N_\text{AO} = 100$ this requires
+approximately 800 MB before additional working arrays.  Symmetry screening and
+integral-direct techniques are left as documented extension points.  For the 14
+STO-3G benchmark molecules ($N_\text{AO} \le 14$) wall-clock time per SCF is
+under one second on a single CPU core.
 
 ## Contracted-Shell Normalisation
 
@@ -125,9 +141,10 @@ $$
    \bigl(\mathbf{S} - \mathbf{S}\tfrac{\mathbf{P}}{2}\mathbf{S}\bigr)
 $$
 
-to the Fock matrix stored in the DIIS subspace [@saunders1973].  The default
-shift $\sigma = 0.2$ hartree is applied only when the DIIS subspace is not
-yet full, and is switched off once DIIS takes over.
+to the Fock matrix [@saunders1973].  The factor $\tfrac{1}{2}$ appears because
+the closed-shell AO density matrix satisfies $\mathbf{P} = 2\mathbf{C}_\text{occ}
+\mathbf{C}_\text{occ}^T$.  The level-shifted Fock matrix is used during the
+initial SCF iterations and disabled once the DIIS subspace is populated.
 
 # Validation
 
@@ -157,21 +174,26 @@ taken from NIST CCCBDB or optimised at the RHF/STO-3G level.
 All 14 molecules pass at a tolerance of $10^{-6}$ hartree.  The largest
 discrepancy ($4.9 \times 10^{-8}$ Eh for C$_2$H$_2$) lies well below the
 chemical accuracy threshold of 1 kcal mol$^{-1}$ ($1.6 \times 10^{-3}$ Eh)
-and originates from floating-point rounding in the Boys-function evaluation,
-not from algorithmic defects.
+and is consistent with floating-point and implementation-level differences
+in integral evaluation.
 
 ## MP2 Correlation Energy
 
-The MP2 layer (`mp2_energy`) is validated against PySCF on four
-closed-shell STO-3G molecules.  Correlation energies agree to within
-$2 \times 10^{-8}$ hartree in all cases:
+The MP2 layer (`mp2_energy`) is validated against PySCF on eight
+closed-shell STO-3G molecules spanning polar hydrides, homonuclear diatomics,
+and polyatomic systems.  Correlation energies agree to within
+$2 \times 10^{-7}$ hartree in all cases:
 
-| Molecule | $E_\text{corr}^\text{PySCF}$ / Eh | $|\Delta E_\text{corr}|$ / Eh |
-|----------|---------------------------------:|------------------------------:|
-| H$_2$    | $-0.01313807$                    | $8.1 \times 10^{-10}$         |
-| H$_2$O   | $-0.03550283$                    | $1.4 \times 10^{-8}$          |
-| CH$_4$   | $-0.05650741$                    | $6.1 \times 10^{-9}$          |
-| NH$_3$   | $-0.04704176$                    | $5.6 \times 10^{-9}$          |
+| Molecule  | $E_\text{RHF}$ / Eh | $E_\text{corr}^\text{PySCF}$ / Eh | $|\Delta E_\text{corr}|$ / Eh |
+|-----------|--------------------:|---------------------------------:|------------------------------:|
+| H$_2$     | $-1.11675930$       | $-0.01313807$                    | $8.1 \times 10^{-10}$         |
+| HF        | $-98.57078004$      | $-0.01734432$                    | $2.6 \times 10^{-9}$          |
+| H$_2$O    | $-74.96294667$      | $-0.03550283$                    | $1.4 \times 10^{-8}$          |
+| N$_2$     | $-107.49597501$     | $-0.15419856$                    | $2.2 \times 10^{-8}$          |
+| CO        | $-111.22455869$     | $-0.12852242$                    | $1.2 \times 10^{-7}$          |
+| NH$_3$    | $-55.45379915$      | $-0.04704176$                    | $5.6 \times 10^{-9}$          |
+| CH$_4$    | $-39.72672422$      | $-0.05650741$                    | $6.1 \times 10^{-9}$          |
+| HCN       | $-91.65072755$      | $-0.12997898$                    | $5.4 \times 10^{-9}$          |
 
 # Known Limitations
 
@@ -179,8 +201,9 @@ MOLEKUL is designed for clarity and pedagogical use; several production-grade
 features are deliberately absent:
 
 - **Memory scaling**: all two-electron repulsion integrals are stored in a
-  dense $N_\text{AO}^4$ array.  For STO-3G molecules up to ~20 heavy atoms
-  this is practical ($N \lesssim 100$, $< 100$ MB), but integral-direct or
+  dense $N_\text{AO}^4$ double-precision array.  At $N_\text{AO} = 100$ this
+  requires approximately 800 MB; practical calculations are therefore limited
+  to small molecules and teaching-scale basis sets.  Integral-direct or
   density-fitting techniques are required for larger systems.
 - **Single-threaded execution**: the integral engine and SCF driver use NumPy
   without explicit parallelism.  Shared-memory or distributed parallelisation
@@ -196,6 +219,26 @@ features are deliberately absent:
 - **No integral screening**: Schwarz or density-based screening is not
   applied; every shell quartet is evaluated, which limits practical
   applicability to small molecules.
+
+# Research Impact
+
+MOLEKUL serves two complementary purposes.  First, as a teaching tool: all
+algorithms are traceable to named functions in readable Python, making it
+suitable for graduate courses in quantum chemistry and computational physics.
+Second, as a reproducible benchmarking baseline: the 606-test suite and
+deterministic NumPy implementation allow hardware and software comparisons
+(e.g.\ evaluating Numba or CuPy acceleration) without hidden compiled-kernel
+overhead.  The benchmark suite covers 14 molecules and three basis sets; all
+timings and energies are logged to version-controlled JSON files.
+
+# AI Usage Disclosure
+
+Generative AI tools were used during software development for code drafting,
+refactoring assistance, documentation support, and test-generation suggestions.
+All scientific algorithms, numerical reference values, and validation criteria
+were reviewed by the author.  Reference values were not modified to fit the
+implementation; every reported energy difference was computed independently
+from PySCF.
 
 # Acknowledgements
 
