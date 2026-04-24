@@ -30,27 +30,26 @@ the total RHF energy.
 Built-in basis data cover H–F for STO-3G [@hehre1969], 6-31G\*
 [@hehre1972; @hariharan1973], and cc-pVDZ [@dunning1989].
 Additional modules provide a geometry optimizer, Mulliken and Löwdin
-[@lowdin1950] population analysis, an MP2 [@moller1934] correlation-energy
-layer, experimental CIS infrastructure, and numerical Hessian-based harmonic
-frequency workflows.
+[@lowdin1950] population analysis, an MP2 [@moller1934] correlation-energy layer, experimental excited-state
+infrastructure, and numerical Hessian-based harmonic frequency workflows.
 
 Validated against PySCF [@sun2020] on a 14-molecule test suite spanning
 H$_2$ through formaldehyde (CH$_2$O), MOLEKUL achieves RHF/STO-3G total-energy
 agreement within $5 \times 10^{-8}$ hartree for every molecule using fixed
 default SCF settings.
 
-# State of the Field
+# State of the field
 
 Production electronic-structure packages such as PySCF [@sun2020], Psi4
 [@smith2020], and ORCA [@neese2020] provide broad functionality and optimized
 implementations.  Their strength is production research, not necessarily
 transparent step-by-step pedagogy.  Earlier educational codes such as PyQuante
-[@quante2004] demonstrated the value of readable implementations but are no
-longer currently maintained or systematically validated against modern
+[@quante2004] demonstrated the value of readable implementations, but they are
+no longer as actively maintained or systematically validated against modern
 reference packages.  MOLEKUL occupies this intermediate space: small in scope,
 pure Python, and continuously tested against PySCF.
 
-# Statement of Need
+# Statement of need
 
 MOLEKUL is intended for advanced undergraduate and graduate students,
 instructors, and researchers who need a readable reference implementation of
@@ -59,14 +58,14 @@ Szabo and Ostlund's textbook [@szabo1989] provides the theoretical foundation,
 yet the gap between a textbook derivation and a program that reproduces
 published energies is substantial.  MOLEKUL bridges this gap: every
 algorithmic step traces directly to a named Python function documented in the
-repository, and every numerical result is compared automatically against PySCF
-for the core RHF and MP2 features.
+repository, and core RHF total energies and MP2 correlation energies are compared
+automatically against PySCF in the validation suite.
 
 Beyond pedagogy, the pure NumPy [@harris2020] implementation provides a
 self-contained baseline for hardware benchmarking, because performance profiles
-isolate NumPy/BLAS behaviour without hidden compiled-kernel overhead.
+isolate NumPy/BLAS behaviour without delegating the quantum-chemistry algorithms to compiled electronic-structure kernels.
 
-# Software Design
+# Software design
 
 MOLEKUL is intentionally a compact pure-Python/NumPy codebase.  The design
 prioritises inspectability and reproducibility over production-scale
@@ -139,11 +138,12 @@ deliberately absent:
   are not parametrised.
 - **Numerical derivatives**: geometry optimisation and harmonic-frequency
   workflows use finite differences rather than analytic nuclear gradients.
-- **Experimental modules**: CIS and frequency analysis are pedagogical
-  infrastructure; they are not production-validated.
+- **Experimental modules**: CIS and frequency-analysis workflows are
+  experimental pedagogical infrastructure; they are not part of the validated
+  production-facing feature set.
 - **No integral screening, ECPs, or relativistic corrections.**
 
-# Research Impact
+# Research impact statement
 
 MOLEKUL serves two complementary purposes.  As a teaching tool, all algorithms
 trace to named functions in readable Python, making it suitable for advanced
@@ -154,14 +154,17 @@ deterministic NumPy implementation allow hardware and software comparisons
 overhead.  Benchmark timings and energies are logged to version-controlled JSON
 files for full reproducibility.
 
-# AI Usage Disclosure
+# AI usage disclosure
 
-Generative AI tools were used during software development for code drafting,
-refactoring assistance, documentation support, and test-generation suggestions.
-All scientific algorithms, numerical reference values, and validation criteria
-were reviewed by the author.  Reference values were not modified to fit the
-implementation; every reported energy difference was computed independently
-from PySCF.
+Generative AI tools, including Claude (Anthropic) and ChatGPT (OpenAI), were
+used during software development for code drafting, refactoring assistance,
+documentation support, test-generation suggestions, and editorial review of
+the manuscript.  All scientific algorithms, numerical reference values,
+validation criteria, and reported results were reviewed and verified by the
+author, who made the primary design decisions and remains responsible for the
+correctness, originality, and scientific content of the submission.
+Reference values were not modified to fit the implementation; every reported
+energy difference was computed independently from PySCF.
 
 # Acknowledgements
 
