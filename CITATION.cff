@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: "If you use MOLEKUL in your research or teaching, please cite it as below."
+type: software
+title: "MOLEKUL: A Pure-Python Ab Initio Quantum Chemistry Code for Education and Reproducible Benchmarking"
+version: "0.1.0"
+date-released: "2026-04-24"
+authors:
+  - family-names: Yazici
+    given-names: Enis
+    orcid: "https://orcid.org/0000-0001-7573-6344"
+    affiliation: "SRH University of Applied Sciences Heidelberg, School of Engineering and Architecture, Heidelberg, Germany"
+repository-code: "https://github.com/yazicienis/molekul"
+license: MIT
+keywords:
+  - quantum chemistry
+  - Hartree-Fock
+  - MP2
+  - ab initio
+  - Gaussian basis sets
+  - Python
+  - education
+  - benchmarking
+abstract: >
+  MOLEKUL is an open-source, pure-Python implementation of Restricted
+  Hartree-Fock (RHF) self-consistent field theory for closed-shell molecules.
+  It evaluates one- and two-electron integrals analytically via
+  McMurchie-Davidson recursions, solves the Roothaan-Hall equations with
+  DIIS acceleration, and includes an MP2 correlation-energy layer.
+  Designed for education and reproducible benchmarking.
+references:
+  - type: article
+    title: "Recent developments in the PySCF program package"
+    authors:
+      - family-names: Sun
+        given-names: Q.
+    journal: "J. Chem. Phys."
+    volume: 153
+    pages: "024109"
+    year: 2020
+    doi: "10.1063/5.0006074"
