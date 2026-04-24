@@ -128,6 +128,59 @@ def _symmetric_orthogonalizer(S: np.ndarray) -> np.ndarray:
     return s_vecs @ np.diag(s_vals ** -0.5) @ s_vecs.T
 
 
+# Fractional occupations for the diagonal SAD guess (spherically averaged).
+# Format: list of occupations in the same order as BasisSet.basis_functions(),
+# i.e. shell-by-shell, then angular component within each shell.
+# STO-3G shell ordering per element: H/He → 1s; Li–Ne → 1s, 2s, 2px, 2py, 2pz.
+_SAD_OCC: dict = {
+    "H":  [1.0],
+    "He": [2.0],
+    "Li": [2.0, 1.0,   0.0, 0.0, 0.0],
+    "Be": [2.0, 2.0,   0.0, 0.0, 0.0],
+    "B":  [2.0, 2.0,   1/3, 1/3, 1/3],
+    "C":  [2.0, 2.0,   2/3, 2/3, 2/3],
+    "N":  [2.0, 2.0,   1.0, 1.0, 1.0],
+    "O":  [2.0, 2.0,   4/3, 4/3, 4/3],
+    "F":  [2.0, 2.0,   5/3, 5/3, 5/3],
+    "Ne": [2.0, 2.0,   2.0, 2.0, 2.0],
+}
+
+
+def _sad_initial_density(basis, molecule) -> np.ndarray:
+    """
+    Superposition of Atomic Densities (SAD) initial guess.
+
+    Builds a diagonal density matrix P where P[μ,μ] = fractional occupation
+    of basis function μ based on the neutral atom's ground-state configuration
+    (p electrons distributed equally over px/py/pz for spherical symmetry).
+
+    Falls back to uniform distribution for unknown elements.
+    """
+    bfs = basis.basis_functions(molecule)
+    n_basis = len(bfs)
+    P = np.zeros((n_basis, n_basis))
+
+    # Group basis function indices by atom
+    atom_bf_indices: dict = {}
+    for bf_idx, (atom_idx, *_) in enumerate(bfs):
+        atom_bf_indices.setdefault(atom_idx, []).append(bf_idx)
+
+    for atom_idx, atom in enumerate(molecule.atoms):
+        indices = atom_bf_indices.get(atom_idx, [])
+        sym = atom.symbol
+        if sym in _SAD_OCC and len(indices) == len(_SAD_OCC[sym]):
+            for global_idx, occ in zip(indices, _SAD_OCC[sym]):
+                P[global_idx, global_idx] = occ
+        else:
+            # Uniform fallback: spread atom's electrons equally
+            n_el = getattr(atom, "atomic_number", len(indices))
+            occ = n_el / max(len(indices), 1)
+            for global_idx in indices:
+                P[global_idx, global_idx] = occ
+
+    return P
+
+
 # ---------------------------------------------------------------------------
 # Main SCF driver
 # ---------------------------------------------------------------------------
@@ -141,6 +194,7 @@ def rhf_scf(
         d_conv: float = 1e-8,
         diis_start: int = 2,
         diis_size: int = 8,
+        level_shift: float = 0.2,
         verbose: bool = False,
 ) -> RHFResult:
     """
@@ -148,14 +202,17 @@ def rhf_scf(
 
     Parameters
     ----------
-    molecule   : Molecule — must be closed-shell (multiplicity=1)
-    basis      : BasisSet (e.g. ``STO3G``)
-    max_iter   : maximum number of SCF iterations
-    e_conv     : convergence threshold for |ΔE| (Hartree)
-    d_conv     : convergence threshold for max|ΔP|
-    diis_start : iteration at which to activate DIIS
-    diis_size  : maximum number of stored DIIS vectors
-    verbose    : print iteration table if True
+    molecule     : Molecule — must be closed-shell (multiplicity=1)
+    basis        : BasisSet (e.g. ``STO3G``)
+    max_iter     : maximum number of SCF iterations
+    e_conv       : convergence threshold for |ΔE| (Hartree)
+    d_conv       : convergence threshold for max|ΔP|
+    diis_start   : iteration at which to activate DIIS
+    diis_size    : maximum number of stored DIIS vectors
+    level_shift  : virtual-orbital energy shift (Hartree) added to DIIS Fock to
+                   prevent wrong-state convergence (Saunders & Hillier 1973).
+                   The converged density is unaffected; set to 0 to disable.
+    verbose      : print iteration table if True
 
     Returns
     -------
@@ -177,11 +234,12 @@ def rhf_scf(
     # --- Orthogonalisation matrix X = S^{-1/2} --------------------------------
     X = _symmetric_orthogonalizer(S)
 
-    # --- Initial guess: diagonalise core Hamiltonian --------------------------
-    Fp = X.T @ H_core @ X
-    _, Cp = np.linalg.eigh(Fp)
-    C = X @ Cp
-    P = 2.0 * C[:, :n_occ] @ C[:, :n_occ].T
+    # --- Initial guess: Superposition of Atomic Densities (SAD) --------------
+    # SAD gives a chemically sensible starting density (spherically-averaged
+    # neutral-atom occupations) that avoids the wrong orbital-occupation
+    # traps that Hcore diagonalisation produces for symmetric molecules (e.g.
+    # N2: Hcore puts πg(antibonding) occupied instead of 3σg).
+    P = _sad_initial_density(basis, molecule)
 
     energy = 0.0
     energy_history: List[float] = []
@@ -212,7 +270,15 @@ def rhf_scf(
         # DIIS error vector: e = FPS - SPF  (measure of [F,P] non-commutativity)
         error = F @ P @ S - S @ P @ F
 
-        diis_focks.append(F.copy())
+        # Level-shifted Fock for DIIS: F_LS = F + σ(S − S·(P/2)·S)
+        # Raises virtual orbital energies by σ without changing converged density.
+        # Derivation: orthonormal-basis shift F' + σ(I − P'_occ) back-transformed to AO.
+        if level_shift > 0.0 and n_occ < S.shape[0]:
+            SP = S @ (0.5 * P)  # S · (P/2)
+            F_diis = F + level_shift * (S - SP @ S)
+        else:
+            F_diis = F
+        diis_focks.append(F_diis)
         diis_errors.append(error.copy())
         if len(diis_focks) > diis_size:
             diis_focks.pop(0)
@@ -220,7 +286,7 @@ def rhf_scf(
 
         # DIIS extrapolation after warm-up
         use_diis = (it >= diis_start) and (len(diis_focks) >= 2)
-        F_use = _diis_extrapolate(diis_focks, diis_errors) if use_diis else F
+        F_use = _diis_extrapolate(diis_focks, diis_errors) if use_diis else F_diis
 
         # Diagonalise in orthonormal basis
         Fp = X.T @ F_use @ X

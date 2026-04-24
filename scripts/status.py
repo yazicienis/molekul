@@ -99,6 +99,33 @@ PHASES: List[Dict[str, Any]] = [
         "test_files":  ["tests/test_cube.py"],
         "description": "Electron density & MO amplitude on 3D grid, Gaussian CUBE format",
     },
+    {
+        "id":          "phase7",
+        "name":        "Mulliken Population & Dipole",
+        "modules":     ["population"],
+        "log_key":     "phase7_population",
+        "script":      "scripts/validate_population.py",
+        "test_files":  [],
+        "description": "Mulliken gross populations, atomic charges, dipole moment (PySCF validated)",
+    },
+    {
+        "id":          "phase8",
+        "name":        "CPU Performance Benchmark",
+        "modules":     [],
+        "log_key":     "phase8_benchmark",
+        "script":      "scripts/benchmark.py",
+        "test_files":  [],
+        "description": "Wall-clock timing for integrals/ERI/SCF/grad/opt across H2–C6H6",
+    },
+    {
+        "id":          "phase9",
+        "name":        "CPU Profiling & Hotspot Analysis",
+        "modules":     [],
+        "log_key":     "phase9_profile",
+        "script":      "profiling/profile_all.py",
+        "test_files":  [],
+        "description": "cProfile + line_profiler + sub-phase timing on ERI/SCF/gradient",
+    },
 ]
 
 
@@ -266,6 +293,39 @@ def _fmt_phase(phase: Dict[str, Any], run_tests: bool) -> List[str]:
                 lines.append(f"      ρ_max    : {rmax:.2f} e/bohr³   grid pts: {npts:,}")
             if isinstance(hn, float):
                 lines.append(f"      HOMO norm: {hn:.4f}  ε_HOMO={he:.4f} eV")
+        elif pid == "phase7":
+            dip  = m.get("h2o_dipole_magnitude_debye", "?")
+            qO   = m.get("h2o_q_O",    "?")
+            qH   = m.get("h2o_q_H",    "?")
+            pycf = m.get("pyscf_available", "?")
+            if isinstance(dip, float):
+                lines.append(f"      H2O |μ|  : {dip:.4f} D")
+                lines.append(f"      H2O q(O) : {qO:+.4f} e   q(H): {qH:+.4f} e")
+                lines.append(f"      PySCF ref: {'available' if pycf else 'not installed'}")
+        elif pid == "phase8":
+            h2o_eri = m.get("h2o_t_eri_s",  "?")
+            h2o_scf = m.get("h2o_t_scf_s",  "?")
+            benz_eri = m.get("c6h6_t_eri_s", "?")
+            elapsed  = m.get("total_wall_s", "?")
+            if isinstance(h2o_eri, float):
+                lines.append(f"      H2O ERI  : {h2o_eri*1000:.0f} ms   SCF: {h2o_scf*1000:.0f} ms")
+            if isinstance(benz_eri, float):
+                lines.append(f"      C6H6 ERI : {benz_eri:.1f} s")
+            if isinstance(elapsed, float):
+                lines.append(f"      Total run : {elapsed/60:.1f} min")
+        elif pid == "phase9":
+            sub = m.get("subphase", {})
+            cache = m.get("cache_analysis", {})
+            t_R  = sub.get("t_R_us", "?")
+            t_ep = sub.get("t_eri_prim_ss_us", "?")
+            ovhd = sub.get("eri_overhead_pct", "?")
+            hit  = cache.get("hit_rate_pct", "?")
+            grad_eri = sub.get("grad_eri_fraction_pct", "?")
+            if isinstance(t_R, float):
+                lines.append(f"      _R (Boys) : {t_R:.2f} µs/call")
+                lines.append(f"      eri_prim  : {t_ep:.1f} µs  (s-s-s-s)")
+                lines.append(f"      py-overhead: {ovhd:.0f}%  _E cache: {hit:.0f}% hits")
+                lines.append(f"      ERI in grad: {grad_eri:.0f}% of gradient time")
 
     # Test results (only if --run-tests)
     if run_tests:
@@ -368,6 +428,10 @@ def main(run_tests: bool = False, as_json: bool = False) -> None:
   python scripts/validate_rhf.py         # phase4_rhf.txt / .json
   python scripts/validate_optimizer.py   # phase5_optimizer.txt / .json
   python scripts/export_cube_h2o.py      # phase6_cube.txt / .json
+  python scripts/validate_population.py  # phase7_population.txt / .json
+  python scripts/benchmark.py            # phase8_benchmark.txt / .json  (~10 min)
+  python scripts/benchmark.py --skip-large  # skip benzene (~1 min)
+  python profiling/profile_all.py         # phase9_profile.json (~15s)
   python scripts/status.py --run-tests   # full status + live test run
 """)
 

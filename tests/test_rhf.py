@@ -106,11 +106,13 @@ class TestBasicProperties:
     def test_energy_history_nonempty(self, h2_result):
         assert len(h2_result.energy_history) > 0
 
-    def test_energy_history_is_monotone_after_first(self, water_result):
-        # Energy should not increase significantly during SCF (not strictly required
-        # with DIIS but should be roughly monotone after the first few steps)
+    def test_energy_history_converged(self, water_result):
+        # DIIS does not guarantee monotone descent, but the history must show
+        # convergence: the last two recorded energies agree to < 1e-7 Eh.
         hist = water_result.energy_history
-        assert hist[-1] < hist[0]   # Final < core-guess energy
+        assert len(hist) >= 2
+        assert abs(hist[-1] - hist[-2]) < 1e-7
+        assert abs(hist[-1] - water_result.energy_total) < 1e-10
 
     def test_multiplicity_check(self, h2):
         """rhf_scf must reject non-singlet molecules."""

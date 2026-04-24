@@ -37,7 +37,7 @@ from math import pi, sqrt
 import numpy as np
 
 from .basis import BasisSet
-from .integrals import _E, _R
+from .integrals import _E, _R, contracted_norm
 
 
 # ---------------------------------------------------------------------------
@@ -133,6 +133,8 @@ def _contracted_eri(bf1, A, bf2, B, bf3, C, bf4, D) -> float:
     N2 = sh2.norms(lx2, ly2, lz2)
     N3 = sh3.norms(lx3, ly3, lz3)
     N4 = sh4.norms(lx4, ly4, lz4)
+    cn = (contracted_norm(lx1, ly1, lz1, sh1) * contracted_norm(lx2, ly2, lz2, sh2)
+          * contracted_norm(lx3, ly3, lz3, sh3) * contracted_norm(lx4, ly4, lz4, sh4))
 
     result = 0.0
     for a_exp, c1, n1 in zip(sh1.exponents, sh1.coefficients, N1):
@@ -146,7 +148,7 @@ def _contracted_eri(bf1, A, bf2, B, bf3, C, bf4, D) -> float:
                                    lx3, ly3, lz3, C, c_exp,
                                    lx4, ly4, lz4, D, d_exp,
                                ))
-    return result
+    return result * cn
 
 
 # ---------------------------------------------------------------------------

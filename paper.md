@@ -160,6 +160,43 @@ chemical accuracy threshold of 1 kcal mol$^{-1}$ ($1.6 \times 10^{-3}$ Eh)
 and originates from floating-point rounding in the Boys-function evaluation,
 not from algorithmic defects.
 
+## MP2 Correlation Energy
+
+The MP2 layer (`mp2_energy`) is validated against PySCF on four
+closed-shell STO-3G molecules.  Correlation energies agree to within
+$2 \times 10^{-8}$ hartree in all cases:
+
+| Molecule | $E_\text{corr}^\text{PySCF}$ / Eh | $|\Delta E_\text{corr}|$ / Eh |
+|----------|---------------------------------:|------------------------------:|
+| H$_2$    | $-0.01313807$                    | $8.1 \times 10^{-10}$         |
+| H$_2$O   | $-0.03550283$                    | $1.4 \times 10^{-8}$          |
+| CH$_4$   | $-0.05650741$                    | $6.1 \times 10^{-9}$          |
+| NH$_3$   | $-0.04704176$                    | $5.6 \times 10^{-9}$          |
+
+# Known Limitations
+
+MOLEKUL is designed for clarity and pedagogical use; several production-grade
+features are deliberately absent:
+
+- **Memory scaling**: all two-electron repulsion integrals are stored in a
+  dense $N_\text{AO}^4$ array.  For STO-3G molecules up to ~20 heavy atoms
+  this is practical ($N \lesssim 100$, $< 100$ MB), but integral-direct or
+  density-fitting techniques are required for larger systems.
+- **Single-threaded execution**: the integral engine and SCF driver use NumPy
+  without explicit parallelism.  Shared-memory or distributed parallelisation
+  is left as a future extension.
+- **Closed-shell only**: the SCF driver implements RHF; unrestricted
+  (UHF) and restricted open-shell (ROHF) references are not supported.
+- **Basis set coverage**: only STO-3G, 6-31G\*, and cc-pVDZ are built in.
+  Heavier elements (beyond F, atomic number 9) are not parametrised.
+- **Post-HF layer**: the MP2 and CIS implementations are single-pass
+  reference implementations validated against PySCF; they lack frozen-core
+  options, density-fitting acceleration, or excited-state geometry
+  optimisation.
+- **No integral screening**: Schwarz or density-based screening is not
+  applied; every shell quartet is evaluated, which limits practical
+  applicability to small molecules.
+
 # Acknowledgements
 
 The author thanks the developers of PySCF, whose intor routines served as the
