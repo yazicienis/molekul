@@ -3,7 +3,7 @@
 A pure-Python ab initio quantum chemistry platform for education and reproducible benchmarking.
 
 [![CI](https://github.com/yazicienis/molekul/actions/workflows/ci.yml/badge.svg)](https://github.com/yazicienis/molekul/actions/workflows/ci.yml)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19743306.svg)](https://doi.org/10.5281/zenodo.19743306)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19763107.svg)](https://doi.org/10.5281/zenodo.19763107)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## Overview
@@ -110,9 +110,9 @@ If you use MOLEKUL, please cite:
   author  = {Yazici, Enis},
   title   = {{MOLEKUL}: A Pure-Python Ab Initio Quantum Chemistry Platform},
   year    = {2026},
-  doi     = {10.5281/zenodo.19743306},
+  doi     = {10.5281/zenodo.19763107},
   url     = {https://github.com/yazicienis/molekul},
-  version = {v0.1.1}
+  version = {v0.1.2}
 }
 ```
 
