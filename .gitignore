@@ -1,3 +1,13 @@
+# LaTeX build artefacts
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
 __pycache__/
 *.py[cod]
 *.pyo

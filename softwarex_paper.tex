@@ -1,3 +1,5 @@
+% Document class options follow the official SoftwareX Original Software
+% Publication LaTeX template (elsarticle, 5p/times/twocolumn).
 \documentclass[5p,times,twocolumn]{elsarticle}
 
 \journal{SoftwareX}
@@ -8,6 +10,7 @@
 \usepackage{tabularx}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{float}
 \usepackage[hidelinks]{hyperref}
 
 \lstset{
@@ -56,7 +59,7 @@ RHF/STO-3G total-energy agreement within $5\times10^{-8}$~E$_h$ and MP2
 correlation-energy agreement within $2\times10^{-7}$~E$_h$.
 The codebase comprises 606 automated tests and is designed for advanced
 undergraduate and graduate courses in quantum chemistry, as well as for
-reproducible NumPy/BLAS performance profiling.
+reproducible algorithmic inspection and validation.
 \end{abstract}
 
 \begin{keyword}
@@ -71,12 +74,8 @@ education
 
 \end{frontmatter}
 
-% ============================================================
-\section*{Code Metadata}
-% ============================================================
-
-\begin{table*}[tbp]
-\caption{Code metadata}
+\begin{table*}[!t]
+\caption{\textbf{Code Metadata}}
 \label{tab:metadata}
 \begin{tabularx}{\textwidth}{lX}
 \toprule
@@ -130,7 +129,7 @@ Table~\ref{tab:modules} lists the main modules.
 Installation: \texttt{pip install -e ".[dev]"}.
 Tests: \texttt{pytest tests/}.
 
-\begin{table}[tbp]
+\begin{table}[H]
 \caption{Main modules of MOLEKUL.}
 \label{tab:modules}
 \begin{tabularx}{\columnwidth}{lX}
@@ -194,7 +193,7 @@ dipole moments are also implemented.
 Built-in data (Table~\ref{tab:basis}) cover H--F; exponents and coefficients
 are taken directly from PySCF's basis-set data~\cite{pritchard2019}.
 
-\begin{table}[tbp]
+\begin{table}[H]
 \caption{Built-in basis sets.}
 \label{tab:basis}
 \begin{tabularx}{\columnwidth}{llX}
@@ -215,24 +214,16 @@ cc-pVDZ & \cite{dunning1989}                        & 15 \\
 The following script computes RHF and MP2 energies of water:
 
 \begin{lstlisting}[language=Python]
-from molekul.molecule import Molecule
-from molekul.atoms import Atom
+from molekul.molecule import Molecule; from molekul.atoms import Atom
 from molekul.basis_sto3g import get_sto3g
-from molekul.rhf import rhf_scf
-from molekul.mp2 import mp2_energy
+from molekul.rhf import rhf_scf; from molekul.mp2 import mp2_energy
 import numpy as np
 
-ANG2BOHR = 1.8897259886
-mol = Molecule([
-    Atom('O', np.array([ 0.  ,  0.   , 0.117])*ANG2BOHR),
-    Atom('H', np.array([ 0.  ,  0.757,-0.469])*ANG2BOHR),
-    Atom('H', np.array([ 0.  , -0.757,-0.469])*ANG2BOHR),
-])
-basis = get_sto3g()
-rhf = rhf_scf(mol, basis)
-mp2 = mp2_energy(mol, basis, rhf)
-print(f"RHF: {rhf.energy_total:.8f} Eh")  # -74.96258854
-print(f"MP2: {mp2.energy_total:.8f} Eh")  # -74.99844967
+B = 1.8897259886   # Ang to Bohr
+mol = Molecule([Atom('O',[0,0,.117*B]),
+    Atom('H',[0,.757*B,-.469*B]), Atom('H',[0,-.757*B,-.469*B])])
+rhf = rhf_scf(mol, get_sto3g())          # -74.96258854 Eh
+mp2 = mp2_energy(mol, get_sto3g(), rhf)  # -74.99844967 Eh
 \end{lstlisting}
 
 % ============================================================
@@ -248,12 +239,41 @@ All 14 pass with maximum deviation $4.9\times10^{-8}$~E$_h$ (C$_2$H$_2$),
 consistent with floating-point differences in integral evaluation.
 Full results are in \texttt{outputs/logs/benchmark\_14mol.json}.
 
+\subsection{Potential Energy Scan}
+
+Figure~\ref{fig:pes} shows the N$_2$ potential energy curve computed with
+MOLEKUL and PySCF at the RHF/STO-3G and MP2/STO-3G levels.
+Energies are plotted relative to the respective minimum.
+The two codes are numerically indistinguishable on this scale: the maximum
+absolute deviation is $2.1\times10^{-7}$~E$_h$ (RHF) and
+$2.2\times10^{-7}$~E$_h$ (MP2) across all scan points.
+Both implementations locate the minimum at the same grid point
+(1.150~\AA{} at RHF/STO-3G and 1.200~\AA{} at MP2/STO-3G).
+The MP2 scan is restricted to $r\le1.70$~\AA{} to avoid the strongly
+stretched region, where single-reference MP2 becomes unreliable.
+
+\begin{figure*}[tbp]
+\centering
+\includegraphics[width=\textwidth]{pes_n2.pdf}
+\caption{%
+  N$_2$ potential energy scan at RHF/STO-3G (left) and MP2/STO-3G (right).
+  Energies are referenced to the minimum of each curve.
+  MOLEKUL (solid blue) and PySCF (dashed red) are numerically
+  indistinguishable on this scale:
+  $|\Delta E|_\mathrm{max}<2.2\times10^{-7}$~E$_h$ across all geometries.
+  The MP2 scan is restricted to $r\le1.70$~\AA{} to avoid the strongly
+  stretched region where single-reference MP2 becomes unreliable.
+  Dotted lines mark the grid-minimum bond length in each panel.
+  Script: \texttt{scripts/potential\_energy\_scan.py}.}
+\label{fig:pes}
+\end{figure*}
+
 \subsection{MP2 Correlation Energy}
 
 Table~\ref{tab:mp2} compares MP2 correlation energies against PySCF for eight
 STO-3G molecules; all agree within $2\times10^{-7}$~E$_h$.
 
-\begin{table}[tbp]
+\begin{table}[H]
 \caption{MP2 correlation energies: MOLEKUL vs.\ PySCF (STO-3G).}
 \label{tab:mp2}
 \begin{tabularx}{\columnwidth}{lXr}
@@ -301,7 +321,8 @@ As a performance-profiling baseline, the 606-test suite and deterministic
 NumPy~\cite{harris2020} implementation allow comparisons of hardware and
 numerical back-ends (e.g.\ Numba, CuPy) without compiled electronic-structure
 kernels.
-Benchmark timings and energies are logged to version-controlled JSON files.
+Benchmark energies are logged to version-controlled JSON files for full
+reproducibility.
 
 % ============================================================
 \section*{Software Availability}
@@ -345,7 +366,8 @@ public GitHub repository and archived on Zenodo at the DOI given in the Code
 Metadata table.
 
 % ============================================================
-\section*{AI Usage Disclosure}
+\section*{Declaration of Generative AI and AI-Assisted Technologies
+  in the Manuscript Preparation Process}
 % ============================================================
 
 Generative AI tools, including Claude (Anthropic) and ChatGPT (OpenAI), were
