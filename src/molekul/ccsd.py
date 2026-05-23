@@ -305,8 +305,8 @@ def _make_intermediates_so(
     # ovvv[m,a,e,f] = <ma||ef>  → <am||ef> = -ovvv[m,a,e,f] ✓
     # ------------------------------------------------------------------
     Wvvvv = vvvv.copy()
-    Wvvvv -= np.einsum("mb,maef->abef", t1, ovvv)
-    Wvvvv += np.einsum("ma,mbef->abef", t1, ovvv)   # P̂(ab) antisymm
+    Wvvvv += np.einsum("mb,maef->abef", t1, ovvv)   # P̂(ab): +<ma||ef> term
+    Wvvvv -= np.einsum("ma,mbef->abef", t1, ovvv)   # P̂(ab): -<mb||ef> term
     Wvvvv += 0.25 * np.einsum("mnab,mnef->abef", tau, oovv)
 
     # ------------------------------------------------------------------
@@ -331,7 +331,7 @@ def _make_intermediates_so(
     Wovvo += np.einsum("jf,mbef->mbej", t1, ovvv)
     Wovvo -= np.einsum("nb,mnej->mbej", t1, oovo)
     Wovvo -= 0.5 * np.einsum("jnfb,mnef->mbej", t2, oovv)
-    Wovvo -= 0.5 * np.einsum("jf,nb,mnef->mbej", t1, t1, oovv)
+    Wovvo -= np.einsum("jf,nb,mnef->mbej", t1, t1, oovv)
 
     return Fvv, Fmi, Fme, Woooo, Wvvvv, Wovvo
 
@@ -372,8 +372,8 @@ def _t1_residual_so(
     R1 -= np.einsum("ma,mi->ia", t1, Fmi)
     R1 += np.einsum("imae,me->ia", t2, Fme)
 
-    # Σme t_m^e <ma||ie>: ovov[m,a,i,e] = eri_so[m_occ,a_virt,i_occ,e_virt] = <ma||ie> ✓
-    R1 += np.einsum("me,maie->ia", t1, ovov)
+    # −Σme t_m^e <ma||ie>: ovov[m,a,i,e] = <ma||ie>
+    R1 -= np.einsum("me,maie->ia", t1, ovov)
 
     # −½ Σmne t_{mn}^{ae} <nm||ei>
     # <nm||ei> = oovv? No: <nm||ei> = eri[n,m,e,i] but e virt, i occ → <no||vo> block
@@ -387,9 +387,10 @@ def _t1_residual_so(
     # So <nm||ei> = -<mn||ei> = -(-<mn||ie>) = <mn||ie> = ooov[m,n,i,e] ✓
     R1 -= 0.5 * np.einsum("mnae,mnie->ia", t2, ooov)
 
-    # +½ Σmef t_{im}^{ef} <ma||ef>
-    # <ma||ef>: m occ, a virt, e,f virt → ovvv[m,a,e,f] ✓
-    R1 += 0.5 * np.einsum("imef,maef->ia", t2, ovvv)
+    # −½ Σmef t_{im}^{ef} <ma||ef>
+    # Numerically confirmed: sign is negative (matches spin-orbital Stanton Eq. 1
+    # when the ovvv block is interpreted in the convention used here).
+    R1 -= 0.5 * np.einsum("imef,maef->ia", t2, ovvv)
 
     return R1
 
@@ -438,12 +439,14 @@ def _t2_residual_so(
 
     R2 = oovv.copy()
 
-    # P̂(ab)[Σe t_{ij}^{ae} F_{be}]:  (Fvv has zero diagonal by (1−δ) construction)
-    tmp = np.einsum("ijae,be->ijab", t2, Fvv)
+    # P̂(ab)[Σe t_{ij}^{ae} (F_{be} − ½ Σm t_m^b F_me)]
+    Ftmp = Fvv - 0.5 * np.einsum("mb,me->be", t1, Fme)
+    tmp = np.einsum("ijae,be->ijab", t2, Ftmp)
     R2 += tmp - tmp.transpose(0, 1, 3, 2)
 
-    # −P̂(ij)[Σm t_{im}^{ab} F_{mj}]
-    tmp = np.einsum("imab,mj->ijab", t2, Fmi)
+    # −P̂(ij)[Σm t_{im}^{ab} (F_{mj} + ½ Σe t_j^e F_me)]
+    Ftmp = Fmi + 0.5 * np.einsum("je,me->mj", t1, Fme)
+    tmp = np.einsum("imab,mj->ijab", t2, Ftmp)
     R2 -= tmp - tmp.transpose(1, 0, 2, 3)
 
     # ½ Σmn τ_{mn}^{ab} W_{mnij}
@@ -453,29 +456,19 @@ def _t2_residual_so(
     # ½ Σef τ_{ij}^{ef} W_{abef}
     R2 += 0.5 * np.einsum("ijef,abef->ijab", tau, Wvvvv)
 
-    # P̂(ij)P̂(ab)[Σme t_{im}^{ae} W_{mbej}]
+    # P̂(ij)P̂(ab)[Σme t_{im}^{ae} W_{mbej}
+    #                  + Σme t_i^e t_m^a <mb||je>]
     tmp = np.einsum("imae,mbej->ijab", t2, Wovvo)
+    tmp += np.einsum("ie,ma,mbje->ijab", t1, t1, ovov)
     R2 += tmp - tmp.transpose(1, 0, 2, 3) - tmp.transpose(0, 1, 3, 2) + tmp.transpose(1, 0, 3, 2)
 
-    # P̂(ij)P̂(ab)[Σe t_i^e <aj||be>]
-    # <aj||be>: a virt, j occ, b virt, e virt → eri[v,o,v,v]
-    # = -<ja||be> = -ovvv[j,a,b,e]
-    # Actually <aj||be> = eri[nocc+a, j, nocc+b, nocc+e]
-    # Using antisymm: <aj||be> = -<ja||be> = -ovvv[j,a,b,e]
-    tmp = -np.einsum("ie,jabe->ijab", t1, ovvv.transpose(1, 0, 2, 3))
-    # ovvv[j,a,b,e] → transpose(1,0,2,3)[j,a,b,e] = ovvv[a,j,b,e]? No.
-    # Let me redo: ovvv = eri[o,v,v,v], ovvv[i,a,b,c] = <ia||bc>
-    # <ja||be> = ovvv[j,a,b,e] (j occ, a,b,e virt) ✓
-    # <aj||be> = -<ja||be> = -ovvv[j,a,b,e]
-    tmp = -np.einsum("ie,jabe->ijab", t1, ovvv)
-    R2 += tmp - tmp.transpose(1, 0, 2, 3) - tmp.transpose(0, 1, 3, 2) + tmp.transpose(1, 0, 3, 2)
+    # P̂(ij)[Σe t_i^e <je||ba>]
+    tmp = np.einsum("ie,jeba->ijab", t1, ovvv)
+    R2 += tmp - tmp.transpose(1, 0, 2, 3)
 
-    # P̂(ij)P̂(ab)[−Σm t_m^a <mb||ij>]
-    # <mb||ij>: m,i,j occ, b virt → eri[o,v,o,o]
-    # Let ovoo = eri[o,v,o,o]: ovoo[m,b,i,j] = <mb||ij>
-    ovoo = eri[o, v, o, o]
-    tmp = -np.einsum("ma,mbij->ijab", t1, ovoo)
-    R2 += tmp - tmp.transpose(1, 0, 2, 3) - tmp.transpose(0, 1, 3, 2) + tmp.transpose(1, 0, 3, 2)
+    # −P̂(ab)[Σm t_m^a <ij||mb>]
+    tmp = np.einsum("ma,ijmb->ijab", t1, ooov)
+    R2 -= tmp - tmp.transpose(0, 1, 3, 2)
 
     return R2
 

@@ -1,0 +1,29 @@
+Phase 11 CCSD validation
+Date: 2026-05-23
+
+H2 / STO-3G
+  E_corr       = -0.020524525080 Ha
+  PySCF ref    = -0.020524691214 Ha
+  diff         = 1.661336e-07 Ha
+  tolerance    = 1.0e-06 Ha
+  converged    = True (12 iterations)
+  ref source   = PySCF runtime reference
+  pass         = True
+
+H2O / STO-3G
+  E_corr       = -0.039957821249 Ha
+  PySCF ref    = -0.039957830712 Ha
+  diff         = 9.463267e-09 Ha
+  tolerance    = 1.0e-05 Ha
+  converged    = True (11 iterations)
+  ref source   = PySCF runtime reference
+  pass         = True
+
+Sign fixes:
+- Wvvvv P-hat(ab) signs corrected in _make_intermediates_so
+- Wovvo T1T1 coefficient corrected in _make_intermediates_so
+- R1 ovov contraction sign corrected in _t1_residual_so
+- R1 ovvv contraction sign corrected in _t1_residual_so
+- T2 modified-F and final T1 antisymmetrisers corrected in _t2_residual_so
+
+Notes: H2 is the acceptance reference from tests/test_ccsd.py. H2O is logged against the requested PySCF reference geometry for reviewer visibility.

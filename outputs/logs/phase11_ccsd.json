@@ -1,0 +1,41 @@
+{
+  "phase": 11,
+  "description": "CCSD spin-orbital implementation",
+  "date": "2026-05-23",
+  "results": [
+    {
+      "molecule": "H2",
+      "basis": "STO-3G",
+      "E_corr_Ha": -0.02052452508036916,
+      "E_total_Ha": -1.1372838292095235,
+      "ref_pyscf_Ha": -0.02052469121401448,
+      "reference_source": "PySCF runtime reference",
+      "diff": 1.6613364531986585e-07,
+      "tolerance": 1e-06,
+      "within_tolerance": true,
+      "converged": true,
+      "n_iter": 12
+    },
+    {
+      "molecule": "H2O",
+      "basis": "STO-3G",
+      "E_corr_Ha": -0.03995782124860822,
+      "E_total_Ha": -74.97307992439067,
+      "ref_pyscf_Ha": -0.03995783071187504,
+      "reference_source": "PySCF runtime reference",
+      "diff": 9.46326681600107e-09,
+      "tolerance": 1e-05,
+      "within_tolerance": true,
+      "converged": true,
+      "n_iter": 11
+    }
+  ],
+  "sign_fixes": [
+    "Wvvvv P-hat(ab) signs corrected in _make_intermediates_so",
+    "Wovvo T1T1 coefficient corrected in _make_intermediates_so",
+    "R1 ovov contraction sign corrected in _t1_residual_so",
+    "R1 ovvv contraction sign corrected in _t1_residual_so",
+    "T2 modified-F and final T1 antisymmetrisers corrected in _t2_residual_so"
+  ],
+  "notes": "H2 is the acceptance reference from tests/test_ccsd.py. H2O is logged against the requested PySCF reference geometry for reviewer visibility."
+}
