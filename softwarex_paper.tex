@@ -1,9 +1,9 @@
-% Document class options follow the official SoftwareX Original Software
-% Publication LaTeX template (elsarticle, 5p/times/twocolumn).
-\documentclass[5p,times,twocolumn]{elsarticle}
+% Single-column format as required by SoftwareX editorial office.
+\documentclass[1p,times]{elsarticle}
 
 \journal{SoftwareX}
 
+\usepackage{microtype}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
@@ -36,11 +36,11 @@
        Education and Reproducible Benchmarking}
 
 \author{Enis Yazici\corref{cor1}}
-\ead{yazicienis@gmail.com}
+\ead{enis.yazici@srh.de}
 \cortext[cor1]{Corresponding author}
-\address{SRH University of Applied Sciences Heidelberg,
-         School of Engineering and Architecture,
-         Heidelberg, Germany}
+\address{SRH University of Applied Sciences Heidelberg,\\
+         School of Engineering and Architecture, Campus Heidelberg,\\
+         Ludwig-Guttmann-Straße 6, 69123 Heidelberg, Germany}
 
 \begin{abstract}
 MOLEKUL is an open-source, pure-Python implementation of Restricted
@@ -74,10 +74,10 @@ education
 
 \end{frontmatter}
 
-\begin{table*}[!t]
+\begin{table}[H]
 \caption{\textbf{Code Metadata}}
 \label{tab:metadata}
-\begin{tabularx}{\textwidth}{lX}
+\begin{tabularx}{\columnwidth}{lX}
 \toprule
 \textbf{Nr.} & \textbf{Detail} \\
 \midrule
@@ -89,10 +89,10 @@ C5 & Versioning system: git \\
 C6 & Languages and tools: Python~$\ge$~3.10, NumPy \\
 C7 & Dependencies: \texttt{numpy}; \texttt{pytest} (development) \\
 C8 & Documentation: \url{https://github.com/yazicienis/molekul} \\
-C9 & Support: \texttt{yazicienis@gmail.com} \\
+C9 & Support: \texttt{enis.yazici@srh.de} \\
 \bottomrule
 \end{tabularx}
-\end{table*}
+\end{table}
 
 % ============================================================
 \section{Motivation and Significance}
@@ -222,15 +222,30 @@ import numpy as np
 B = 1.8897259886   # Ang to Bohr
 mol = Molecule([Atom('O',[0,0,.117*B]),
     Atom('H',[0,.757*B,-.469*B]), Atom('H',[0,-.757*B,-.469*B])])
-rhf = rhf_scf(mol, get_sto3g())          # -74.96258854 Eh
-mp2 = mp2_energy(mol, get_sto3g(), rhf)  # -74.99844967 Eh
+rhf = rhf_scf(mol, get_sto3g())          # -74.96294667 Eh
+mp2 = mp2_energy(mol, get_sto3g(), rhf)  # -74.99844951 Eh
 \end{lstlisting}
 
 % ============================================================
-\section{Validation}
+\section{Impact}
 % ============================================================
 
-\subsection{RHF/STO-3G}
+MOLEKUL serves two complementary purposes.
+As a teaching tool, all algorithms trace to named functions in readable Python,
+making it suitable for advanced undergraduate and graduate courses in quantum
+chemistry and computational physics.
+As an algorithmic-inspection and validation baseline, the 606-test suite
+and deterministic NumPy~\cite{harris2020} implementation allow controlled
+comparisons of numerical back-ends (e.g.\ Numba, CuPy) without compiled
+electronic-structure kernels.
+Benchmark energies are logged to version-controlled JSON files for full
+reproducibility.
+
+% ============================================================
+\section{Conclusions}
+% ============================================================
+
+\subsection{Validation Summary}
 
 The script \texttt{scripts/benchmark\_14mol.py} compares MOLEKUL RHF/STO-3G
 energies against PySCF~\cite{sun2020} for 14 closed-shell molecules (H$_2$
@@ -238,8 +253,6 @@ through CH$_2$O).
 All 14 pass with maximum deviation $4.9\times10^{-8}$~E$_h$ (C$_2$H$_2$),
 consistent with floating-point differences in integral evaluation.
 Full results are in \texttt{outputs/logs/benchmark\_14mol.json}.
-
-\subsection{Potential Energy Scan}
 
 Figure~\ref{fig:pes} shows the N$_2$ potential energy curve computed with
 MOLEKUL and PySCF at the RHF/STO-3G and MP2/STO-3G levels.
@@ -252,9 +265,9 @@ Both implementations locate the minimum at the same grid point
 The MP2 scan is restricted to $r\le1.70$~\AA{} to avoid the strongly
 stretched region, where single-reference MP2 becomes unreliable.
 
-\begin{figure*}[tbp]
+\begin{figure}[tbp]
 \centering
-\includegraphics[width=\textwidth]{pes_n2.pdf}
+\includegraphics[width=\columnwidth]{pes_n2.pdf}
 \caption{%
   N$_2$ potential energy scan at RHF/STO-3G (left) and MP2/STO-3G (right).
   Energies are referenced to the minimum of each curve.
@@ -266,9 +279,7 @@ stretched region, where single-reference MP2 becomes unreliable.
   Dotted lines mark the grid-minimum bond length in each panel.
   Script: \texttt{scripts/potential\_energy\_scan.py}.}
 \label{fig:pes}
-\end{figure*}
-
-\subsection{MP2 Correlation Energy}
+\end{figure}
 
 Table~\ref{tab:mp2} compares MP2 correlation energies against PySCF for eight
 STO-3G molecules; all agree within $2\times10^{-7}$~E$_h$.
@@ -294,9 +305,7 @@ HCN    & $-0.12997898$ & $5\times10^{-9}$  \\
 \end{tabularx}
 \end{table}
 
-% ============================================================
-\section{Known Limitations}
-% ============================================================
+\subsection{Known Limitations}
 
 Dense $N_\mathrm{AO}^4$ ERI storage limits practical use to small molecules
 ($N_\mathrm{AO}\lesssim50$); no integral screening, density fitting, or
@@ -309,20 +318,14 @@ Excited-state (CIS) and harmonic-frequency modules are experimental
 pedagogical infrastructure and are not production-validated.
 No effective core potentials or relativistic corrections are included.
 
-% ============================================================
-\section{Impact}
-% ============================================================
+\subsection{Summary}
 
-MOLEKUL serves two complementary purposes.
-As a teaching tool, all algorithms trace to named functions in readable Python,
-making it suitable for advanced undergraduate and graduate courses in quantum
-chemistry and computational physics.
-As an algorithmic-inspection and validation baseline, the 606-test suite
-and deterministic NumPy~\cite{harris2020} implementation allow controlled
-comparisons of numerical back-ends (e.g.\ Numba, CuPy) without compiled
-electronic-structure kernels.
-Benchmark energies are logged to version-controlled JSON files for full
-reproducibility.
+MOLEKUL achieves sub-microhartree agreement with PySCF across a 14-molecule
+benchmark suite and reproduces potential energy curves at the RHF/STO-3G and
+MP2/STO-3G levels.
+The code is designed to be extended incrementally---each limitation above
+represents a well-defined algorithmic addition that students or researchers can
+implement against the existing test suite.
 
 % ============================================================
 \section*{Software Availability}
@@ -383,7 +386,7 @@ submission.
 % ============================================================
 
 The author thanks the developers of PySCF, whose reference calculations were
-used throughout validation, and the EMSL Basis Set Exchange~\cite{pritchard2019}
+used throughout validation, and the Basis Set Exchange~\cite{pritchard2019}
 for tabulated basis-set parameters.
 
 % ============================================================
