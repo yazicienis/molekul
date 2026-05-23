@@ -36,4 +36,4 @@ _Earlier history (pre-workflow) reconstructed from git log:_
 - Ran `pytest tests/ -x`: 606 passed
 - H2 validation diff vs PySCF runtime reference: `1.661336e-07` Ha
 - H2O validation diff vs PySCF runtime reference: `9.463267e-09` Ha
-- Commit: `PENDING`
+- Commit: `c114255`
