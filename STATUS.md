@@ -1,6 +1,6 @@
 # STATUS
 
-_Last updated: 2026-05-23 by Codex_
+_Last updated: 2026-05-27 by Claude_
 
 ## Project
 
@@ -15,7 +15,7 @@ v0.1.2 — SoftwareX paper submitted.
 | 11 | CCSD spin-orbital | ✅ sign fix validated |
 | 12 | KS-DFT (LDA/PBE) | ✅ complete |
 | 13 | CIS excited states | ✅ complete |
-| 14 | CCSD(T) | 📋 prompt ready |
+| 14 | CCSD(T) | ✅ complete |
 | 15 | EOM-CCSD | 📋 prompt ready |
 | 16 | UHF | 📋 prompt ready |
 | 17 | TD-DFT (Casida TDA) | 📋 prompt ready |
@@ -23,11 +23,11 @@ v0.1.2 — SoftwareX paper submitted.
 
 ## Current bottleneck
 
-Phase 11 implementation validated. Claude reviewer handles next.
+Phase 14 complete (Claude review 2026-05-27). Next: Phase 15 EOM-CCSD — assigned to Codex.
 
 ## Test suite
 
-606 tests, all passing as of 2026-05-23.
+611 tests, all passing as of 2026-05-27.
 
 Latest verification:
 - `pytest tests/test_ccsd.py -v`: 10 passed

@@ -1,33 +1,25 @@
 # NEXT_AGENT
 
-**Next:** Claude  
-**Task:** Phase 11 — CCSD sign fix review
+**Next:** Codex  
+**Task:** Phase 15 — EOM-CCSD excited states
 
 ## What to do
 
-Review the Phase 11 commit from Codex.
+Implement EOM-CCSD-EE (equation-of-motion, excitation energies) on top of
+converged CCSD amplitudes. Full specification in `prompts/phase15_eom_ccsd.md`.
 
-Focus:
-- `src/molekul/ccsd.py` sign and antisymmetriser corrections:
-  - `_make_intermediates_so`: `Wvvvv` P-hat(ab) signs and `Wovvo` T1T1 term
-  - `_t1_residual_so`: R1 `ovov` and `ovvv` contraction signs
-  - `_t2_residual_so`: modified F intermediates and final T1 antisymmetrisers
-- `scripts/validate_ccsd.py`
-- `outputs/logs/phase11_ccsd.json` and `.txt`
-- Handoff/status/changelog updates
-- Confirm unrelated SoftwareX paper files were not included in the Phase 11
-  commit.
+Key points:
+- Create `src/molekul/eom_ccsd.py` with `eom_ccsd_ee()` and `EOMCCSDResult`
+- Reuse `ccsd_energy()` from `src/molekul/ccsd.py` to get T1, T2 amplitudes
+- Build the H̄ (similarity-transformed Hamiltonian) matrix in singles+doubles space
+- Diagonalise with `np.linalg.eig`; return `n_states` lowest positive real eigenvalues
+- Validate against PySCF `EOM_CCSD` for H2 and H2O in STO-3G
+- Write `scripts/validate_eom_ccsd.py` and generate `outputs/logs/phase15_eom_ccsd.json`
+- All existing 611 tests must continue to pass; add `tests/test_eom_ccsd.py`
 
-Reviewer note:
-- `pytest tests/test_ccsd.py -v`: 10 passed
-- `pytest tests/ -x`: 606 passed
-- H2 validation diff vs PySCF runtime reference: `1.661336e-07` Ha
-- H2O validation diff vs PySCF runtime reference: `9.463267e-09` Ha
+## Acceptance criteria
 
-## Acceptance self-check (run before handing off)
-
-- [ ] Review commit diff
-- [ ] Confirm `outputs/logs/phase11_ccsd.json` exists
-- [ ] Confirm H2 E_corr diff < 1e-6 Ha
-- [ ] Confirm H2O E_corr diff < 1e-5 Ha
-- [ ] Commit hash recorded in `CHANGELOG_AGENT.md`
+- H₂O state 1 excitation energy within 0.001 Ha of PySCF EOM-CCSD
+- `outputs/logs/phase15_eom_ccsd.json` present with runtime PySCF reference
+- 611 + new EOM-CCSD tests pass
+- Commit: Phase 15 files only (no paper/unrelated changes)

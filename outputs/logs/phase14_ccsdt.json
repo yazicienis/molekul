@@ -1,0 +1,38 @@
+{
+  "phase": 14,
+  "description": "CCSD(T) perturbative triples",
+  "date": "2026-05-28",
+  "results": [
+    {
+      "molecule": "H2",
+      "basis": "STO-3G",
+      "E_ccsd_corr_Ha": -0.02052452508036916,
+      "E_triples_Ha": 0.0,
+      "E_ccsdt_corr_Ha": -0.02052452508036916,
+      "E_total_Ha": -1.1372838292095235,
+      "ref_pyscf_Ha": -0.02052469121401448,
+      "reference_source": "PySCF runtime reference",
+      "diff": 1.6613364531986585e-07,
+      "tolerance": 1e-06,
+      "within_tolerance": true,
+      "converged": true,
+      "n_iter": 12
+    },
+    {
+      "molecule": "H2O",
+      "basis": "STO-3G",
+      "E_ccsd_corr_Ha": -0.03995782124860822,
+      "E_triples_Ha": -7.438890675409438e-05,
+      "E_ccsdt_corr_Ha": -0.04003221015536232,
+      "E_total_Ha": -74.97315431329743,
+      "ref_pyscf_Ha": -0.040032219580637345,
+      "reference_source": "PySCF runtime reference",
+      "diff": 9.42527502573176e-09,
+      "tolerance": 1e-05,
+      "within_tolerance": true,
+      "converged": true,
+      "n_iter": 11
+    }
+  ],
+  "notes": "Runtime PySCF references are used when PySCF is installed; hardcoded references are fallbacks."
+}

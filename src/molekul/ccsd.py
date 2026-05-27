@@ -27,15 +27,18 @@ Amplitude equations are iterated with DIIS acceleration.
 Initial guess: t2_{ij}^{ab}(0) = <ij||ab> / D_{ijab}  (= MP2 amplitudes)
               t1_i^a(0)        = 0
 
-Scaling: O(N⁶) per iteration, O(N⁴) spin-orbital storage.
+Scaling: CCSD O(N⁶) per iteration, CCSD(T) O(N⁷), O(N⁴) spin-orbital storage.
 
 Public API
 ----------
 ccsd_energy(molecule, basis, rhf_result) → CCSDResult
+ccsdt_energy(molecule, basis, rhf_result) → CCSDTResult
 
 References
 ----------
 Stanton et al., J. Chem. Phys. 94, 4334 (1991).
+Raghavachari et al., J. Chem. Phys. 91, 1007 (1989).
+Scuseria, Janssen, Schaefer, J. Chem. Phys. 98, 8718 (1993).
 Crawford & Schaefer, Rev. Comp. Chem. 14, 33 (2000).
 Helgaker, Jørgensen, Olsen, "Molecular Electronic-Structure Theory", Ch. 13.
 """
@@ -65,6 +68,23 @@ class CCSDResult:
     energy_mp2:   float         # MP2 correlation energy   (Hartree, from initial T2)
     t1:           np.ndarray    # Spin-orbital T1 amplitudes  (n_occ_so, n_virt_so)
     t2:           np.ndarray    # Spin-orbital T2 amplitudes  (n_occ_so,)*2 + (n_virt_so,)*2
+    converged:    bool
+    n_iter:       int
+    n_occ:        int           # spatial occupied MOs
+    n_virt:       int           # spatial virtual MOs
+    n_basis:      int
+
+
+@dataclass
+class CCSDTResult:
+    """Output of a perturbative triples correction on top of CCSD."""
+    energy_ccsdt: float         # (T) triples correction only (Hartree)
+    energy_total: float         # E_HF + E_CCSD + E_(T)      (Hartree)
+    energy_hf:    float         # RHF total energy           (Hartree)
+    energy_ccsd:  float         # CCSD correlation energy    (Hartree)
+    energy_mp2:   float         # MP2 correlation energy     (Hartree)
+    t1:           np.ndarray    # Spin-orbital T1 amplitudes
+    t2:           np.ndarray    # Spin-orbital T2 amplitudes
     converged:    bool
     n_iter:       int
     n_occ:        int           # spatial occupied MOs
@@ -171,6 +191,41 @@ def transform_mo_full(eri_ao: np.ndarray, C: np.ndarray) -> np.ndarray:
     tmp = np.einsum("iqrs,qj->ijrs", tmp,    C, optimize=True)
     tmp = np.einsum("ijrs,rk->ijks", tmp,    C, optimize=True)
     return np.einsum("ijks,sl->ijkl", tmp,   C, optimize=True)
+
+
+def _prepare_ccsd_spin_orbital_data(
+        molecule:   Molecule,
+        basis:      BasisSet,
+        rhf_result: RHFResult,
+        eri_ao:     np.ndarray | None,
+        verbose:    bool = False,
+) -> tuple[int, int, int, np.ndarray, np.ndarray, np.ndarray]:
+    """Build shared spin-orbital data for CCSD and perturbative triples."""
+    if not rhf_result.converged:
+        raise ValueError("CCSD requires a converged RHF reference.")
+
+    nocc = molecule.n_electrons // 2
+    C = rhf_result.mo_coefficients
+    eps = rhf_result.mo_energies
+    nbasis = C.shape[0]
+    nvirt = nbasis - nocc
+
+    if nvirt < 1:
+        raise ValueError("CCSD requires at least one virtual orbital.")
+
+    if eri_ao is None:
+        eri_ao = build_eri(basis, molecule)
+
+    if verbose:
+        print("  CCSD: AO→MO transformation …")
+
+    eri_mo = transform_mo_full(eri_ao, C)
+
+    if verbose:
+        print("  CCSD: building spin-orbital integrals …")
+
+    eri_so, eps_so, fock_so = _build_so_integrals(eri_mo, eps, nocc)
+    return nocc, nvirt, nbasis, eri_so, eps_so, fock_so
 
 
 # ---------------------------------------------------------------------------
@@ -516,6 +571,115 @@ class _DIIS:
 
 
 # ---------------------------------------------------------------------------
+# CCSD spin-orbital solver
+# ---------------------------------------------------------------------------
+
+def _solve_ccsd_from_so_data(
+        rhf_result: RHFResult,
+        nocc:       int,
+        nvirt:      int,
+        nbasis:     int,
+        eri_so:     np.ndarray,
+        eps_so:     np.ndarray,
+        fock_so:    np.ndarray,
+        *,
+        max_iter:   int,
+        e_conv:     float,
+        amp_conv:   float,
+        diis_start: int,
+        diis_size:  int,
+        verbose:    bool,
+) -> CCSDResult:
+    """Iterate spin-orbital CCSD amplitudes from prepared integral data."""
+    nocc_so = 2 * nocc
+    nvirt_so = 2 * nvirt
+
+    o = slice(0, nocc_so)
+    v = slice(nocc_so, None)
+
+    eps_occ_so = eps_so[:nocc_so]
+    eps_vir_so = eps_so[nocc_so:]
+    fov_so = fock_so[o, v]
+    oovv_so = eri_so[o, o, v, v]
+
+    D1 = eps_occ_so[:, None] - eps_vir_so[None, :]
+    D2 = (
+        eps_occ_so[:, None, None, None]
+        + eps_occ_so[None, :, None, None]
+        - eps_vir_so[None, None, :, None]
+        - eps_vir_so[None, None, None, :]
+    )
+
+    t1 = np.zeros((nocc_so, nvirt_so))
+    t2 = oovv_so / D2
+
+    e_mp2 = _ccsd_energy_so(t1, t2, fov_so, oovv_so)
+    e_ccsd = e_mp2
+    converged = False
+
+    diis = _DIIS(diis_size)
+
+    if verbose:
+        print(f"  {'Iter':>4}  {'E_corr':>18}  {'ΔE':>12}  {'rms|R|':>12}")
+        print(f"  {'----':>4}  {'------':>18}  {'--':>12}  {'------':>12}")
+        print(f"  {'MP2':>4}  {e_mp2:18.12f}  {'(initial)':>12}")
+
+    for iteration in range(1, max_iter + 1):
+        e_old = e_ccsd
+
+        Fvv, Fmi, Fme, Woooo, Wvvvv, Wovvo = _make_intermediates_so(
+            t1, t2, fock_so, eri_so, nocc_so
+        )
+
+        R1 = _t1_residual_so(t1, t2, fov_so, Fvv, Fmi, Fme, eri_so, nocc_so)
+        R2 = _t2_residual_so(t1, t2, fov_so, Fvv, Fmi, Fme,
+                              Woooo, Wvvvv, Wovvo, eri_so, nocc_so)
+
+        new_t1 = R1 / D1
+        new_t2 = R2 / D2
+
+        err = np.concatenate([(new_t1 - t1).ravel(), (new_t2 - t2).ravel()])
+        rms = float(np.sqrt(np.mean(err**2)))
+        flat = np.concatenate([new_t1.ravel(), new_t2.ravel()])
+
+        if iteration >= diis_start:
+            diis.push(flat, err)
+            flat_ex = diis.extrapolate()
+        else:
+            flat_ex = flat
+
+        t1 = flat_ex[:nocc_so * nvirt_so].reshape(nocc_so, nvirt_so)
+        t2 = flat_ex[nocc_so * nvirt_so:].reshape(nocc_so, nocc_so, nvirt_so, nvirt_so)
+
+        e_ccsd = _ccsd_energy_so(t1, t2, fov_so, oovv_so)
+        de = e_ccsd - e_old
+
+        if verbose:
+            print(f"  {iteration:4d}  {e_ccsd:18.12f}  {de:12.6e}  {rms:12.6e}")
+
+        if abs(de) < e_conv and rms < amp_conv:
+            converged = True
+            break
+
+    if not converged and verbose:
+        print(f"  WARNING: CCSD did not converge in {max_iter} iterations.")
+
+    return CCSDResult(
+        energy_ccsd=e_ccsd,
+        energy_total=rhf_result.energy_total + e_ccsd,
+        energy_hf=rhf_result.energy_total,
+        energy_mp2=e_mp2,
+        t1=t1,
+        t2=t2,
+        converged=converged,
+        n_iter=iteration,
+        n_occ=nocc,
+        n_virt=nvirt,
+        n_basis=nbasis,
+    )
+
+
+# ---------------------------------------------------------------------------
 # Main driver
 # ---------------------------------------------------------------------------
 
@@ -538,135 +702,137 @@ def ccsd_energy(
     Uses spin-orbital amplitudes so Stanton (1991) equations apply verbatim.
     Correlation energy is extracted from the spin-orbital expression and equals
     the standard spatial CCSD energy.
-
-    Parameters
-    ----------
-    molecule   : Molecule (bohr coordinates)
-    basis      : BasisSet
-    rhf_result : converged RHFResult from rhf_scf()
-    eri_ao     : pre-built AO ERI tensor (built internally if None)
-    max_iter   : maximum CCSD iterations
-    e_conv     : energy convergence threshold (Hartree)
-    amp_conv   : amplitude RMS convergence threshold
-    diis_start : iteration at which DIIS begins
-    diis_size  : DIIS subspace size
-    verbose    : print iteration progress
-
-    Returns
-    -------
-    CCSDResult
     """
-    if not rhf_result.converged:
-        raise ValueError("CCSD requires a converged RHF reference.")
+    nocc, nvirt, nbasis, eri_so, eps_so, fock_so = _prepare_ccsd_spin_orbital_data(
+        molecule, basis, rhf_result, eri_ao, verbose
+    )
+    return _solve_ccsd_from_so_data(
+        rhf_result, nocc, nvirt, nbasis, eri_so, eps_so, fock_so,
+        max_iter=max_iter,
+        e_conv=e_conv,
+        amp_conv=amp_conv,
+        diis_start=diis_start,
+        diis_size=diis_size,
+        verbose=verbose,
+    )
 
-    nocc   = molecule.n_electrons // 2
-    C      = rhf_result.mo_coefficients
-    eps    = rhf_result.mo_energies
-    nbasis = C.shape[0]
-    nvirt  = nbasis - nocc
 
-    if nvirt < 1:
-        raise ValueError("CCSD requires at least one virtual orbital.")
+# ---------------------------------------------------------------------------
+# Perturbative triples correction, CCSD(T)
+# ---------------------------------------------------------------------------
 
-    # Build AO ERI if not supplied
-    if eri_ao is None:
-        eri_ao = build_eri(basis, molecule)
+def _ccsdt_correction_so(
+        t1:    np.ndarray,
+        t2:    np.ndarray,
+        fock:  np.ndarray,
+        eri:   np.ndarray,
+        eps:   np.ndarray,
+        nocc:  int,
+) -> float:
+    """
+    Spin-orbital perturbative triples correction.
+
+    This is the closed-shell spin-orbital form used by PySCF GCCSD(T), based on
+    Scuseria, Janssen, and Schaefer, J. Chem. Phys. 98, 8718 (1993). Indices
+    are spin-orbital occupied i,j,k and virtual a,b,c. The a>b>c loop visits
+    unique virtual triples; the occupied permutations are handled by the W/V
+    intermediates and the final factor of 1/2.
+    """
+    nvir = t1.shape[1]
+    if nocc < 3 or nvir < 3:
+        return 0.0
+
+    o = slice(0, nocc)
+    v = slice(nocc, None)
+
+    # PySCF notation: bcei=<bc||ei>, majk=<ma||jk>, bcjk=<bc||jk>.
+    bcei = eri[o, v, v, v].transpose(3, 2, 1, 0)
+    majk = eri[o, o, o, v].transpose(2, 3, 0, 1)
+    bcjk = eri[o, o, v, v].transpose(2, 3, 0, 1)
+    fvo = fock[v, o]
+
+    eijk = (
+        eps[o][:, None, None]
+        + eps[o][None, :, None]
+        + eps[o][None, None, :]
+    )
+    eabc = (
+        eps[v][:, None, None]
+        + eps[v][None, :, None]
+        + eps[v][None, None, :]
+    )
+
+    t2T = t2.transpose(2, 3, 0, 1)
+    t1T = t1.T
+
+    def get_wv(a: int, b: int, c: int) -> tuple[np.ndarray, np.ndarray]:
+        w = np.einsum("ejk,ei->ijk", t2T[a, :], bcei[b, c])
+        w -= np.einsum("im,mjk->ijk", t2T[b, c], majk[:, a])
+        vtmp = np.einsum("i,jk->ijk", t1T[a], bcjk[b, c])
+        vtmp += np.einsum("i,jk->ijk", fvo[a], t2T[b, c])
+        vtmp += w
+        w = w + w.transpose(2, 0, 1) + w.transpose(1, 2, 0)
+        return w, vtmp
+
+    triples = 0.0
+    for a in range(nvir):
+        for b in range(a):
+            for c in range(b):
+                wabc, vabc = get_wv(a, b, c)
+                wcab, vcab = get_wv(c, a, b)
+                wbac, vbac = get_wv(b, a, c)
+
+                w = wabc + wcab - wbac
+                vtmp = vabc + vcab - vbac
+                w = w / (eijk - eabc[a, b, c])
+                triples += float(np.einsum("ijk,ijk->", w, vtmp))
+
+    return 0.5 * triples
+
+
+def ccsdt_energy(
+        molecule:   Molecule,
+        basis:      BasisSet,
+        rhf_result: RHFResult,
+        *,
+        eri_ao:     np.ndarray | None = None,
+        verbose:    bool = False,
+) -> CCSDTResult:
+    """Compute CCSD(T) total energy by adding perturbative triples to CCSD."""
+    if verbose:
+        print("  CCSD(T): solving CCSD amplitudes …")
+
+    nocc, nvirt, nbasis, eri_so, eps_so, fock_so = _prepare_ccsd_spin_orbital_data(
+        molecule, basis, rhf_result, eri_ao, verbose
+    )
+    ccsd = _solve_ccsd_from_so_data(
+        rhf_result, nocc, nvirt, nbasis, eri_so, eps_so, fock_so,
+        max_iter=100,
+        e_conv=1e-10,
+        amp_conv=1e-8,
+        diis_start=2,
+        diis_size=8,
+        verbose=verbose,
+    )
 
     if verbose:
-        print("  CCSD: AO→MO transformation …")
+        print("  CCSD(T): evaluating perturbative triples …")
 
-    eri_mo = transform_mo_full(eri_ao, C)
+    nocc_so = 2 * nocc
+    triples = _ccsdt_correction_so(ccsd.t1, ccsd.t2, fock_so, eri_so, eps_so, nocc_so)
 
-    if verbose:
-        print("  CCSD: building spin-orbital integrals …")
-
-    eri_so, eps_so, fock_so = _build_so_integrals(eri_mo, eps, nocc)
-
-    # Spin-orbital occupied/virtual slices
-    nocc_so  = 2 * nocc
-    nvirt_so = 2 * nvirt
-
-    o = slice(0, nocc_so)
-    v = slice(nocc_so, None)
-
-    eps_occ_so = eps_so[:nocc_so]
-    eps_vir_so = eps_so[nocc_so:]
-    fov_so     = fock_so[o, v]   # = 0 for canonical RHF
-    oovv_so    = eri_so[o, o, v, v]
-
-    # Orbital energy denominators (spin-orbital)
-    D1 = eps_occ_so[:, None] - eps_vir_so[None, :]
-    D2 = (  eps_occ_so[:, None, None, None]
-          + eps_occ_so[None, :, None, None]
-          - eps_vir_so[None, None, :, None]
-          - eps_vir_so[None, None, None, :])
-
-    # Initial T amplitudes
-    t1 = np.zeros((nocc_so, nvirt_so))
-    t2 = oovv_so / D2                  # antisymmetric by construction
-
-    e_mp2  = _ccsd_energy_so(t1, t2, fov_so, oovv_so)
-    e_ccsd = e_mp2
-    converged = False
-
-    diis = _DIIS(diis_size)
-
-    if verbose:
-        print(f"  {'Iter':>4}  {'E_corr':>18}  {'ΔE':>12}  {'rms|R|':>12}")
-        print(f"  {'----':>4}  {'------':>18}  {'--':>12}  {'------':>12}")
-        print(f"  {'MP2':>4}  {e_mp2:18.12f}  {'(initial)':>12}")
-
-    for iteration in range(1, max_iter + 1):
-        e_old = e_ccsd
-
-        Fvv, Fmi, Fme, Woooo, Wvvvv, Wovvo = _make_intermediates_so(
-            t1, t2, fock_so, eri_so, nocc_so
-        )
-
-        R1 = _t1_residual_so(t1, t2, fov_so, Fvv, Fmi, Fme, eri_so, nocc_so)
-        R2 = _t2_residual_so(t1, t2, fov_so, Fvv, Fmi, Fme,
-                              Woooo, Wvvvv, Wovvo, eri_so, nocc_so)
-
-        # Jacobi update: R1/R2 are numerators N; t_new = N/D
-        new_t1 = R1 / D1
-        new_t2 = R2 / D2
-
-        err  = np.concatenate([(new_t1 - t1).ravel(), (new_t2 - t2).ravel()])
-        rms  = float(np.sqrt(np.mean(err**2)))
-        flat = np.concatenate([new_t1.ravel(), new_t2.ravel()])
-
-        if iteration >= diis_start:
-            diis.push(flat, err)
-            flat_ex = diis.extrapolate()
-        else:
-            flat_ex = flat
-
-        t1 = flat_ex[:nocc_so * nvirt_so].reshape(nocc_so, nvirt_so)
-        t2 = flat_ex[nocc_so * nvirt_so:].reshape(nocc_so, nocc_so, nvirt_so, nvirt_so)
-
-        e_ccsd = _ccsd_energy_so(t1, t2, fov_so, oovv_so)
-        de     = e_ccsd - e_old
-
-        if verbose:
-            print(f"  {iteration:4d}  {e_ccsd:18.12f}  {de:12.6e}  {rms:12.6e}")
-
-        if abs(de) < e_conv and rms < amp_conv:
-            converged = True
-            break
-
-    if not converged and verbose:
-        print(f"  WARNING: CCSD did not converge in {max_iter} iterations.")
-
-    return CCSDResult(
-        energy_ccsd  = e_ccsd,
-        energy_total = rhf_result.energy_total + e_ccsd,
-        energy_hf    = rhf_result.energy_total,
-        energy_mp2   = e_mp2,
-        t1           = t1,
-        t2           = t2,
-        converged    = converged,
-        n_iter       = iteration,
-        n_occ        = nocc,
-        n_virt       = nvirt,
+    return CCSDTResult(
+        energy_ccsdt = triples,
+        energy_total = ccsd.energy_total + triples,
+        energy_hf    = ccsd.energy_hf,
+        energy_ccsd  = ccsd.energy_ccsd,
+        energy_mp2   = ccsd.energy_mp2,
+        t1           = ccsd.t1,
+        t2           = ccsd.t2,
+        converged    = ccsd.converged,
+        n_iter       = ccsd.n_iter,
+        n_occ        = ccsd.n_occ,
+        n_virt       = ccsd.n_virt,
         n_basis      = nbasis,
     )
+

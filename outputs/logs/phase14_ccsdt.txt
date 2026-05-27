@@ -1,0 +1,26 @@
+Phase 14 CCSD(T) validation
+Date: 2026-05-28
+
+H2 / STO-3G
+  E_CCSD corr   = -0.020524525080 Ha
+  E_(T)         = 0.000000000000 Ha
+  E_CCSD(T) corr= -0.020524525080 Ha
+  PySCF ref     = -0.020524691214 Ha
+  diff          = 1.661336e-07 Ha
+  tolerance     = 1.0e-06 Ha
+  converged     = True (12 iterations)
+  ref source    = PySCF runtime reference
+  pass          = True
+
+H2O / STO-3G
+  E_CCSD corr   = -0.039957821249 Ha
+  E_(T)         = -0.000074388907 Ha
+  E_CCSD(T) corr= -0.040032210155 Ha
+  PySCF ref     = -0.040032219581 Ha
+  diff          = 9.425275e-09 Ha
+  tolerance     = 1.0e-05 Ha
+  converged     = True (11 iterations)
+  ref source    = PySCF runtime reference
+  pass          = True
+
+Notes: Runtime PySCF references are used when PySCF is installed; hardcoded references are fallbacks.

@@ -26,6 +26,29 @@ _Earlier history (pre-workflow) reconstructed from git log:_
 
 ---
 
+## 2026-05-23 | Claude | Phase 11 | CCSD sign fix review — ACCEPTED
+
+- Reviewed commit c114255: `ccsd.py` sign/antisymmetriser corrections,
+  `scripts/validate_ccsd.py`, `outputs/logs/phase11_ccsd.json/.txt`
+- Confirmed SoftwareX paper files absent from commit ✓
+- H2 diff 1.66e-7 Ha (< 1e-6), H2O diff 9.46e-9 Ha (< 1e-5) — both pass ✓
+- 606/606 tests pass ✓
+- Minor: validate_ccsd.py exit code only checks H2 (non-blocking)
+- Updated NEXT_AGENT → Codex, Phase 14 CCSD(T)
+
+---
+
+## 2026-05-27 | Claude | Phase 14 | CCSD(T) validation + commit (resumed after shutdown)
+
+- Ran `pytest tests/test_ccsdt.py -v`: 5 passed
+- Ran `pytest tests/ -x`: 611 passed (606 existing + 5 new)
+- Ran `scripts/validate_ccsdt.py`: H2 diff 1.66e-7 Ha, H2O diff 9.43e-9 Ha — both pass
+- Generated `outputs/logs/phase14_ccsdt.json` and `.txt`
+- Fixed syntax error in `validate_ccsdt.py` (mangled newline escape chars)
+- Updated NEXT_AGENT → Codex, Phase 15 EOM-CCSD
+
+---
+
 ## 2026-05-23 | Codex | Phase 11 | CCSD sign fix validation + commit
 
 - Confirmed and revised spin-orbital CCSD sign/antisymmetriser corrections in
