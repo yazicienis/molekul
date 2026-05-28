@@ -1,0 +1,73 @@
+# MOLEKUL — Phase Roadmap
+
+## Workflow Summary
+
+| Role | Agent | Responsibility |
+|------|-------|----------------|
+| Supervisor | Claude | Phase planning, prompt authoring, output review, PHASES.md updates |
+| Worker | Codex | Implementation, tests, log generation, commits |
+
+Each phase follows the lifecycle: **Plan → Prompt → Implement → Validate → Log → Commit → Update here**
+
+Codex prompts live in `prompts/phaseNN_<name>.md`.  
+Validation logs live in `outputs/logs/phaseNN_<name>.{json,txt}`.
+
+---
+
+## Part I — Molecular Quantum Chemistry (COMPLETE)
+
+| # | Name | Module(s) | Status |
+|---|------|-----------|--------|
+| 1 | Molecules & Atoms | `atoms.py`, `molecule.py`, `constants.py` | ✅ |
+| 2 | One-electron integrals | `integrals.py` | ✅ |
+| 3 | Basis sets (STO-3G) | `basis_sto3g.py`, `basis.py` | ✅ |
+| 4 | RHF SCF (DIIS + SAD) | `rhf.py` | ✅ |
+| 5 | Geometry optimizer (numerical grad) | `optimizer.py` | ✅ |
+| 6 | Cube file export | `cube.py` | ✅ |
+| 7 | Population analysis | `population.py` | ✅ |
+| 8 | MP2 correlation | `mp2.py` | ✅ |
+| 9 | Basis sets (6-31G*, cc-pVDZ) + profiling | `basis_631gstar.py`, `basis_ccpvdz.py` | ✅ |
+| 10 | Harmonic frequencies & IR | `freqs.py` | ✅ |
+| 11 | CCSD spin-orbital | `ccsd.py` | ✅ |
+| 12 | KS-DFT (LDA + PBE) | `dft.py` | ✅ |
+| 13 | CIS excited states | `cis.py` | ✅ |
+| 14 | CCSD(T) perturbative triples | `ccsd.py` | ✅ |
+| 15 | EOM-CCSD excited states | `eom_ccsd.py` | ✅ |
+| 16 | UHF (unrestricted HF) | `uhf.py` | ✅ |
+| 17 | TD-DFT (Casida TDA) | `tddft.py` | ✅ |
+
+628 tests passing as of 2026-05-27.
+
+---
+
+## Part II — Periodic Systems & GPU (PLANNED)
+
+### Design decisions (agreed 2026-05-29)
+
+- **GPU:** Optional CuPy backend (`xp = cupy if use_gpu else numpy`); NumPy API preserved.
+  CPU default, GPU opt-in. Tests always run on CPU.
+- **Periodic approach:** Gaussian-type orbitals with Bloch theorem (like CRYSTAL code).
+  Real-space cutoff first (pedagogical), Ewald summation added for accuracy.
+- **Validation:** PySCF periodic module (`pyscf.pbc`) as reference.
+- **1D test systems:** H chain (1D), then 3D cubic systems (LiH rock-salt etc.)
+- **Phonons:** finite-difference from periodic forces.
+
+| # | Name | Depends on | Prompt | Status |
+|---|------|-----------|--------|--------|
+| 18 | Analytic RHF gradient | 4, 9 | `prompts/phase18_analytic_grad.md` | 📋 ready |
+| 19 | GPU backend (optional CuPy) | all | `prompts/phase19_gpu_backend.md` | 📋 ready |
+| 20 | Periodic HF (Bloch + k-points + Ewald) | 19 | `prompts/phase20_periodic_hf.md` | 📋 ready |
+| 21 | Periodic KS-DFT | 20, 12 | `prompts/phase21_periodic_dft.md` | 📝 after 20 |
+| 22 | Band structure & DOS | 20, 21 | `prompts/phase22_bands_dos.md` | 📝 after 21 |
+| 23 | Phonons (finite difference) | 18, 20 | `prompts/phase23_phonons.md` | 📝 after 22 |
+
+---
+
+## Supervisor Notes
+
+- All reference values must be cross-checked with PySCF at identical geometries before logging.
+- Each phase produces at minimum: one `.json` + one `.txt` log in `outputs/logs/`.
+- Tests go in `tests/test_<module>.py`; reference values hardcoded, tolerance in docstring.
+- Do not start a new phase until the previous phase's log is committed.
+- Part II prompts for phases 21–23 will be written after Phase 20 lands (periodic
+  integral infrastructure must be understood before scoping downstream phases).
