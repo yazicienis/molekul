@@ -18,7 +18,7 @@ Diagonal:
 Off-diagonal  (4-point cross difference):
   H_{αβ} = [E(+α+β) − E(+α−β) − E(−α+β) + E(−α−β)] / (4h²)
 
-Total SCF calls: 1 + 2·(3N) + 4·C(3N,2)  (163 for H₂O, 9 atoms)
+Total SCF calls: 1 + 2·(3N) + 4·C(3N,2)  (163 for H₂O, 3 atoms / 9 DOF)
 
 Mass-weighted Hessian and normal modes
 --------------------------------------

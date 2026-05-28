@@ -1,0 +1,21 @@
+MOLEKUL SoftwareX Paper — Pending Corrections
+=============================================
+(Apply when reviewer reports arrive)
+
+1. BENCHMARK NUMBER (Section: Validation / Abstract)
+   Current text:  "...agree within 4.9×10⁻⁸ Eₕ..."
+   Should be:     "...agree within 6×10⁻⁸ Eₕ..." (or "~5.8×10⁻⁸ Eₕ")
+   Evidence:      outputs/logs/benchmark_14mol.json, field "delta_E": 5.837e-08
+   Note:          Worst-case molecule drives the bound; the paper rounds down incorrectly.
+
+2. MODULE NAME (Section: Code Architecture / any mention of frequencies module)
+   Current text:  "harmonic.py"
+   Should be:     "freqs.py"
+   Evidence:      ls src/molekul/freqs.py  (harmonic.py does not exist in the repo)
+
+3. MP2 GEOMETRY SOURCES (Section: MP2 Validation Table)
+   Issue:         The table does not specify which geometry (PySCF-optimized vs
+                  experimental equilibrium) was used for each molecule.
+   Fix:           Add a table footnote: "All geometries optimized at RHF/STO-3G
+                  with MOLEKUL's numerical gradient optimizer." (or whatever is true —
+                  verify against scripts/benchmark_14mol.py before writing.)

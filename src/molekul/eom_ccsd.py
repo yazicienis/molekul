@@ -328,6 +328,14 @@ def eom_ccsd_ee(
 
     order = np.array(singlet_indices, dtype=int)
     order = order[np.argsort(eigenvalues.real[order])]
+    if len(order) < n_states:
+        warnings.warn(
+            f"EOM-CCSD: requested {n_states} singlet states but only "
+            f"{len(order)} found (S²<1e-4 filter). "
+            "Try increasing n_states or the diagonalisation space.",
+            UserWarning,
+            stacklevel=2,
+        )
     order = order[:min(n_states, len(order))]
     omega = eigenvalues.real[order]
     selected_vectors = eigenvectors[:, order]

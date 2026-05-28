@@ -8,28 +8,37 @@ A pure-Python ab initio quantum chemistry platform for education and reproducibl
 
 ## Overview
 
-MOLEKUL implements Restricted Hartree–Fock (RHF) SCF theory and MP2
-correlation energy for closed-shell molecules entirely in Python and NumPy.
-Every algorithmic step — from primitive integral evaluation to Fock-matrix
-diagonalization — is traceable to a named function and a standard
-quantum-chemistry reference.
+MOLEKUL is a pure-Python ab initio quantum chemistry platform covering
+single-reference methods from RHF to CCSD(T), DFT, and excited-state methods.
+Every algorithmic step — from primitive integral evaluation to amplitude
+equations — is traceable to a named function and a standard reference.
 
-**Validated against PySCF:** RHF/STO-3G energies for 14 molecules agree
-within 5×10⁻⁸ Eₕ; MP2 correlation energies for 8 molecules agree within
-2×10⁻⁷ Eₕ.
+**Validated against PySCF** at each phase of development.
+
+> **Version note:** v0.1.2 (SoftwareX paper, Zenodo DOI) covers Phases 1–9
+> (RHF, MP2, geometry, population, basis sets). The current HEAD (Phase 17,
+> 628 tests) additionally includes CCSD, CCSD(T), KS-DFT, CIS, EOM-CCSD,
+> UHF, and TD-DFT.
 
 ## Features
 
 | Feature | Status |
 |---------|--------|
 | RHF SCF (DIIS + SAD guess + level shift) | ✅ validated |
+| UHF (unrestricted, paired DIIS, ⟨S²⟩) | ✅ validated |
 | MP2 correlation energy | ✅ validated |
+| CCSD spin-orbital | ✅ validated |
+| CCSD(T) perturbative triples | ✅ validated |
+| KS-DFT (LDA/Slater+VWN validated; PBE experimental) | ✅/experimental |
+| CIS excited states | ✅ validated |
+| EOM-CCSD excited states (EE) | ✅ validated |
+| TD-DFT TDA (LDA kernel validated; PBE experimental) | ✅/experimental |
 | STO-3G, 6-31G\*, cc-pVDZ (H–F) | ✅ built-in |
 | Mulliken & Löwdin population analysis | ✅ |
 | Electric dipole moment | ✅ |
 | Geometry optimizer (numerical gradients) | ✅ |
-| Harmonic frequencies (numerical Hessian) | experimental |
-| CIS excited states | experimental |
+| Harmonic frequencies (numerical Hessian) | ✅ |
+| Cube file export | ✅ |
 
 ## Installation
 
@@ -39,7 +48,7 @@ cd molekul
 pip install -e ".[dev]"
 ```
 
-**Requirements:** Python ≥ 3.10, NumPy. No SciPy or compiled extensions required.
+**Requirements:** Python ≥ 3.10, NumPy. Core electronic-structure routines are NumPy-only; geometry optimization uses SciPy (`scipy.optimize.minimize`). No compiled extensions required.
 
 ## Quick start
 
@@ -70,7 +79,7 @@ print(f"MP2 energy: {mp2_result.energy_total:.8f} Eh")   # -74.99844967 Eh
 ## Running tests
 
 ```bash
-pytest tests/          # 606 tests
+pytest tests/          # 628 tests (as of Phase 17)
 ```
 
 ## Validation
@@ -85,7 +94,7 @@ Results are logged to `outputs/logs/benchmark_14mol.json`.
 
 ```
 src/molekul/       Core library
-tests/             606 automated tests
+tests/             628 automated tests
 scripts/           Benchmark and validation scripts
 outputs/logs/      JSON benchmark logs
 examples/          Example XYZ geometries
@@ -96,10 +105,10 @@ profiling/         Performance profiling results
 ## Known limitations
 
 - Dense N⁴ ERI storage: practical limit ~N_AO ≤ 50
-- Closed-shell RHF only (no UHF/ROHF)
 - Element coverage: H–F only
 - No integral screening, ECPs, or relativistic corrections
 - Geometry optimization and frequencies use finite differences
+- PBE functional and PBE TD-DFT kernel are implemented but not fully validated on grids
 
 ## Citation
 

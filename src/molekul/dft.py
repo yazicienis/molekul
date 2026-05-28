@@ -471,8 +471,10 @@ def build_vxc_matrix(phi: np.ndarray, weights: np.ndarray,
         # We store v_sigma * ∇ρ as a (n_pts, 3) vector computed externally
         # Here we use dphi and P to build ∇ρ on-the-fly — but P is not passed.
         # Instead we pass the GGA contribution as a pre-computed (n_pts,3) term.
-        # For simplicity, skip the GGA term — caller should pass grad_rho.
-        pass  # handled in ks_scf via _build_fock_ks
+        raise NotImplementedError(
+            "GGA matrix assembly in build_vxc_matrix is not implemented; "
+            "use _build_fock_ks which handles the GGA correction internally."
+        )
 
     return Vxc
 

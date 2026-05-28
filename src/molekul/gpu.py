@@ -1,9 +1,10 @@
 """
-GPU-accelerated SCF via PyTorch.
+Legacy/experimental GPU benchmark using PyTorch.
 
-The integral computation (ERI, H_core) is done on CPU with our existing
-code.  All subsequent matrix algebra (Fock build, diagonalisation,
-density-matrix update) runs on GPU using torch.
+This module is a standalone proof-of-concept that offloads RHF matrix algebra
+to a CUDA GPU via PyTorch. It is NOT the official GPU backend for MOLEKUL;
+the production GPU backend (Phase 19) uses CuPy and integrates via
+``src/molekul/backend.py``.
 
 Requires: torch with CUDA support.
 
