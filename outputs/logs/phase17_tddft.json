@@ -1,0 +1,78 @@
+{
+  "phase": 17,
+  "description": "TD-DFT Tamm-Dancoff approximation",
+  "date": "2026-05-28",
+  "results": [
+    {
+      "molecule": "H2",
+      "basis": "STO-3G",
+      "functional": "lda",
+      "excitation_energies_Ha": [
+        0.9717625573101674
+      ],
+      "excitation_energies_eV": [
+        26.443015893212316
+      ],
+      "oscillator_strengths": [
+        1.1219776309835328
+      ],
+      "ref_pyscf_Ha": [
+        0.9717624334576916
+      ],
+      "ref_pyscf_oscillator_strengths": [
+        1.1219775816088091
+      ],
+      "reference_source": "PySCF runtime TDA reference",
+      "state1_diff": 1.2385247571966573e-07,
+      "tolerance": 0.01,
+      "within_tolerance": true,
+      "n_states": 1
+    },
+    {
+      "molecule": "H2O",
+      "basis": "STO-3G",
+      "functional": "lda",
+      "excitation_energies_Ha": [
+        0.4225070064364187,
+        0.5071016218422484,
+        0.519699691347921,
+        0.6526456014781384,
+        0.8093382920754987
+      ],
+      "excitation_energies_eV": [
+        11.497005520686864,
+        13.798943111129084,
+        14.141754170946413,
+        17.75939799562903,
+        22.023224870462712
+      ],
+      "oscillator_strengths": [
+        0.002628405052806177,
+        2.3948121565721698e-17,
+        0.07411518360437194,
+        0.06715261518079829,
+        1.1030629813275399
+      ],
+      "ref_pyscf_Ha": [
+        0.4224534750548313,
+        0.5070545434975845,
+        0.5196651843541983,
+        0.6526140377887297,
+        0.8093031424884293
+      ],
+      "ref_pyscf_oscillator_strengths": [
+        0.0026275171463295928,
+        3.0552294101441736e-30,
+        0.07411692260442648,
+        0.06716336453845889,
+        1.1030066789709614
+      ],
+      "reference_source": "PySCF runtime TDA reference",
+      "state1_diff": 5.3531381587423876e-05,
+      "tolerance": 0.01,
+      "within_tolerance": true,
+      "n_states": 5
+    }
+  ],
+  "notes": "Runtime PySCF TDA references are used when PySCF is installed; hardcoded references are fallbacks."
+}

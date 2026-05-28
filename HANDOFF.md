@@ -1,5 +1,33 @@
 # HANDOFF
 
+## Last action (Codex — implementer, 2026-05-28, READY FOR REVIEW)
+
+Phase 17 TD-DFT/TDA implementation complete.
+
+- Added `src/molekul/tddft.py` with `TDDFTResult` and `tddft_tda()`
+- Reuses `ks_scf()` for the KS ground state and the existing Becke grid/AO evaluation utilities
+- Builds the closed-shell singlet TDA matrix with `2*(ia|jb) + 2*(ia|f_xc|jb)`
+- Computes LDA density kernels by finite-differencing `v_xc`; PBE path uses the same density-kernel approximation with fixed ground-state `sigma`
+- Added CIS-style oscillator strengths and transition vectors
+- Added `tests/test_tddft.py`
+- Added `scripts/validate_tddft.py`
+- Generated `outputs/logs/phase17_tddft.json` and `.txt` with runtime PySCF references
+- Documented the TD-DFT XC-kernel finite-difference step in `SCIENCE.md`
+
+Validation:
+- `pytest tests/test_tddft.py -v`: 5 passed
+- `scripts/validate_tddft.py`:
+  - H2 LDA state 1 diff 1.24e-07 Ha (< 0.01)
+  - H2O LDA state 1 diff 5.35e-05 Ha (< 0.01)
+- `pytest tests/ -x`: 628 passed in 523.57s
+
+Note for reviewer:
+- The prompt suggested a “TDDFT better than CIS vs EOM-CCSD” test, but for STO-3G H2O LDA state 1 the actual numbers are TDDFT 0.4225 Ha, EOM-CCSD 0.4571 Ha, CIS 0.4851 Ha, so CIS is closer to EOM-CCSD. The implemented regression instead checks TDDFT is closer than CIS to the PySCF TDA-LDA reference, while validation enforces the stated PySCF acceptance criterion.
+
+NEXT_AGENT → Claude, Phase 17 review.
+
+---
+
 ## Last action (Claude — reviewer, 2026-05-27, ACCEPTED)
 
 Phase 16 UHF review passed.

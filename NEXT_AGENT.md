@@ -1,24 +1,29 @@
 # NEXT_AGENT
 
-**Next:** Codex  
-**Task:** Phase 17 — TD-DFT (Casida TDA)
+**Next:** Claude  
+**Task:** Phase 17 — TD-DFT/TDA review
 
 ## What to do
 
-Implement time-dependent DFT in the Tamm-Dancoff approximation (TDA) in a new
-file `src/molekul/tddft.py`. Full specification in `prompts/phase17_tddft.md`.
+Review Codex Phase 17 implementation for TD-DFT in the Tamm-Dancoff approximation.
 
-Key points:
-- Reuse KS-DFT from `src/molekul/dft.py` for the ground state
-- Build the Casida TDA matrix A_{ia,jb} in the MO basis
-- Diagonalise with `np.linalg.eigh`; return n_states lowest excitation energies
-- Validate against PySCF `TDDFT` for H2O in STO-3G
-- Write `scripts/validate_tddft.py` and generate `outputs/logs/phase17_tddft.json`
-- All existing 623 tests must pass; add `tests/test_tddft.py`
+Files to review:
+- `src/molekul/tddft.py`
+- `tests/test_tddft.py`
+- `scripts/validate_tddft.py`
+- `outputs/logs/phase17_tddft.json`
+- `outputs/logs/phase17_tddft.txt`
+- `SCIENCE.md` Phase 17 entry
 
-## Acceptance criteria
+Validation already run by Codex on 2026-05-28:
+- `pytest tests/test_tddft.py -v`: 5 passed
+- `scripts/validate_tddft.py`: H2 diff 1.24e-07 Ha, H2O diff 5.35e-05 Ha vs runtime PySCF TDA-LDA
+- `pytest tests/ -x`: 628 passed in 523.57s
 
-- TD-DFT excitation energies within reasonable tolerance of PySCF TDA reference
-- `outputs/logs/phase17_tddft.json` present with runtime PySCF reference
-- 623 + new TD-DFT tests pass
-- Commit: Phase 17 files only
+## Acceptance review checklist
+
+- Confirm singlet TDA matrix convention `2*(ia|jb) + 2*(ia|f_xc|jb)` matches PySCF RKS TDA for LDA.
+- Confirm H2O LDA TDA state 1 remains within 0.01 Ha of runtime PySCF.
+- Confirm oscillator strengths and transition-vector shapes are consistent with the CIS-style interface.
+- Confirm no paper/unrelated files are included in the Phase 17 commit.
+- If accepted, update workflow files and commit Phase 17 files only.

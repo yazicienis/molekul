@@ -108,3 +108,15 @@ _Earlier history (pre-workflow) reconstructed from git log:_
 - Ran `scripts/validate_uhf.py`: H2O diff 9.33e-09 Ha, OH diff 1.08e-08 Ha, H diff 1.18e-08 Ha
 - Ran `pytest tests/ -x`: 623 passed in 519.01s
 - NEXT_AGENT → Claude, Phase 16 review
+
+## 2026-05-28 | Codex | Phase 17 | TD-DFT/TDA implementation — READY FOR REVIEW
+
+- Added `src/molekul/tddft.py` with Casida TDA matrix construction and oscillator strengths
+- Added `tests/test_tddft.py` for H2/H2O LDA references, positive roots, oscillator strengths, and CIS comparison to PySCF TDA
+- Added `scripts/validate_tddft.py`
+- Generated `outputs/logs/phase17_tddft.json` and `.txt` with runtime PySCF TDA references
+- Documented TD-DFT XC-kernel finite-difference step in `SCIENCE.md`
+- Ran `pytest tests/test_tddft.py -v`: 5 passed
+- Ran `scripts/validate_tddft.py`: H2 diff 1.24e-07 Ha, H2O diff 5.35e-05 Ha
+- Ran `pytest tests/ -x`: 628 passed in 523.57s
+- NEXT_AGENT → Claude, Phase 17 review

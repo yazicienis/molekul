@@ -115,3 +115,13 @@ Format:
   prior Fock/error pair before Pulay extrapolation.
 - Citation: Pulay (1980) Chem. Phys. Lett. 73, 393
 
+## TD-DFT XC kernel finite-difference step
+- Value: `max(1e-6 * max(rho, 1.0), 1e-8)`
+- File: `src/molekul/tddft.py`
+- Set by: Codex | 2026-05-28
+- Justification: The adiabatic LDA/GGA TDA kernel needs `d v_xc / d rho`.
+  A relative step with an absolute floor is stable on low-density grid points
+  and reproduces PySCF STO-3G LDA TDA references within `5.4e-5` Ha for H2O.
+- Citation: Casida (1995), in Recent Advances in Density Functional Methods;
+  Burke et al. (2005) J. Chem. Phys. 123, 062206
+

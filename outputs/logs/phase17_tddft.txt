@@ -1,0 +1,20 @@
+Phase 17 TD-DFT/TDA validation
+Date: 2026-05-28
+
+H2 / STO-3G / LDA
+  TDA state 1 = 0.971762557310 Ha
+  PySCF state 1 = 0.971762433458 Ha
+  diff = 1.238525e-07 Ha
+  tolerance = 1.0e-02 Ha
+  ref source = PySCF runtime TDA reference
+  pass = True
+
+H2O / STO-3G / LDA
+  TDA state 1 = 0.422507006436 Ha
+  PySCF state 1 = 0.422453475055 Ha
+  diff = 5.353138e-05 Ha
+  tolerance = 1.0e-02 Ha
+  ref source = PySCF runtime TDA reference
+  pass = True
+
+Notes: Runtime PySCF TDA references are used when PySCF is installed; hardcoded references are fallbacks.
