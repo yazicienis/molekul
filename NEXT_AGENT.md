@@ -1,9 +1,22 @@
 # NEXT_AGENT
 
-**Next:** Human (planning) → then Codex  
-**Task:** Phase 18+ roadmap decision
+**Next:** Codex  
+**Task:** Phase 18 — Analytic RHF gradient
 
-## Status
+## What to do
+
+Implement analytic RHF nuclear gradients. Full specification in
+`prompts/phase18_analytic_grad.md`.
+
+Key points:
+- Add `rhf_gradient()` to `src/molekul/grad.py` (alongside existing numerical grad)
+- Implement derivative integrals for overlap, h_core, ERI
+- Update optimizer to use analytic forces by default
+- Validate: max |analytic - numerical| < 1e-5 Ha/Bohr for H2, H2O, CO
+- Write `scripts/validate_grad.py` and `outputs/logs/phase18_grad.json`
+- All existing 628 tests must pass; add `tests/test_grad.py`
+
+## Context
 
 All planned molecular phases (1–17) are complete. The codebase now covers:
 - RHF, UHF, MP2, CCSD, CCSD(T), KS-DFT (LDA/PBE)
@@ -11,16 +24,9 @@ All planned molecular phases (1–17) are complete. The codebase now covers:
 - Geometry optimization, harmonic frequencies, population analysis
 - 628 tests, all passing
 
-## Pending decisions (human)
+## Acceptance criteria
 
-1. **Phase 18 — Analytic RHF gradient**: draft prompt exists at
-   `prompts/phase18_analytic_grad.md`. Ready to assign to Codex when approved.
-
-2. **Part II — Periodic systems**: 1D → 2D → 3D Bloch/k-point framework.
-   Scope, sequencing, and GPU acceleration strategy to be discussed with human.
-
-## When ready
-
-After human approves Phase 18 scope and Part II plan:
-- Assign Phase 18 to Codex (analytic gradient)
-- Claude to write Part II prompts (periodic phases 19+)
+- max |analytic - numerical| < 1e-5 Ha/Bohr for all test molecules
+- Translational sum of forces < 1e-10 Ha/Bohr
+- 628 + new tests pass
+- Commit: Phase 18 files only
