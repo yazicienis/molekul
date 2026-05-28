@@ -1,0 +1,20 @@
+Phase 15 EOM-CCSD validation
+Date: 2026-05-28
+
+H2 / STO-3G
+  EOM-CCSD state 1 = 0.968931521300 Ha
+  PySCF state 1    = 0.968931565639 Ha
+  diff             = 4.433892e-08 Ha
+  tolerance        = 1.0e-03 Ha
+  ref source       = PySCF runtime EOM-CCSD singlet reference
+  pass             = True
+
+H2O / STO-3G
+  EOM-CCSD state 1 = 0.457120020418 Ha
+  PySCF state 1    = 0.457119948870 Ha
+  diff             = 7.154743e-08 Ha
+  tolerance        = 1.0e-03 Ha
+  ref source       = PySCF runtime EOM-CCSD singlet reference
+  pass             = True
+
+Notes: Runtime PySCF EOM-CCSD singlet references are used when PySCF is installed; hardcoded references are fallbacks.

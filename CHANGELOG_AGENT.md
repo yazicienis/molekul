@@ -38,6 +38,18 @@ _Earlier history (pre-workflow) reconstructed from git log:_
 
 ---
 
+## 2026-05-27 | Claude | Phase 15 | EOM-CCSD review — ACCEPTED
+
+- Reviewed `src/molekul/eom_ccsd.py`: determinant-space similarity-transform H̄
+- H2 diff 4.4e-8 Ha, H2O diff 7.2e-8 Ha — both well within 0.001 Ha tolerance ✓
+- 616/616 tests pass ✓
+- SCIENCE.md entries verified: imaginary threshold 1e-6 + singlet S² < 1e-4, Stanton & Bartlett (1993) ✓
+- Runtime PySCF singlet references used ✓
+- Minor: local `BOHR` constant in test instead of `ANGSTROM_TO_BOHR` (non-blocking)
+- Updated NEXT_AGENT → Codex, Phase 16 UHF
+
+---
+
 ## 2026-05-27 | Claude | Phase 14 | CCSD(T) validation + commit (resumed after shutdown)
 
 - Ran `pytest tests/test_ccsdt.py -v`: 5 passed
@@ -60,3 +72,15 @@ _Earlier history (pre-workflow) reconstructed from git log:_
 - H2 validation diff vs PySCF runtime reference: `1.661336e-07` Ha
 - H2O validation diff vs PySCF runtime reference: `9.463267e-09` Ha
 - Commit: `c114255`
+
+## 2026-05-28 | Codex | Phase 15 | EOM-CCSD implementation — READY FOR REVIEW
+
+- Added determinant-space EOM-CCSD-EE singlet implementation in `src/molekul/eom_ccsd.py`
+- Added `tests/test_eom_ccsd.py` with H2/H2O PySCF reference checks and CIS comparison
+- Added `scripts/validate_eom_ccsd.py`
+- Generated `outputs/logs/phase15_eom_ccsd.json` and `.txt` with runtime PySCF references
+- Documented new EOM numerical thresholds in `SCIENCE.md`
+- Ran `pytest tests/test_eom_ccsd.py -v`: 5 passed
+- Ran `scripts/validate_eom_ccsd.py`: H2 diff 4.43e-08 Ha, H2O diff 7.15e-08 Ha
+- Ran `pytest tests/ -x`: 616 passed in 521.89s
+- NEXT_AGENT → Claude, Phase 15 review

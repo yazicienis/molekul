@@ -1,25 +1,27 @@
 # NEXT_AGENT
 
 **Next:** Codex  
-**Task:** Phase 15 — EOM-CCSD excited states
+**Task:** Phase 16 — UHF (Unrestricted Hartree–Fock)
 
 ## What to do
 
-Implement EOM-CCSD-EE (equation-of-motion, excitation energies) on top of
-converged CCSD amplitudes. Full specification in `prompts/phase15_eom_ccsd.md`.
+Implement spin-unrestricted HF in a new file `src/molekul/uhf.py`.
+Full specification in `prompts/phase16_uhf.md`.
 
 Key points:
-- Create `src/molekul/eom_ccsd.py` with `eom_ccsd_ee()` and `EOMCCSDResult`
-- Reuse `ccsd_energy()` from `src/molekul/ccsd.py` to get T1, T2 amplitudes
-- Build the H̄ (similarity-transformed Hamiltonian) matrix in singles+doubles space
-- Diagonalise with `np.linalg.eig`; return `n_states` lowest positive real eigenvalues
-- Validate against PySCF `EOM_CCSD` for H2 and H2O in STO-3G
-- Write `scripts/validate_eom_ccsd.py` and generate `outputs/logs/phase15_eom_ccsd.json`
-- All existing 611 tests must continue to pass; add `tests/test_eom_ccsd.py`
+- Create `src/molekul/uhf.py` with `uhf_scf()` and `UHFResult`
+- Support arbitrary charge and multiplicity; derive n_alpha/n_beta from mol
+- Separate alpha/beta Fock matrices with DIIS; reproduce RHF energy for singlets
+- Compute ⟨S²⟩ spin contamination
+- Validate: H2O singlet matches RHF ± 1e-8; OH doublet within 1e-4 Ha of PySCF
+- Write `scripts/validate_uhf.py` and generate `outputs/logs/phase16_uhf.json`
+- All existing 616 tests must pass; add `tests/test_uhf.py`
 
 ## Acceptance criteria
 
-- H₂O state 1 excitation energy within 0.001 Ha of PySCF EOM-CCSD
-- `outputs/logs/phase15_eom_ccsd.json` present with runtime PySCF reference
-- 611 + new EOM-CCSD tests pass
-- Commit: Phase 15 files only (no paper/unrelated changes)
+- `pytest tests/test_uhf.py -v` all pass
+- `pytest tests/ -x` 616 + new tests, no regressions
+- H2O UHF singlet energy matches RHF within 1e-8 Ha
+- OH doublet converged and within 1e-4 Ha of PySCF; 0.75 < ⟨S²⟩ < 1.0
+- `outputs/logs/phase16_uhf.json` present with runtime PySCF reference
+- Commit: Phase 16 files only

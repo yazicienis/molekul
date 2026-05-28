@@ -1,0 +1,59 @@
+{
+  "phase": 15,
+  "description": "EOM-CCSD-EE singlet excitation energies",
+  "date": "2026-05-28",
+  "results": [
+    {
+      "molecule": "H2",
+      "basis": "STO-3G",
+      "excitation_energies_Ha": [
+        0.9689315213004588,
+        1.6204267390742393
+      ],
+      "excitation_energies_eV": [
+        26.365969872019534,
+        44.09405788027594
+      ],
+      "ref_pyscf_Ha": [
+        0.968931565639376,
+        1.6204268358516414
+      ],
+      "reference_source": "PySCF runtime EOM-CCSD singlet reference",
+      "state1_diff": 4.433891720445615e-08,
+      "tolerance": 0.001,
+      "within_tolerance": true,
+      "n_states": 2
+    },
+    {
+      "molecule": "H2O",
+      "basis": "STO-3G",
+      "excitation_energies_Ha": [
+        0.4571200204179042,
+        0.5419861073951213,
+        0.5987505385911188,
+        0.6993538962628021,
+        0.8272844153999432
+      ],
+      "excitation_energies_eV": [
+        12.438869436365513,
+        14.74819330828818,
+        16.292832170596277,
+        19.03038899384373,
+        22.511555762734236
+      ],
+      "ref_pyscf_Ha": [
+        0.4571199488704738,
+        0.5419860026127008,
+        0.5987504654326823,
+        0.6993538206212268,
+        0.827284311596912
+      ],
+      "reference_source": "PySCF runtime EOM-CCSD singlet reference",
+      "state1_diff": 7.154743042470102e-08,
+      "tolerance": 0.001,
+      "within_tolerance": true,
+      "n_states": 5
+    }
+  ],
+  "notes": "Runtime PySCF EOM-CCSD singlet references are used when PySCF is installed; hardcoded references are fallbacks."
+}

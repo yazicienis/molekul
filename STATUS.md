@@ -16,25 +16,25 @@ v0.1.2 — SoftwareX paper submitted.
 | 12 | KS-DFT (LDA/PBE) | ✅ complete |
 | 13 | CIS excited states | ✅ complete |
 | 14 | CCSD(T) | ✅ complete |
-| 15 | EOM-CCSD | 📋 prompt ready |
+| 15 | EOM-CCSD | ✅ complete |
 | 16 | UHF | 📋 prompt ready |
 | 17 | TD-DFT (Casida TDA) | 📋 prompt ready |
 | 18+ | TBD | 🔲 not planned yet |
 
 ## Current bottleneck
 
-Phase 14 complete (Claude review 2026-05-27). Next: Phase 15 EOM-CCSD — assigned to Codex.
+Phase 15 accepted (Claude review 2026-05-27). Next: Phase 16 UHF — assigned to Codex.
 
 ## Test suite
 
-611 tests, all passing as of 2026-05-27.
+616 tests, all passing as of 2026-05-27.
 
 Latest verification:
-- `pytest tests/test_ccsd.py -v`: 10 passed
-- `pytest tests/ -x`: 606 passed in 516.61s
-- `scripts/validate_ccsd.py`: wrote `outputs/logs/phase11_ccsd.json` and
-  `.txt`; H2 diff vs PySCF runtime reference `1.661336e-07` Ha;
-  H2O diff vs PySCF runtime reference `9.463267e-09` Ha.
+- `pytest tests/test_eom_ccsd.py -v`: 5 passed
+- `scripts/validate_eom_ccsd.py`: wrote `outputs/logs/phase15_eom_ccsd.json` and
+  `.txt`; H2 state 1 diff vs PySCF runtime reference `4.433892e-08` Ha;
+  H2O state 1 diff vs PySCF runtime reference `7.154743e-08` Ha.
+- `pytest tests/ -x`: 616 passed in 521.89s.
 
 ## Open scientific questions
 
@@ -44,3 +44,5 @@ Latest verification:
   spin-orbital formulation. Documented in `tests/test_ccsd.py`.
 - H₂O CCSD validation now agrees with the PySCF runtime reference at the
   Phase 11 requested geometry: diff `9.463267e-09` Ha.
+- Phase 15 EOM-CCSD returns closed-shell singlet roots using an `S^2` filter
+  to match PySCF RHF EOM-EE singlet references; documented in `SCIENCE.md`.
