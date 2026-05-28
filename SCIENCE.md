@@ -25,7 +25,7 @@ Format:
 
 ## DIIS subspace size
 - Value: `diis_size = 8`
-- File: `src/molekul/rhf.py`
+- File: `src/molekul/rhf.py`, `src/molekul/uhf.py`
 - Set by: Human
 - Justification: 6–10 vectors is standard; 8 balances memory vs convergence
   speed for molecules up to ~20 basis functions.
@@ -97,4 +97,21 @@ Format:
   (`S(S+1)=0`) from triplets (`S(S+1)=2`) by several orders of magnitude in the
   STO-3G validation systems.
 - Citation: Stanton & Bartlett (1993) J. Chem. Phys. 98, 7029
+
+## UHF max iterations
+- Value: `max_iter = 100`
+- File: `src/molekul/uhf.py`
+- Set by: Codex | 2026-05-28
+- Justification: Mirrors the existing RHF and CCSD iteration ceiling in this
+  small-basis educational code; Phase 16 validation systems converge in 13 or
+  fewer iterations.
+- Citation: N/A
+
+## UHF DIIS start iteration
+- Value: `diis_start = 2`
+- File: `src/molekul/uhf.py`
+- Set by: Codex | 2026-05-28
+- Justification: Matches the existing RHF DIIS warm-up behavior, allowing one
+  prior Fock/error pair before Pulay extrapolation.
+- Citation: Pulay (1980) Chem. Phys. Lett. 73, 393
 

@@ -84,3 +84,15 @@ _Earlier history (pre-workflow) reconstructed from git log:_
 - Ran `scripts/validate_eom_ccsd.py`: H2 diff 4.43e-08 Ha, H2O diff 7.15e-08 Ha
 - Ran `pytest tests/ -x`: 616 passed in 521.89s
 - NEXT_AGENT → Claude, Phase 15 review
+
+## 2026-05-28 | Codex | Phase 16 | UHF implementation — READY FOR REVIEW
+
+- Added `src/molekul/uhf.py` with alpha/beta Fock builds, paired DIIS, and `<S^2>`
+- Added `tests/test_uhf.py` for H2O singlet, OH doublet, H atom, and result fields
+- Added `scripts/validate_uhf.py`
+- Generated `outputs/logs/phase16_uhf.json` and `.txt` with runtime PySCF references
+- Documented UHF numerical parameters in `SCIENCE.md`
+- Ran `pytest tests/test_uhf.py -v`: 7 passed
+- Ran `scripts/validate_uhf.py`: H2O diff 9.33e-09 Ha, OH diff 1.08e-08 Ha, H diff 1.18e-08 Ha
+- Ran `pytest tests/ -x`: 623 passed in 519.01s
+- NEXT_AGENT → Claude, Phase 16 review

@@ -1,6 +1,6 @@
 # STATUS
 
-_Last updated: 2026-05-27 by Claude_
+_Last updated: 2026-05-28 by Codex_
 
 ## Project
 
@@ -17,24 +17,24 @@ v0.1.2 — SoftwareX paper submitted.
 | 13 | CIS excited states | ✅ complete |
 | 14 | CCSD(T) | ✅ complete |
 | 15 | EOM-CCSD | ✅ complete |
-| 16 | UHF | 📋 prompt ready |
+| 16 | UHF | 🔍 ready for review |
 | 17 | TD-DFT (Casida TDA) | 📋 prompt ready |
 | 18+ | TBD | 🔲 not planned yet |
 
 ## Current bottleneck
 
-Phase 15 accepted (Claude review 2026-05-27). Next: Phase 16 UHF — assigned to Codex.
+Phase 16 implementation complete; awaiting Claude review.
 
 ## Test suite
 
-616 tests, all passing as of 2026-05-27.
+623 tests, all passing as of 2026-05-28.
 
 Latest verification:
-- `pytest tests/test_eom_ccsd.py -v`: 5 passed
-- `scripts/validate_eom_ccsd.py`: wrote `outputs/logs/phase15_eom_ccsd.json` and
-  `.txt`; H2 state 1 diff vs PySCF runtime reference `4.433892e-08` Ha;
-  H2O state 1 diff vs PySCF runtime reference `7.154743e-08` Ha.
-- `pytest tests/ -x`: 616 passed in 521.89s.
+- `pytest tests/test_uhf.py -v`: 7 passed
+- `scripts/validate_uhf.py`: wrote `outputs/logs/phase16_uhf.json` and `.txt`;
+  H2O diff vs PySCF `9.327650e-09` Ha; OH diff vs PySCF `1.076030e-08` Ha;
+  H atom diff vs PySCF `1.177606e-08` Ha.
+- `pytest tests/ -x`: 623 passed in 519.01s.
 
 ## Open scientific questions
 
@@ -46,3 +46,5 @@ Latest verification:
   Phase 11 requested geometry: diff `9.463267e-09` Ha.
 - Phase 15 EOM-CCSD returns closed-shell singlet roots using an `S^2` filter
   to match PySCF RHF EOM-EE singlet references; documented in `SCIENCE.md`.
+- Phase 16 UHF validates OH doublet with `<S^2> = 0.753255`; spin contamination
+  is small but nonzero as expected for UHF.

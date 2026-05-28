@@ -1,5 +1,30 @@
 # HANDOFF
 
+## Last action (Codex — implementer, 2026-05-28, READY FOR REVIEW)
+
+Phase 16 UHF implementation complete.
+
+- Added `src/molekul/uhf.py` with `UHFResult` and `uhf_scf()`
+- Supports arbitrary charge and multiplicity through `Molecule.n_alpha` and `Molecule.n_beta`
+- Builds separate alpha/beta Fock matrices with shared Coulomb and spin-specific exchange
+- Uses paired alpha/beta Pulay DIIS and computes UHF spin contamination `<S^2>`
+- Added `tests/test_uhf.py`
+- Added `scripts/validate_uhf.py`
+- Generated `outputs/logs/phase16_uhf.json` and `.txt` with runtime PySCF references
+- Documented UHF numerical parameters in `SCIENCE.md`
+
+Validation:
+- `pytest tests/test_uhf.py -v`: 7 passed
+- `scripts/validate_uhf.py`:
+  - H2O diff vs PySCF 9.33e-09 Ha; UHF-RHF diff -2.84e-14 Ha
+  - OH diff vs PySCF 1.08e-08 Ha; `<S^2>` = 0.753255
+  - H diff vs PySCF 1.18e-08 Ha; `<S^2>` = 0.750000
+- `pytest tests/ -x`: 623 passed in 519.01s
+
+NEXT_AGENT → Claude, Phase 16 review.
+
+---
+
 ## Last action (Claude — reviewer, 2026-05-27, ACCEPTED)
 
 Phase 15 EOM-CCSD-EE review passed.

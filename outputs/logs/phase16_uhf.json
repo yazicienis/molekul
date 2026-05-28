@@ -1,0 +1,59 @@
+{
+  "phase": 16,
+  "description": "Unrestricted Hartree-Fock",
+  "date": "2026-05-28",
+  "results": [
+    {
+      "molecule": "H2O",
+      "basis": "STO-3G",
+      "charge": 0,
+      "multiplicity": 1,
+      "energy_total_Ha": -74.96294666586769,
+      "S2": -5.329070518200751e-15,
+      "ref_pyscf_Ha": -74.96294665654004,
+      "ref_pyscf_S2": 1.5907275496829243e-12,
+      "reference_source": "PySCF runtime UHF reference",
+      "diff": 9.327649763690715e-09,
+      "tolerance": 1e-08,
+      "within_tolerance": true,
+      "converged": true,
+      "n_iter": 8,
+      "rhf_energy_total_Ha": -74.96294666586766,
+      "uhf_minus_rhf_Ha": -2.842170943040401e-14,
+      "matches_rhf": true
+    },
+    {
+      "molecule": "OH",
+      "basis": "STO-3G",
+      "charge": 0,
+      "multiplicity": 2,
+      "energy_total_Ha": -74.36263328760239,
+      "S2": 0.7532550303503216,
+      "ref_pyscf_Ha": -74.36263327684209,
+      "ref_pyscf_S2": 0.7532550326868224,
+      "reference_source": "PySCF runtime UHF reference",
+      "diff": 1.076030287094909e-08,
+      "tolerance": 0.0001,
+      "within_tolerance": true,
+      "converged": true,
+      "n_iter": 13
+    },
+    {
+      "molecule": "H",
+      "basis": "STO-3G",
+      "charge": 0,
+      "multiplicity": 2,
+      "energy_total_Ha": -0.46658183778121964,
+      "S2": 0.75,
+      "ref_pyscf_Ha": -0.46658184955727533,
+      "ref_pyscf_S2": 0.75,
+      "reference_source": "PySCF runtime UHF reference",
+      "diff": 1.1776055686141262e-08,
+      "tolerance": 1e-05,
+      "within_tolerance": true,
+      "converged": true,
+      "n_iter": 3
+    }
+  ],
+  "notes": "Runtime PySCF UHF references are used when PySCF is installed; hardcoded references are fallbacks."
+}

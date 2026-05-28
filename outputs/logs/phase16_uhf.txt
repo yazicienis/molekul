@@ -1,0 +1,37 @@
+Phase 16 UHF validation
+Date: 2026-05-28
+
+H2O / STO-3G charge=0 mult=1
+  UHF total   = -74.962946665868 Ha
+  PySCF ref   = -74.962946656540 Ha
+  diff        = 9.327650e-09 Ha
+  tolerance   = 1.0e-08 Ha
+  <S^2>       = -0.000000000000
+  PySCF <S^2> = 0.000000000002
+  converged   = True (8 iterations)
+  ref source  = PySCF runtime UHF reference
+  pass        = True
+
+OH / STO-3G charge=0 mult=2
+  UHF total   = -74.362633287602 Ha
+  PySCF ref   = -74.362633276842 Ha
+  diff        = 1.076030e-08 Ha
+  tolerance   = 1.0e-04 Ha
+  <S^2>       = 0.753255030350
+  PySCF <S^2> = 0.753255032687
+  converged   = True (13 iterations)
+  ref source  = PySCF runtime UHF reference
+  pass        = True
+
+H / STO-3G charge=0 mult=2
+  UHF total   = -0.466581837781 Ha
+  PySCF ref   = -0.466581849557 Ha
+  diff        = 1.177606e-08 Ha
+  tolerance   = 1.0e-05 Ha
+  <S^2>       = 0.750000000000
+  PySCF <S^2> = 0.750000000000
+  converged   = True (3 iterations)
+  ref source  = PySCF runtime UHF reference
+  pass        = True
+
+Notes: Runtime PySCF UHF references are used when PySCF is installed; hardcoded references are fallbacks.
