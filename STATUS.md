@@ -1,6 +1,6 @@
 # STATUS
 
-_Last updated: 2026-05-28 by Codex_
+_Last updated: 2026-05-27 by Claude_
 
 ## Project
 
@@ -17,17 +17,17 @@ v0.1.2 — SoftwareX paper submitted.
 | 13 | CIS excited states | ✅ complete |
 | 14 | CCSD(T) | ✅ complete |
 | 15 | EOM-CCSD | ✅ complete |
-| 16 | UHF | 🔍 ready for review |
+| 16 | UHF | ✅ complete |
 | 17 | TD-DFT (Casida TDA) | 📋 prompt ready |
 | 18+ | TBD | 🔲 not planned yet |
 
 ## Current bottleneck
 
-Phase 16 implementation complete; awaiting Claude review.
+Phase 16 accepted (Claude review 2026-05-27). Next: Phase 17 TD-DFT — assigned to Codex.
 
 ## Test suite
 
-623 tests, all passing as of 2026-05-28.
+623 tests, all passing as of 2026-05-27.
 
 Latest verification:
 - `pytest tests/test_uhf.py -v`: 7 passed

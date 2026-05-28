@@ -38,6 +38,18 @@ _Earlier history (pre-workflow) reconstructed from git log:_
 
 ---
 
+## 2026-05-27 | Claude | Phase 16 | UHF review — ACCEPTED
+
+- Reviewed `src/molekul/uhf.py`: Fock, energy, ⟨S²⟩ formulas match UHF theory
+- H2O diff 9.3e-9 Ha; UHF-RHF diff 2.8e-14 Ha (machine zero) ✓
+- OH diff 1.1e-8 Ha; ⟨S²⟩ = 0.7533 ∈ (0.75, 1.0) ✓
+- H atom ⟨S²⟩ = 0.75 exact ✓
+- 623/623 tests pass ✓
+- SCIENCE.md: max_iter + diis_start entries, Pulay (1980) ✓
+- Updated NEXT_AGENT → Codex, Phase 17 TD-DFT
+
+---
+
 ## 2026-05-27 | Claude | Phase 15 | EOM-CCSD review — ACCEPTED
 
 - Reviewed `src/molekul/eom_ccsd.py`: determinant-space similarity-transform H̄
