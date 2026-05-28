@@ -63,6 +63,23 @@ Validation logs live in `outputs/logs/phaseNN_<name>.{json,txt}`.
 
 ---
 
+## Long-term Vision
+
+- **Target audience:** undergraduate, MSc, and PhD students in computational
+  materials science. Even PhD students often use codes as black boxes — MOLEKUL
+  is designed to break that cycle.
+- **Platform goal:** elective-course-level teaching platform. Every algorithm is
+  transparent; every step can be traced.
+- **Documentation roadmap:**
+  1. All phases complete first ("see the full picture")
+  2. Jupyter notebooks — one per phase, narrative + running code + exercises
+  3. Course book — distilled from notebooks, authored text only (cannot be
+     agent-written; this is the PI's voice)
+- **Scientific usability** is a secondary goal — SoftwareX paper already
+  demonstrates this. Accuracy benchmarks against PySCF in every phase.
+
+---
+
 ## Supervisor Notes
 
 - All reference values must be cross-checked with PySCF at identical geometries before logging.
