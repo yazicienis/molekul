@@ -4,6 +4,28 @@ Format: `YYYY-MM-DD | Agent | Phase | Action | Commit`
 
 ---
 
+## 2026-05-29 | Claude | audit | Internal audit fixes applied — commit e671fc1
+
+- Applied agreed items from Codex full-repo audit (`tavsiyeler2.txt`):
+  - `dft.py`: `build_vxc_matrix` GGA branch now raises `NotImplementedError`
+    instead of silently passing (was a hidden correctness hazard)
+  - `eom_ccsd.py`: added `warnings.warn` when S²<1e-4 filter returns fewer
+    singlets than `n_states` requested
+  - `freqs.py`: docstring typo fixed (H₂O: "9 atoms" → "3 atoms / 9 DOF")
+  - `gpu.py`: marked as legacy/experimental PyTorch benchmark, clearly distinct
+    from planned Phase 19 CuPy backend
+  - `README.md`: updated overview (Phase 17 scope), version note separating
+    v0.1.2 (SoftwareX) from HEAD, SciPy dependency documented, test count
+    606→628, features table and known limitations updated
+- Created `paper_corrections_pending.txt`: 3 paper fixes to apply when
+  reviewer reports arrive (benchmark number ~5.8e-8 not 4.9e-8; module name
+  freqs.py not harmonic.py; MP2 geometry source documentation)
+- 628/628 tests pass (no regressions)
+- Note: Zenodo v0.1.2 DOI is frozen; new Zenodo release will be made after
+  paper acceptance. GitHub main can advance freely.
+
+---
+
 ## 2026-05-23 | Claude | setup | Workflow bootstrap
 
 - Created NEXT_AGENT.md, HANDOFF.md, STATUS.md, CHANGELOG_AGENT.md, SCIENCE.md
