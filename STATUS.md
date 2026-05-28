@@ -1,6 +1,6 @@
 # STATUS
 
-_Last updated: 2026-05-28 by Codex_
+_Last updated: 2026-05-27 by Claude_
 
 ## Project
 
@@ -18,12 +18,13 @@ v0.1.2 — SoftwareX paper submitted.
 | 14 | CCSD(T) | ✅ complete |
 | 15 | EOM-CCSD | ✅ complete |
 | 16 | UHF | ✅ complete |
-| 17 | TD-DFT (Casida TDA) | 🔍 ready for review |
-| 18+ | TBD | 🔲 not planned yet |
+| 17 | TD-DFT (Casida TDA) | ✅ complete |
+| 18 | Analytic RHF gradient | 📝 draft prompt ready |
+| 19–22 | Periodic systems (Part II) | 🔲 planning phase |
 
 ## Current bottleneck
 
-Phase 17 implementation complete; awaiting Claude review.
+Phase 17 accepted (Claude review 2026-05-27). All planned molecular phases (1–17) complete. Next: Phase 18 analytic gradient + Part II planning (periodic systems).
 
 ## Test suite
 

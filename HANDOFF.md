@@ -1,6 +1,19 @@
 # HANDOFF
 
-## Last action (Codex — implementer, 2026-05-28, READY FOR REVIEW)
+## Last action (Claude — reviewer, 2026-05-27, ACCEPTED)
+
+Phase 17 TD-DFT/TDA review passed. All planned molecular phases (1–17) complete.
+
+- TDA matrix diag(ε_a−ε_i) + 2J + 2f_xc correct for closed-shell singlet ✓
+- H2 diff 1.2e-7 Ha, H2O diff 5.4e-5 Ha — both within 0.01 Ha ✓
+- Oscillator strengths match PySCF ✓
+- SCIENCE.md: XC kernel fd step, Casida (1995) + Burke (2005) ✓
+- 628/628 tests pass ✓
+- NEXT_AGENT → Human, Phase 18+ planning
+
+---
+
+## Previous action (Codex — implementer, 2026-05-28, READY FOR REVIEW)
 
 Phase 17 TD-DFT/TDA implementation complete.
 

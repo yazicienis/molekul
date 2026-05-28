@@ -38,6 +38,19 @@ _Earlier history (pre-workflow) reconstructed from git log:_
 
 ---
 
+## 2026-05-27 | Claude | Phase 17 | TD-DFT/TDA review — ACCEPTED
+
+- Reviewed `src/molekul/tddft.py`: TDA matrix diag(ε_a−ε_i) + 2J + 2f_xc correct for singlet ✓
+- ALDA f_xc via numerical finite difference, stable step formula ✓
+- H2 diff 1.2e-7 Ha, H2O diff 5.4e-5 Ha — both well within 0.01 Ha tolerance ✓
+- Oscillator strengths match PySCF ✓
+- SCIENCE.md: XC kernel fd step, Casida (1995) + Burke (2005) ✓
+- 628/628 tests pass ✓
+- Minor: 0.01 Ha tolerance not in SCIENCE.md (STATUS.md open questions covers reason)
+- Phase 17 is the last planned phase — next: Phase 18+ planning with human
+
+---
+
 ## 2026-05-27 | Claude | Phase 16 | UHF review — ACCEPTED
 
 - Reviewed `src/molekul/uhf.py`: Fock, energy, ⟨S²⟩ formulas match UHF theory
