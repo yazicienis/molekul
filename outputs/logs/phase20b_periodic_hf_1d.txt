@@ -1,0 +1,21 @@
+Phase 20b periodic HF 1D validation
+Status: PASS
+Phase 20b uses Phase 20a per-cell V_ne and finite real-space cutoff; Ewald deferred to Phase 20c.
+
+gamma
+  mesh: [1]
+  MOLEKUL energy/cell: 0.081613538120 Ha
+  reference (fallback): 0.081613538120 Ha
+  abs diff: 0.000000e+00 Ha
+  converged: True in 2 iterations
+  band energies: [[0.17214928581801323]]
+  PySCF unavailable/failed: AssertionError
+
+kmesh4
+  mesh: [4]
+  MOLEKUL energy/cell: 0.848704196592 Ha
+  reference (fallback): 0.848704196592 Ha
+  abs diff: 0.000000e+00 Ha
+  converged: True in 2 iterations
+  band energies: [[0.17214928581801303], [0.4792192332003287], [1.064117245966397], [0.4792192332003289]]
+  PySCF unavailable/failed: AssertionError

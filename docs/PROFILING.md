@@ -191,7 +191,7 @@ iterations) is negligible against the ERI rebuild.
 **Every gradient evaluation rebuilds the full ERI tensor 18 times.**
 There is no caching of ERI across displacements (each geometry is different,
 so this is physically correct but computationally wasteful compared to an
-analytic gradient implementation).
+true recurrence-based analytic gradient implementation).
 
 ---
 
@@ -204,7 +204,7 @@ Ranked by total time consumed in a full gradient calculation (H2O):
 | 1 | `_R` Boys function (`hyp1f1`) | ~2.9 s | Replace with Taylor/Chebyshev expansion |
 | 2 | `eri_primitive` Python overhead (loops, `np.asarray`) | ~1.1 s | Vectorise / Numba / Cython |
 | 3 | P, Q centroid allocation in `eri_primitive` | ~0.2 s | Pass raw floats; avoid NumPy alloc |
-| 4 | 18× full ERI rebuild per gradient | structural | Analytic gradient (1 SCF equivalent) |
+| 4 | 18× full ERI rebuild per gradient | structural | True recurrence-based analytic gradient (1 SCF equivalent) |
 | 5 | DIIS B-matrix Python loop | ~0.007 ms/iter | Vectorise B-matrix build |
 | 6 | `np.asarray` guard at `eri_primitive` entry | ~0.1 s | Pre-convert; remove redundant call |
 

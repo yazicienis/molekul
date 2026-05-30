@@ -186,7 +186,7 @@ What remains approximate
   - Cartesian BFGS does not remove translations/rotations explicitly
     (molecule may drift by ~1e-4 bohr; bond length is unaffected)
   - STO-3G is a minimal basis; R_eq differs from experiment (~1.40 bohr)
-  - No analytic gradients — each gradient evaluation costs 6*N_atoms SCF
+  - Uses numerical energy gradients — each gradient evaluation costs 6*N_atoms SCF
 """)
 
     # --- Dual-format log to outputs/logs/ -----------------------------------

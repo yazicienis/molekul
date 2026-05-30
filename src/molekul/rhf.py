@@ -37,6 +37,7 @@ from typing import List
 
 import numpy as np
 
+from .backend import get_xp, to_cpu, to_device
 from .basis import BasisSet
 from .integrals import build_overlap, build_core_hamiltonian
 from .eri import build_eri
@@ -77,9 +78,13 @@ def _build_fock(H_core: np.ndarray, P: np.ndarray, eri: np.ndarray) -> np.ndarra
 
     ERI tensor convention: eri[μ,ν,λ,σ] = (μν|λσ)  (chemists' notation)
     """
-    J = np.einsum("ls,mnls->mn", P, eri)
-    K = np.einsum("ls,mlns->mn", P, eri)
-    return H_core + J - 0.5 * K
+    xp = get_xp()
+    h_core = to_device(H_core)
+    density = to_device(P)
+    eri_dev = to_device(eri)
+    J = xp.einsum("ls,mnls->mn", density, eri_dev)
+    K = xp.einsum("ls,mlns->mn", density, eri_dev)
+    return to_cpu(h_core + J - 0.5 * K)
 
 
 def _diis_extrapolate(

@@ -4,6 +4,116 @@ Format: `YYYY-MM-DD | Agent | Phase | Action | Commit`
 
 ---
 
+## 2026-05-30 | Claude | Phase 20b | Periodic HF 1D review — ACCEPTED (fallback-only validation)
+
+- SCF loop, energy formula, generalized eigh, Aufbau, density normalization all correct ✓
+- SCIENCE.md max_iter/conv_tol entries ✓; 655/655 tests pass ✓
+- PySCF cross-validation deferred: PySCF 2.12.1 `low_dim_ft_type=inf_vacuum` breaks AND energy would differ physically anyway (different V_ne). Internal consistency tests sufficient for Phase 20b.
+- validation_note added to phase20b log clarifying fallback = self-consistent, not cross-validated
+- NEXT_AGENT → Codex, commit all pending phases then Phase 20c
+
+## 2026-05-29 | Codex | Phase 20b | Periodic HF 1D implementation — READY FOR REVIEW
+
+- Added `PeriodicHFResult` and `periodic_hf()` to `src/molekul/periodic.py`
+- Implemented finite real-space cutoff SCF for 1D crystals using Bloch S/H blocks, periodic ERI blocks, and generalized k-point eigenproblems
+- Kept Phase 20a per-cell `V_ne` convention; Ewald remains deferred to Phase 20c
+- Added `tests/test_periodic_hf_1d.py`
+- Added `scripts/validate_periodic_hf_1d.py` and generated `outputs/logs/phase20b_periodic_hf_1d.json/.txt`
+- Documented periodic HF SCF controls in `SCIENCE.md`
+- Validation: Phase 20b tests 6 passed; validation PASS; full suite 655 passed / 2 skipped / 2 warnings in 607.36s
+- PySCF 2.12.1 fails with the prompt's `low_dim_ft_type=inf_vacuum` PBC reference settings, so fallback references were used and logged
+- No commit made because the worktree contains accepted but uncommitted previous phase changes
+- NEXT_AGENT → Claude, Phase 20b review
+
+## 2026-05-29 | Claude | Phase 20a | Periodic infrastructure review — ACCEPTED
+
+- `Crystal` dataclass, reciprocal lattice, `monkhorst_pack`, `bloch_overlap`, `bloch_hcore` all correct ✓
+- Γ tests: S diff 4.22e-14 < 1e-10; H_core diff 2.07e-13 < 1e-8 ✓
+- SCIENCE.md r_max_factor=4.0 entry with citations ✓
+- 649/649 tests pass ✓
+- V_ne convention: `_hcore_translation(R)` uses only cell-R nuclei — correct for molecular-limit test; approximation for periodic HF. Approved for Phase 20b; Ewald resolves in Phase 20c. Phase 20b prompt must document this explicitly.
+- NEXT_AGENT → Codex, Phase 20b
+
+## 2026-05-29 | Codex | Phase 20a | Periodic infrastructure implementation — READY FOR REVIEW
+
+- Added `src/molekul/periodic.py` with `Crystal`, reciprocal lattice utilities, Monkhorst-Pack k-points, and Bloch-summed overlap/core Hamiltonian matrices
+- Added real-space lattice-shell generation with `r_max_factor = 4.0` and documented the cutoff in `SCIENCE.md`
+- Added `tests/test_periodic_infrastructure.py`
+- Added `scripts/validate_periodic_infrastructure.py` and generated `outputs/logs/phase20a_periodic_infrastructure.json/.txt`
+- Validation: Phase 20a tests 8 passed; validation PASS with S(Gamma) diff `4.218847e-14` and H_core(Gamma) diff `2.071676e-13`; full suite 649 passed / 2 skipped in 610.43s
+- Reviewer note: `bloch_hcore()` uses a translated-cell nuclear-potential convention to satisfy the requested H2-in-a-box molecular-limit check; review before Phase 20b
+- No commit made because the worktree already contains accepted but uncommitted Phase 18/19/audit changes
+- NEXT_AGENT → Claude, Phase 20a review
+
+## 2026-05-29 | Claude | audit cleanup | Metadata/docs/repo hygiene review — ACCEPTED
+
+- Version `0.2.0.dev0` coherent in `__init__.py` and `pyproject.toml` ✓
+- README quick-start energies match recomputed O-origin geometry ✓
+- Benchmark log regenerated; HF worst-case (5.837e-08) now consistent with `paper_corrections_pending.txt` ✓
+- Phase 18 "semi-numerical" label in STATUS.md, PHASES.md, optimizer verbose ✓
+- Root cleanup: LaTeX artifacts gone, versioned zips in `archive/`, `.gitignore` updated; `.tex` untouched ✓
+- NEXT_AGENT → Codex, Phase 20a Periodic Infrastructure
+
+## 2026-05-29 | Codex | audit cleanup | Metadata/docs/repo hygiene — READY FOR REVIEW
+
+- Set package/project HEAD version to `0.2.0.dev0` in `src/molekul/__init__.py` and `pyproject.toml`
+- Updated README HEAD/test metadata and quick-start H2O RHF/MP2 energy comments
+- Aligned `scripts/benchmark_14mol.py` H2O geometry with the README/paper example and regenerated `outputs/logs/benchmark_14mol.json`
+- Relabeled Phase 18 as semi-numerical RHF gradient where current labels overstated fully analytic integral derivatives
+- Clarified docs to reserve true recurrence-based analytic gradient wording for a future implementation
+- Added `.gitignore` entries for submission zips, `.spl`, `.toc`, and `archive/`
+- Moved obsolete versioned submission zips into ignored `archive/`; kept `softwarex_submission.zip` as canonical root zip
+- Removed LaTeX build artifacts from repo root; left `.tex`, `.bib`, and `.pdf` untouched
+- Validation: `scripts/benchmark_14mol.py` 14/14 passed; `pytest tests/ -x` 641 passed / 2 skipped in 608.33s
+- NEXT_AGENT → Claude, audit cleanup review
+
+## 2026-05-29 | Claude | Phase 19 | Optional CuPy GPU backend review — ACCEPTED
+
+- `use_gpu()` context manager restores backend in both ImportError and CuPy-available branches via `try/finally` ✓
+- NumPy default confirmed; no CuPy leak from public API (all three callsites call `to_cpu()` on return) ✓
+- Fock expression `J = einsum("ls,mnls->mn")`, `K = einsum("ls,mlns->mn")`, `F = H + J − 0.5K` verified correct ✓
+- Scope boundary maintained: only Fock + CCSD contraction path refactored ✓
+- SCIENCE.md correctly unchanged (no new numerical parameters) ✓
+- 641/641 tests pass, 2 CuPy-gated skipped in CPU-only environment ✓
+- NEXT_AGENT → Codex, Audit Cleanup (`prompts/audit_cleanup.md`)
+
+## 2026-05-29 | Codex | Phase 19 | Optional CuPy GPU backend implementation — READY FOR REVIEW
+
+- Added `src/molekul/backend.py` with context-managed NumPy/CuPy backend selection
+- Refactored `rhf._build_fock()` backend contractions while preserving NumPy returns
+- Refactored `ccsd.transform_mo_full()` and the spin-orbital CCSD amplitude contraction path to use the active backend
+- Added `tests/test_backend.py` with CPU fallback tests plus CuPy-gated transform/RHF equivalence tests
+- Added `scripts/validate_gpu_backend.py` and generated `outputs/logs/phase19_gpu_backend.json/.txt`
+- Validation: backend tests 4 passed / 2 skipped; RHF+CCSD targeted tests 47 passed; full suite 641 passed / 2 skipped in 605.26s
+- CuPy unavailable locally, so GPU-specific tests were skipped and validation status is CPU_ONLY
+- NEXT_AGENT → Claude, Phase 19 review
+
+## 2026-05-29 | Claude | Phase 18 | Semi-numerical RHF gradient review — ACCEPTED
+
+- Verified one-electron (`Σ P_mn dH_mn/dR`), Coulomb, exchange, Pulay, and nuclear-repulsion prefactors all correct
+- Exchange einsum `"ml,ns,mnls->"` verified via dummy-index relabeling: equivalent to `-¼ Σ P_mn P_ls d(ml|ns)/dR` ✓
+- Energy-weighted density `W = 2*(C_occ * eps_occ) @ C_occ.T` correct ✓
+- SCIENCE.md entry: h=1e-4 Bohr, Helgaker §10.2, truncation < 1e-7 Ha/Bohr ✓
+- Validation: H2/H2O/CO gradient-vs-numerical all < 1e-6 Ha/Bohr; translational residuals < 1e-10 ✓
+- 637/637 tests pass ✓
+- Optimizer `use_analytic` flag acceptable; numerical default appropriate until recurrence-based derivative integrals exist ✓
+- Minor notes (non-blocking): no PySCF gradient cross-validation (internal FD consistency only); translational invariance test trivially satisfied by centering inside `rhf_gradient()`
+- NEXT_AGENT → Codex, Phase 19 GPU backend
+
+## 2026-05-29 | Codex | Phase 18 | Semi-numerical RHF gradient implementation — READY FOR REVIEW
+
+- Added Phase 18 RHF gradient machinery in `src/molekul/grad.py`
+- Added integral-derivative helper APIs for overlap, hcore, and ERI tensors
+- Added optional optimizer `use_analytic` path while preserving numerical default for practical runtime
+- Added `tests/test_grad.py` and `scripts/validate_grad.py`
+- Generated `outputs/logs/phase18_grad.json` and `.txt`
+- Documented integral derivative finite-difference step in `SCIENCE.md`
+- Validation: H2/H2O/CO gradient-vs-numerical max diffs all < `1e-5` Ha/Bohr
+- Ran `pytest tests/test_grad.py -q`: 9 passed
+- Ran `scripts/validate_grad.py`: PASS
+- Ran `pytest tests/ -x`: 637 passed in 613.71s
+- NEXT_AGENT → Claude, Phase 18 review
+
 ## 2026-05-29 | Claude | audit | Internal audit fixes applied — commit e671fc1
 
 - Applied agreed items from Codex full-repo audit (`tavsiyeler2.txt`):

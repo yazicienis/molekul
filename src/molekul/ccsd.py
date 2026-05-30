@@ -49,6 +49,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from .backend import get_xp, to_cpu, to_device
 from .basis import BasisSet
 from .eri import build_eri
 from .molecule import Molecule
@@ -187,10 +188,14 @@ def transform_mo_full(eri_ao: np.ndarray, C: np.ndarray) -> np.ndarray:
 
     O(N⁵) cost, O(N⁴) storage.
     """
-    tmp = np.einsum("pqrs,pi->iqrs", eri_ao, C, optimize=True)
-    tmp = np.einsum("iqrs,qj->ijrs", tmp,    C, optimize=True)
-    tmp = np.einsum("ijrs,rk->ijks", tmp,    C, optimize=True)
-    return np.einsum("ijks,sl->ijkl", tmp,   C, optimize=True)
+    xp = get_xp()
+    eri = to_device(eri_ao)
+    coeff = to_device(C)
+    tmp = xp.einsum("pqrs,pi->iqrs", eri, coeff, optimize=True)
+    tmp = xp.einsum("iqrs,qj->ijrs", tmp, coeff, optimize=True)
+    tmp = xp.einsum("ijrs,rk->ijks", tmp, coeff, optimize=True)
+    result = xp.einsum("ijks,sl->ijkl", tmp, coeff, optimize=True)
+    return to_cpu(result)
 
 
 def _prepare_ccsd_spin_orbital_data(
@@ -247,9 +252,10 @@ def _ccsd_energy_so(
     oovv[i,j,a,b] = <ij||ab>  (already antisymmetrized).
     For canonical RHF, f_{ia} = 0.
     """
-    tau = t2 + np.einsum("ia,jb->ijab", t1, t1) - np.einsum("ja,ib->ijab", t1, t1)
-    e_singles = float(np.einsum("ia,ia->", fov, t1))
-    e_doubles  = 0.25 * float(np.einsum("ijab,ijab->", oovv, tau))
+    xp = get_xp()
+    tau = t2 + xp.einsum("ia,jb->ijab", t1, t1) - xp.einsum("ja,ib->ijab", t1, t1)
+    e_singles = float(to_cpu(xp.einsum("ia,ia->", fov, t1)))
+    e_doubles  = 0.25 * float(to_cpu(xp.einsum("ijab,ijab->", oovv, tau)))
     return e_singles + e_doubles
 
 
@@ -272,6 +278,7 @@ def _make_intermediates_so(
 
     Returns (Fvv, Fmi, Fme, Woooo, Wvvvv, Wovvo) as described in Stanton (1991).
     """
+    xp = get_xp()
     o = slice(0, nocc)
     v = slice(nocc, None)
 
@@ -287,8 +294,8 @@ def _make_intermediates_so(
     ovvo = eri[o, v, v, o]
 
     # τ and τ̃  (Stanton Eqs. before 3)
-    tau       = t2 + np.einsum("ia,jb->ijab", t1, t1) - np.einsum("ja,ib->ijab", t1, t1)
-    tau_tilde = t2 + 0.5 * (np.einsum("ia,jb->ijab", t1, t1) - np.einsum("ja,ib->ijab", t1, t1))
+    tau       = t2 + xp.einsum("ia,jb->ijab", t1, t1) - xp.einsum("ja,ib->ijab", t1, t1)
+    tau_tilde = t2 + 0.5 * (xp.einsum("ia,jb->ijab", t1, t1) - xp.einsum("ja,ib->ijab", t1, t1))
 
     # ------------------------------------------------------------------
     # Fvv[a,e]  (Stanton Eq. 3)
@@ -305,10 +312,10 @@ def _make_intermediates_so(
     # eri[m, a+nocc, f+nocc, e+nocc] = <m,a||f,e> ✓
     # ------------------------------------------------------------------
     Fvv = fvv.copy()
-    Fvv[np.diag_indices_from(Fvv)] = 0.0   # (1−δ_ae): zero diagonal
-    Fvv -= 0.5 * np.einsum("me,ma->ae", fov, t1)
-    Fvv += np.einsum("mf,mafe->ae", t1, ovvv)
-    Fvv -= 0.5 * np.einsum("mnaf,mnef->ae", tau_tilde, oovv)
+    Fvv[xp.diag_indices_from(Fvv)] = 0.0   # (1−δ_ae): zero diagonal
+    Fvv -= 0.5 * xp.einsum("me,ma->ae", fov, t1)
+    Fvv += xp.einsum("mf,mafe->ae", t1, ovvv)
+    Fvv -= 0.5 * xp.einsum("mnaf,mnef->ae", tau_tilde, oovv)
 
     # ------------------------------------------------------------------
     # Fmi[m,i]  (Stanton Eq. 4)
@@ -320,10 +327,10 @@ def _make_intermediates_so(
     # ooov[m,n,i,e] = <mn||ie>  (m,n,i occ, e virt) ✓
     # ------------------------------------------------------------------
     Fmi = foo.copy()
-    Fmi[np.diag_indices_from(Fmi)] = 0.0   # (1−δ_mi)
-    Fmi += 0.5 * np.einsum("me,ie->mi", fov, t1)
-    Fmi += np.einsum("ne,mnie->mi", t1, ooov)
-    Fmi += 0.5 * np.einsum("inef,mnef->mi", tau_tilde, oovv)
+    Fmi[xp.diag_indices_from(Fmi)] = 0.0   # (1−δ_mi)
+    Fmi += 0.5 * xp.einsum("me,ie->mi", fov, t1)
+    Fmi += xp.einsum("ne,mnie->mi", t1, ooov)
+    Fmi += 0.5 * xp.einsum("inef,mnef->mi", tau_tilde, oovv)
 
     # ------------------------------------------------------------------
     # Fme[m,e]  (Stanton Eq. 5)
@@ -331,7 +338,7 @@ def _make_intermediates_so(
     # F_me = f_me + Σnf t_n^f <mn||ef>
     # ------------------------------------------------------------------
     Fme = fov.copy()
-    Fme += np.einsum("nf,mnef->me", t1, oovv)
+    Fme += xp.einsum("nf,mnef->me", t1, oovv)
 
     # ------------------------------------------------------------------
     # Woooo[m,n,i,j]  (Stanton Eq. 6)
@@ -340,9 +347,9 @@ def _make_intermediates_so(
     #          + ¼ Σef τ_{ij}^{ef} <mn||ef>
     # ------------------------------------------------------------------
     Woooo = oooo.copy()
-    Woooo += np.einsum("je,mnie->mnij", t1, ooov)
-    Woooo -= np.einsum("ie,mnje->mnij", t1, ooov)   # P̂(ij) antisymm
-    Woooo += 0.25 * np.einsum("ijef,mnef->mnij", tau, oovv)
+    Woooo += xp.einsum("je,mnie->mnij", t1, ooov)
+    Woooo -= xp.einsum("ie,mnje->mnij", t1, ooov)   # P̂(ij) antisymm
+    Woooo += 0.25 * xp.einsum("ijef,mnef->mnij", tau, oovv)
 
     # ------------------------------------------------------------------
     # Wvvvv[a,b,e,f]  (Stanton Eq. 7)
@@ -360,9 +367,9 @@ def _make_intermediates_so(
     # ovvv[m,a,e,f] = <ma||ef>  → <am||ef> = -ovvv[m,a,e,f] ✓
     # ------------------------------------------------------------------
     Wvvvv = vvvv.copy()
-    Wvvvv += np.einsum("mb,maef->abef", t1, ovvv)   # P̂(ab): +<ma||ef> term
-    Wvvvv -= np.einsum("ma,mbef->abef", t1, ovvv)   # P̂(ab): -<mb||ef> term
-    Wvvvv += 0.25 * np.einsum("mnab,mnef->abef", tau, oovv)
+    Wvvvv += xp.einsum("mb,maef->abef", t1, ovvv)   # P̂(ab): +<ma||ef> term
+    Wvvvv -= xp.einsum("ma,mbef->abef", t1, ovvv)   # P̂(ab): -<mb||ef> term
+    Wvvvv += 0.25 * xp.einsum("mnab,mnef->abef", tau, oovv)
 
     # ------------------------------------------------------------------
     # Wovvo[m,b,e,j]  (Stanton Eq. 8)
@@ -383,10 +390,10 @@ def _make_intermediates_so(
     oovo = eri[o, o, v, o]   # <mn||ej>
 
     Wovvo = ovvo.copy()
-    Wovvo += np.einsum("jf,mbef->mbej", t1, ovvv)
-    Wovvo -= np.einsum("nb,mnej->mbej", t1, oovo)
-    Wovvo -= 0.5 * np.einsum("jnfb,mnef->mbej", t2, oovv)
-    Wovvo -= np.einsum("jf,nb,mnef->mbej", t1, t1, oovv)
+    Wovvo += xp.einsum("jf,mbef->mbej", t1, ovvv)
+    Wovvo -= xp.einsum("nb,mnej->mbej", t1, oovo)
+    Wovvo -= 0.5 * xp.einsum("jnfb,mnef->mbej", t2, oovv)
+    Wovvo -= xp.einsum("jf,nb,mnef->mbej", t1, t1, oovv)
 
     return Fvv, Fmi, Fme, Woooo, Wvvvv, Wovvo
 
@@ -414,6 +421,7 @@ def _t1_residual_so(
            − ½ Σmne t_{mn}^{ae} <nm||ei>
            + ½ Σmef t_{im}^{ef} <ma||ef>
     """
+    xp = get_xp()
     o = slice(0, nocc)
     v = slice(nocc, None)
 
@@ -423,12 +431,12 @@ def _t1_residual_so(
     ovvv = eri[o, v, v, v]   # <ia||bc>
 
     R1 = fov.copy()
-    R1 += np.einsum("ie,ae->ia", t1, Fvv)
-    R1 -= np.einsum("ma,mi->ia", t1, Fmi)
-    R1 += np.einsum("imae,me->ia", t2, Fme)
+    R1 += xp.einsum("ie,ae->ia", t1, Fvv)
+    R1 -= xp.einsum("ma,mi->ia", t1, Fmi)
+    R1 += xp.einsum("imae,me->ia", t2, Fme)
 
     # −Σme t_m^e <ma||ie>: ovov[m,a,i,e] = <ma||ie>
-    R1 -= np.einsum("me,maie->ia", t1, ovov)
+    R1 -= xp.einsum("me,maie->ia", t1, ovov)
 
     # −½ Σmne t_{mn}^{ae} <nm||ei>
     # <nm||ei> = oovv? No: <nm||ei> = eri[n,m,e,i] but e virt, i occ → <no||vo> block
@@ -440,12 +448,12 @@ def _t1_residual_so(
     # (antisymm in first two indices: <nm||ei> = -<mn||ei>, and swap last two: = +<mn||ie>? No)
     # Let me be precise: <pq||rs> antisymm means <pq||rs> = -<qp||rs> = -<pq||sr>
     # So <nm||ei> = -<mn||ei> = -(-<mn||ie>) = <mn||ie> = ooov[m,n,i,e] ✓
-    R1 -= 0.5 * np.einsum("mnae,mnie->ia", t2, ooov)
+    R1 -= 0.5 * xp.einsum("mnae,mnie->ia", t2, ooov)
 
     # −½ Σmef t_{im}^{ef} <ma||ef>
     # Numerically confirmed: sign is negative (matches spin-orbital Stanton Eq. 1
     # when the ovvv block is interpreted in the convention used here).
-    R1 -= 0.5 * np.einsum("imef,maef->ia", t2, ovvv)
+    R1 -= 0.5 * xp.einsum("imef,maef->ia", t2, ovvv)
 
     return R1
 
@@ -483,6 +491,7 @@ def _t2_residual_so(
     Update: t2_new = t2 − R / D2  (Jacobi step, DIIS-accelerated)
     At convergence R = 0.
     """
+    xp = get_xp()
     o = slice(0, nocc)
     v = slice(nocc, None)
 
@@ -495,34 +504,34 @@ def _t2_residual_so(
     R2 = oovv.copy()
 
     # P̂(ab)[Σe t_{ij}^{ae} (F_{be} − ½ Σm t_m^b F_me)]
-    Ftmp = Fvv - 0.5 * np.einsum("mb,me->be", t1, Fme)
-    tmp = np.einsum("ijae,be->ijab", t2, Ftmp)
+    Ftmp = Fvv - 0.5 * xp.einsum("mb,me->be", t1, Fme)
+    tmp = xp.einsum("ijae,be->ijab", t2, Ftmp)
     R2 += tmp - tmp.transpose(0, 1, 3, 2)
 
     # −P̂(ij)[Σm t_{im}^{ab} (F_{mj} + ½ Σe t_j^e F_me)]
-    Ftmp = Fmi + 0.5 * np.einsum("je,me->mj", t1, Fme)
-    tmp = np.einsum("imab,mj->ijab", t2, Ftmp)
+    Ftmp = Fmi + 0.5 * xp.einsum("je,me->mj", t1, Fme)
+    tmp = xp.einsum("imab,mj->ijab", t2, Ftmp)
     R2 -= tmp - tmp.transpose(1, 0, 2, 3)
 
     # ½ Σmn τ_{mn}^{ab} W_{mnij}
-    tau = t2 + np.einsum("ia,jb->ijab", t1, t1) - np.einsum("ja,ib->ijab", t1, t1)
-    R2 += 0.5 * np.einsum("mnab,mnij->ijab", tau, Woooo)
+    tau = t2 + xp.einsum("ia,jb->ijab", t1, t1) - xp.einsum("ja,ib->ijab", t1, t1)
+    R2 += 0.5 * xp.einsum("mnab,mnij->ijab", tau, Woooo)
 
     # ½ Σef τ_{ij}^{ef} W_{abef}
-    R2 += 0.5 * np.einsum("ijef,abef->ijab", tau, Wvvvv)
+    R2 += 0.5 * xp.einsum("ijef,abef->ijab", tau, Wvvvv)
 
     # P̂(ij)P̂(ab)[Σme t_{im}^{ae} W_{mbej}
     #                  + Σme t_i^e t_m^a <mb||je>]
-    tmp = np.einsum("imae,mbej->ijab", t2, Wovvo)
-    tmp += np.einsum("ie,ma,mbje->ijab", t1, t1, ovov)
+    tmp = xp.einsum("imae,mbej->ijab", t2, Wovvo)
+    tmp += xp.einsum("ie,ma,mbje->ijab", t1, t1, ovov)
     R2 += tmp - tmp.transpose(1, 0, 2, 3) - tmp.transpose(0, 1, 3, 2) + tmp.transpose(1, 0, 3, 2)
 
     # P̂(ij)[Σe t_i^e <je||ba>]
-    tmp = np.einsum("ie,jeba->ijab", t1, ovvv)
+    tmp = xp.einsum("ie,jeba->ijab", t1, ovvv)
     R2 += tmp - tmp.transpose(1, 0, 2, 3)
 
     # −P̂(ab)[Σm t_m^a <ij||mb>]
-    tmp = np.einsum("ma,ijmb->ijab", t1, ooov)
+    tmp = xp.einsum("ma,ijmb->ijab", t1, ooov)
     R2 -= tmp - tmp.transpose(0, 1, 3, 2)
 
     return R2
@@ -548,23 +557,24 @@ class _DIIS:
             self._errors.pop(0)
 
     def extrapolate(self) -> np.ndarray:
+        xp = get_xp()
         m = len(self._vecs)
         if m < 2:
             return self._vecs[-1]
-        B = np.zeros((m + 1, m + 1))
+        B = xp.zeros((m + 1, m + 1))
         for i in range(m):
             for j in range(i, m):
-                v = float(np.dot(self._errors[i], self._errors[j]))
+                v = xp.dot(self._errors[i], self._errors[j])
                 B[i, j] = B[j, i] = v
         B[m, :] = B[:, m] = -1.0
         B[m, m] = 0.0
-        rhs = np.zeros(m + 1)
+        rhs = xp.zeros(m + 1)
         rhs[m] = -1.0
         try:
-            c = np.linalg.solve(B, rhs)
-        except np.linalg.LinAlgError:
+            c = xp.linalg.solve(B, rhs)
+        except Exception:
             return self._vecs[-1]
-        result = np.zeros_like(self._vecs[0])
+        result = xp.zeros_like(self._vecs[0])
         for ci, vi in zip(c[:m], self._vecs):
             result += ci * vi
         return result
@@ -591,6 +601,11 @@ def _solve_ccsd_from_so_data(
         verbose:    bool,
 ) -> CCSDResult:
     """Iterate spin-orbital CCSD amplitudes from prepared integral data."""
+    xp = get_xp()
+    eri_so = to_device(eri_so)
+    eps_so = to_device(eps_so)
+    fock_so = to_device(fock_so)
+
     nocc_so = 2 * nocc
     nvirt_so = 2 * nvirt
 
@@ -610,7 +625,7 @@ def _solve_ccsd_from_so_data(
         - eps_vir_so[None, None, None, :]
     )
 
-    t1 = np.zeros((nocc_so, nvirt_so))
+    t1 = xp.zeros((nocc_so, nvirt_so))
     t2 = oovv_so / D2
 
     e_mp2 = _ccsd_energy_so(t1, t2, fov_so, oovv_so)
@@ -638,9 +653,9 @@ def _solve_ccsd_from_so_data(
         new_t1 = R1 / D1
         new_t2 = R2 / D2
 
-        err = np.concatenate([(new_t1 - t1).ravel(), (new_t2 - t2).ravel()])
-        rms = float(np.sqrt(np.mean(err**2)))
-        flat = np.concatenate([new_t1.ravel(), new_t2.ravel()])
+        err = xp.concatenate([(new_t1 - t1).ravel(), (new_t2 - t2).ravel()])
+        rms = float(to_cpu(xp.sqrt(xp.mean(err**2))))
+        flat = xp.concatenate([new_t1.ravel(), new_t2.ravel()])
 
         if iteration >= diis_start:
             diis.push(flat, err)
@@ -669,8 +684,8 @@ def _solve_ccsd_from_so_data(
         energy_total=rhf_result.energy_total + e_ccsd,
         energy_hf=rhf_result.energy_total,
         energy_mp2=e_mp2,
-        t1=t1,
-        t2=t2,
+        t1=to_cpu(t1),
+        t2=to_cpu(t2),
         converged=converged,
         n_iter=iteration,
         n_occ=nocc,

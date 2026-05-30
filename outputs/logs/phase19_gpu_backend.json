@@ -1,0 +1,10 @@
+{
+  "backend_detected": "numpy",
+  "rhf_cpu_energy": -74.96294666586766,
+  "rhf_gpu_energy": null,
+  "energy_diff": null,
+  "transform_cpu_seconds": 0.00015585101209580898,
+  "transform_gpu_seconds": null,
+  "transform_max_diff": null,
+  "status": "CPU_ONLY"
+}

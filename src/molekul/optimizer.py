@@ -1,5 +1,5 @@
 """
-Geometry optimizer for RHF energies using numerical gradients.
+Geometry optimizer for RHF energies using numerical or RHF-gradient forces.
 
 Algorithm
 ---------
@@ -34,7 +34,7 @@ from scipy.optimize import minimize
 
 from .atoms import Atom
 from .basis import BasisSet
-from .grad import numerical_gradient, gradient_norm, max_gradient
+from .grad import numerical_gradient, rhf_gradient, gradient_norm, max_gradient
 from .io_xyz import write_xyz_trajectory
 from .molecule import Molecule
 from .rhf import rhf_scf
@@ -94,7 +94,8 @@ def optimize_geometry(
         *,
         grad_tol: float = 1e-4,      # max |dE/dR| convergence threshold (Ha/bohr)
         max_steps: int = 100,
-        h_grad: float = 1e-3,        # finite-difference step for gradient (bohr)
+        h_grad: float = 1e-3,        # finite-difference step for gradient fallback (bohr)
+        use_analytic: bool = False,
         traj_path: Optional[str] = None,
         history_path: Optional[str] = None,
         verbose: bool = True,
@@ -108,7 +109,8 @@ def optimize_geometry(
     basis        : BasisSet (e.g. STO3G)
     grad_tol     : max absolute gradient component for convergence (Ha/bohr)
     max_steps    : maximum number of gradient evaluations (scipy maxiter)
-    h_grad       : finite-difference step for numerical gradient (bohr)
+    h_grad       : finite-difference step for numerical gradient fallback (bohr)
+    use_analytic : use RHF gradient expression instead of energy finite differences
     traj_path    : if given, write multi-frame XYZ trajectory here
     history_path : if given, write JSON optimisation history here
     verbose      : print progress table if True
@@ -130,7 +132,10 @@ def optimize_geometry(
         result = rhf_scf(mol, basis)
         E = result.energy_total
 
-        grad = numerical_gradient(mol, basis, h=h_grad)
+        if use_analytic:
+            grad = rhf_gradient(mol, basis, result)
+        else:
+            grad = numerical_gradient(mol, basis, h=h_grad)
         g_rms = gradient_norm(grad)
         g_max = max_gradient(grad)
 
@@ -151,10 +156,14 @@ def optimize_geometry(
     E0 = rhf_scf(molecule, basis).energy_total
 
     if verbose:
-        print(f"\nGeometry optimisation — BFGS / numerical gradient")
+        grad_label = "semi-numerical gradient" if use_analytic else "numerical gradient"
+        print(f"\nGeometry optimisation — BFGS / {grad_label}")
         print(f"Molecule : {molecule.name or 'unnamed'}  "
               f"({molecule.n_atoms} atoms, {molecule.n_electrons} electrons)")
-        print(f"Basis    : STO-3G    grad step h = {h_grad:.0e} bohr")
+        if use_analytic:
+            print(f"Basis    : STO-3G    gradient = RHF expression + FD integral derivatives")
+        else:
+            print(f"Basis    : STO-3G    grad step h = {h_grad:.0e} bohr")
         print(f"Tol      : max|grad| < {grad_tol:.0e} Ha/bohr   max_steps = {max_steps}")
         print(f"{'─'*72}")
 
@@ -171,10 +180,14 @@ def optimize_geometry(
     )
 
     final_mol = _mol_from_flat(opt.x, molecule)
-    g_final = numerical_gradient(final_mol, basis, h=h_grad)
+    final_rhf = rhf_scf(final_mol, basis)
+    if use_analytic:
+        g_final = rhf_gradient(final_mol, basis, final_rhf)
+    else:
+        g_final = numerical_gradient(final_mol, basis, h=h_grad)
     g_rms_final = gradient_norm(g_final)
     g_max_final = max_gradient(g_final)
-    E_final = rhf_scf(final_mol, basis).energy_total
+    E_final = final_rhf.energy_total
 
     converged = opt.success or (g_max_final < grad_tol)
 
@@ -206,7 +219,8 @@ def optimize_geometry(
         history = {
             "molecule": molecule.name,
             "basis": "STO-3G",
-            "method": "RHF/numerical-BFGS",
+            "method": "RHF/analytic-BFGS" if use_analytic else "RHF/numerical-BFGS",
+            "use_analytic_gradient": use_analytic,
             "h_grad_bohr": h_grad,
             "grad_tol": grad_tol,
             "converged": converged,

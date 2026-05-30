@@ -16,9 +16,10 @@ equations — is traceable to a named function and a standard reference.
 **Validated against PySCF** at each phase of development.
 
 > **Version note:** v0.1.2 (SoftwareX paper, Zenodo DOI) covers Phases 1–9
-> (RHF, MP2, geometry, population, basis sets). The current HEAD (Phase 17,
-> 628 tests) additionally includes CCSD, CCSD(T), KS-DFT, CIS, EOM-CCSD,
-> UHF, and TD-DFT.
+> (RHF, MP2, geometry, population, basis sets). The current HEAD (`0.2.0.dev0`, Phase 19,
+> 641 tests plus 2 CuPy-gated skips) additionally includes CCSD, CCSD(T),
+> KS-DFT, CIS, EOM-CCSD, UHF, TD-DFT, semi-numerical RHF gradients,
+> and an optional CuPy backend.
 
 ## Features
 
@@ -70,16 +71,16 @@ mol = Molecule([
 
 basis = get_sto3g()
 rhf_result = rhf_scf(mol, basis)
-print(f"RHF energy: {rhf_result.energy_total:.8f} Eh")   # -74.96258854 Eh
+print(f"RHF energy: {rhf_result.energy_total:.8f} Eh")   # -74.96294667 Eh
 
 mp2_result = mp2_energy(mol, basis, rhf_result)
-print(f"MP2 energy: {mp2_result.energy_total:.8f} Eh")   # -74.99844967 Eh
+print(f"MP2 energy: {mp2_result.energy_total:.8f} Eh")   # -74.99844951 Eh
 ```
 
 ## Running tests
 
 ```bash
-pytest tests/          # 628 tests (as of Phase 17)
+pytest tests/          # 641 tests, plus 2 CuPy-gated skips on CPU-only systems
 ```
 
 ## Validation
@@ -94,7 +95,7 @@ Results are logged to `outputs/logs/benchmark_14mol.json`.
 
 ```
 src/molekul/       Core library
-tests/             628 automated tests
+tests/             641 automated tests
 scripts/           Benchmark and validation scripts
 outputs/logs/      JSON benchmark logs
 examples/          Example XYZ geometries

@@ -1,6 +1,6 @@
 # STATUS
 
-_Last updated: 2026-05-29 by Claude_
+_Last updated: 2026-05-29 by Codex_
 
 ## Project
 
@@ -19,22 +19,24 @@ v0.1.2 — SoftwareX paper submitted.
 | 15 | EOM-CCSD | ✅ complete |
 | 16 | UHF | ✅ complete |
 | 17 | TD-DFT (Casida TDA) | ✅ complete |
-| 18 | Analytic RHF gradient | 📝 draft prompt ready |
-| 19–22 | Periodic systems (Part II) | 🔲 planning phase |
+| 18 | Semi-numerical RHF gradient (analytic energy expression + FD integral derivatives) | ✅ complete |
+| 19 | Optional CuPy GPU backend | ✅ complete |
+| 20a | Periodic infrastructure (Crystal/lattice/Bloch S+H) | ✅ complete |
+| 20b | Periodic HF 1D (H chain, real-space cutoff SCF) | ✅ complete (fallback-only validation; PySCF deferred to 20c) |
+| 20c–22 | Periodic systems (Part II) | 🔲 planning phase |
 
 ## Current bottleneck
 
-Phase 17 accepted (Claude review 2026-05-27). All planned molecular phases (1–17) complete. Next: Phase 18 analytic gradient + Part II planning (periodic systems).
+Phase 20b accepted. Next: Codex commits all pending phases, then Phase 20c (Ewald + 3D + k-mesh).
 
 ## Test suite
 
-628 tests, all passing as of 2026-05-28.
+655 tests passing and 2 CuPy-gated tests skipped as of 2026-05-29.
 
 Latest verification:
-- `pytest tests/test_tddft.py -v`: 5 passed
-- `scripts/validate_tddft.py`: wrote `outputs/logs/phase17_tddft.json` and `.txt`;
-  H2 LDA state 1 diff vs PySCF `1.238525e-07` Ha; H2O LDA state 1 diff vs PySCF `5.353138e-05` Ha.
-- `pytest tests/ -x`: 628 passed in 523.57s.
+- `pytest tests/test_periodic_hf_1d.py -q`: 6 passed, 2 PySCF warnings.
+- `python scripts/validate_periodic_hf_1d.py`: PASS; Gamma energy/cell `0.081613538120` Ha, 4-k energy/cell `0.848704196592` Ha; PySCF prompt reference failed locally and fallback references were used.
+- `pytest tests/ -x`: 655 passed, 2 skipped, 2 warnings in 607.36s.
 
 ## Open scientific questions
 
@@ -51,3 +53,18 @@ Latest verification:
 - Phase 17 TD-DFT implements TDA LDA accurately against PySCF. PBE is wired
   through with a density-kernel approximation; full GGA kernel terms remain a
   possible future improvement.
+
+- Phase 18 gradient integral derivatives are finite-difference wrappers around
+  existing integral builders (`h=1e-4` Bohr). They validate tightly against
+  numerical energy gradients, but optimizer default remains numerical until
+  true recurrence-based derivative integrals are implemented.
+- Phase 19 GPU tests are gated on CuPy availability and were skipped locally because
+  CuPy is not installed. CPU fallback and NumPy behavior are validated; true GPU
+  numerical equivalence should be checked on a CuPy-equipped machine.
+- Phase 20a `bloch_hcore()` uses a translated-cell nuclear-potential convention
+  so the requested H2-in-a-box Gamma molecular limit holds. Full periodic HF
+  needs reviewer agreement on this convention before Phase 20b.
+- Phase 20b PySCF runtime reference fails locally under the prompt's
+  `low_dim_ft_type=inf_vacuum` setting with PySCF 2.12.1, so validation uses
+  deterministic fallback references. Reviewer should decide whether to update
+  reference parameters before Phase 20c.

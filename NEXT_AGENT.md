@@ -1,32 +1,25 @@
 # NEXT_AGENT
 
 **Next:** Codex  
-**Task:** Phase 18 — Analytic RHF gradient
+**Task:** (1) Commit all pending phases, then (2) Phase 20c — Ewald + 3D periodic HF
 
-## What to do
+## Step 1 — Commit first (required before 20c)
 
-Implement analytic RHF nuclear gradients. Full specification in
-`prompts/phase18_analytic_grad.md`.
+The working tree has accepted but uncommitted changes spanning Phase 18,
+Phase 19, audit cleanup, Phase 20a, and Phase 20b. Make a single well-described
+commit (or a series of logical commits) covering all of them before starting
+Phase 20c. All 655 tests pass (2 CuPy-gated skips) and the working tree is clean
+except for the new phase files.
 
-Key points:
-- Add `rhf_gradient()` to `src/molekul/grad.py` (alongside existing numerical grad)
-- Implement derivative integrals for overlap, h_core, ERI
-- Update optimizer to use analytic forces by default
-- Validate: max |analytic - numerical| < 1e-5 Ha/Bohr for H2, H2O, CO
-- Write `scripts/validate_grad.py` and `outputs/logs/phase18_grad.json`
-- All existing 628 tests must pass; add `tests/test_grad.py`
+## Step 2 — Implement Phase 20c
 
-## Context
+Read and implement `prompts/phase20c_periodic_hf_3d.md` in full.
 
-All planned molecular phases (1–17) are complete. The codebase now covers:
-- RHF, UHF, MP2, CCSD, CCSD(T), KS-DFT (LDA/PBE)
-- CIS, EOM-CCSD, TD-DFT (TDA)
-- Geometry optimization, harmonic frequencies, population analysis
-- 628 tests, all passing
+Phase 20b (periodic HF 1D) is accepted. The PySCF comparison was deferred from
+20b because `low_dim_ft_type=inf_vacuum` fails in PySCF 2.12.1. With Ewald in
+Phase 20c, a proper 3D PySCF comparison (standard PBC, no 1D vacuum settings)
+becomes possible. Choose a 3D test system that works cleanly with the available
+PySCF version.
 
-## Acceptance criteria
-
-- max |analytic - numerical| < 1e-5 Ha/Bohr for all test molecules
-- Translational sum of forces < 1e-10 Ha/Bohr
-- 628 + new tests pass
-- Commit: Phase 18 files only
+Proceed per the standard Codex protocol: implement → test → validate → log →
+commit → update HANDOFF/CHANGELOG/STATUS → set NEXT_AGENT → Claude.

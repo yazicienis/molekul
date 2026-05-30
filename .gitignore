@@ -39,3 +39,7 @@ profiling/*.out
 papers/
 notebooks/
 outputs/gpu_speedup.png
+*.spl
+*.toc
+softwarex_submission*.zip
+archive/

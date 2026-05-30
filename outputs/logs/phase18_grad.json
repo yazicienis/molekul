@@ -1,0 +1,134 @@
+{
+  "phase": 18,
+  "description": "RHF nuclear gradient validation",
+  "basis": "STO-3G",
+  "gradient_tolerance_Ha_per_bohr": 1e-05,
+  "translation_tolerance_Ha_per_bohr": 1e-10,
+  "status": "PASS",
+  "results": [
+    {
+      "molecule": "H2",
+      "energy_total_Ha": -1.1167593041291544,
+      "analytic_gradient_Ha_per_bohr": [
+        [
+          0.0,
+          0.0,
+          -0.02767957411787969
+        ],
+        [
+          0.0,
+          0.0,
+          0.02767957411787969
+        ]
+      ],
+      "numerical_gradient_Ha_per_bohr": [
+        [
+          0.0,
+          0.0,
+          -0.02767931604941154
+        ],
+        [
+          0.0,
+          0.0,
+          0.027679316049522562
+        ]
+      ],
+      "max_abs_diff_Ha_per_bohr": 2.580684681507961e-07,
+      "translational_residual_Ha_per_bohr": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_translational_residual_Ha_per_bohr": 0.0,
+      "within_gradient_tolerance": true,
+      "within_translation_tolerance": true,
+      "elapsed_s": 0.1251747019996401
+    },
+    {
+      "molecule": "H2O",
+      "energy_total_Ha": -74.93312210314207,
+      "analytic_gradient_Ha_per_bohr": [
+        [
+          -3.0863960940185553e-16,
+          5.95245496411619e-12,
+          -0.2050162436069579
+        ],
+        [
+          1.7366594006561835e-17,
+          -0.10115682098209161,
+          0.10250812180385475
+        ],
+        [
+          2.9127301539529366e-16,
+          0.10115682097613915,
+          0.10250812180310313
+        ]
+      ],
+      "numerical_gradient_Ha_per_bohr": [
+        [
+          0.0,
+          -2.8421709430404007e-11,
+          -0.20501609733258874
+        ],
+        [
+          0.0,
+          -0.1011571057887295,
+          0.10250806819556146
+        ],
+        [
+          0.0,
+          0.10115710576030779,
+          0.10250806828793202
+        ]
+      ],
+      "max_abs_diff_Ha_per_bohr": 2.848066378846603e-07,
+      "translational_residual_Ha_per_bohr": [
+        -4.930380657631324e-32,
+        0.0,
+        0.0
+      ],
+      "max_translational_residual_Ha_per_bohr": 4.930380657631324e-32,
+      "within_gradient_tolerance": true,
+      "within_translation_tolerance": true,
+      "elapsed_s": 14.97333335399162
+    },
+    {
+      "molecule": "CO",
+      "energy_total_Ha": -111.22455869322233,
+      "analytic_gradient_Ha_per_bohr": [
+        [
+          -8.989488356345336e-16,
+          8.942271387040481e-16,
+          0.05493001059747993
+        ],
+        [
+          8.989488356345336e-16,
+          -8.942271387040481e-16,
+          -0.05493001059747993
+        ]
+      ],
+      "numerical_gradient_Ha_per_bohr": [
+        [
+          0.0,
+          0.0,
+          0.05493098807107799
+        ],
+        [
+          0.0,
+          0.0,
+          -0.05493098807107799
+        ]
+      ],
+      "max_abs_diff_Ha_per_bohr": 9.774735980627725e-07,
+      "translational_residual_Ha_per_bohr": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_translational_residual_Ha_per_bohr": 0.0,
+      "within_gradient_tolerance": true,
+      "within_translation_tolerance": true,
+      "elapsed_s": 51.17557073599892
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+Phase 18 RHF gradient validation
+Basis: STO-3G
+Status: PASS
+
+H2
+  E_total = -1.116759304129 Ha
+  max |analytic - numerical| = 2.580685e-07 Ha/Bohr
+  max translational residual = 0.000000e+00 Ha/Bohr
+  elapsed = 0.13 s
+
+H2O
+  E_total = -74.933122103142 Ha
+  max |analytic - numerical| = 2.848066e-07 Ha/Bohr
+  max translational residual = 4.930381e-32 Ha/Bohr
+  elapsed = 14.97 s
+
+CO
+  E_total = -111.224558693222 Ha
+  max |analytic - numerical| = 9.774736e-07 Ha/Bohr
+  max translational residual = 0.000000e+00 Ha/Bohr
+  elapsed = 51.18 s

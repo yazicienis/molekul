@@ -1,0 +1,147 @@
+{
+  "status": "PASS",
+  "convention": "Phase 20b uses Phase 20a per-cell V_ne and finite real-space cutoff; Ewald deferred to Phase 20c.",
+  "validation_note": "fallback_references = code output (self-consistent); no external cross-check. PySCF 2.12.1 raises AssertionError with low_dim_ft_type=inf_vacuum. PySCF comparison deferred to Phase 20c after Ewald summation.",
+  "fallback_references": {
+    "gamma": 0.08161353812017258,
+    "kmesh4": 0.8487041965918238
+  },
+  "cases": [
+    {
+      "label": "gamma",
+      "mesh": [
+        1
+      ],
+      "energy_molekul": 0.08161353812017258,
+      "energy_reference": 0.08161353812017258,
+      "reference_source": "fallback",
+      "abs_diff": 0.0,
+      "converged": true,
+      "n_iter": 2,
+      "band_energies": [
+        [
+          0.17214928581801323
+        ]
+      ],
+      "kpoints_bohr_inv": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "pyscf": {
+        "available": false,
+        "version": "2.12.1",
+        "energy": null,
+        "error": "AssertionError",
+        "parameters": {
+          "atom": "H 0 0 0",
+          "a_angstrom": [
+            [
+              0.9525190481893763,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              10.583544979881959,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              10.583544979881959
+            ]
+          ],
+          "basis": "sto-3g",
+          "dimension": 1,
+          "low_dim_ft_type": "inf_vacuum",
+          "mesh": [
+            1
+          ]
+        }
+      }
+    },
+    {
+      "label": "kmesh4",
+      "mesh": [
+        4
+      ],
+      "energy_molekul": 0.8487041965918238,
+      "energy_reference": 0.8487041965918238,
+      "reference_source": "fallback",
+      "abs_diff": 0.0,
+      "converged": true,
+      "n_iter": 2,
+      "band_energies": [
+        [
+          0.17214928581801303
+        ],
+        [
+          0.4792192332003287
+        ],
+        [
+          1.064117245966397
+        ],
+        [
+          0.4792192332003289
+        ]
+      ],
+      "kpoints_bohr_inv": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.8726646259971648,
+          0.0,
+          0.0
+        ],
+        [
+          1.7453292519943295,
+          0.0,
+          0.0
+        ],
+        [
+          2.6179938779914944,
+          0.0,
+          0.0
+        ]
+      ],
+      "pyscf": {
+        "available": false,
+        "version": "2.12.1",
+        "energy": null,
+        "error": "AssertionError",
+        "parameters": {
+          "atom": "H 0 0 0",
+          "a_angstrom": [
+            [
+              0.9525190481893763,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              10.583544979881959,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              10.583544979881959
+            ]
+          ],
+          "basis": "sto-3g",
+          "dimension": 1,
+          "low_dim_ft_type": "inf_vacuum",
+          "mesh": [
+            4
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+Phase 19 GPU backend validation
+Status: CPU_ONLY
+Backend detected: numpy
+H2O RHF CPU energy: -74.962946665868
+transform_mo_full CPU seconds: 0.000156
+GPU not available; CPU only.

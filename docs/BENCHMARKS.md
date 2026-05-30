@@ -87,8 +87,8 @@ n=36 │ ███████████████████████�
   DIIS convergence is slower for charged open-ish systems near the minimal
   basis limit.
 - **H2O gradient (6.8 s)** is dominated by 18 × 370 ms SCF calls. An
-  analytic gradient implementation would reduce this to a single-pass cost
-  comparable to one SCF cycle.
+  true recurrence-based analytic gradient implementation would reduce this
+  to a single-pass cost comparable to one SCF cycle.
 
 ---
 
@@ -98,7 +98,7 @@ n=36 │ ███████████████████████�
 |----------|--------|-----------------|
 | High | Vectorise ERI inner loop with NumPy | 10–50× |
 | High | Cauchy-Schwarz integral screening | 2–10× (larger basis) |
-| Medium | Analytic gradient | ~18× for H2O gradient |
+| Medium | True recurrence-based analytic gradient | ~18× for H2O gradient |
 | Medium | Exploit 8-fold ERI permutation symmetry in storage | 8× memory |
 | Low | GPU offload (CuPy or custom CUDA) | 100–1000× for ERI |
 | Low | Density fitting / RI approximation | n^3 vs n^4 |

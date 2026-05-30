@@ -125,3 +125,36 @@ Format:
 - Citation: Casida (1995), in Recent Advances in Density Functional Methods;
   Burke et al. (2005) J. Chem. Phys. 123, 062206
 
+
+## Integral derivative finite-difference step
+- Value: `h = 1e-4` Bohr for central differences of overlap, core-Hamiltonian,
+  and ERI tensors used by the Phase 18 RHF gradient expression.
+- File: `src/molekul/grad.py`
+- Set by: Codex | 2026-05-29
+- Justification: The derivative is applied to smooth Gaussian integral tensors;
+  `1e-4` Bohr keeps truncation error below the `1e-7` integral-derivative test
+  tolerance while avoiding cancellation seen at substantially smaller steps.
+- Citation: Helgaker, Jørgensen & Olsen §10.2
+
+## Periodic Bloch lattice-sum cutoff
+- Value: `r_max_factor = 4.0`; lattice vectors with `|R| <= 4 * max(|a_i|)`
+  are included in Phase 20a Bloch-summed one-electron matrices.
+- File: `src/molekul/periodic.py`
+- Set by: Codex | 2026-05-29
+- Justification: This finite real-space shell is large enough for the Phase 20a
+  H2-in-a-box molecular-limit validation while keeping the educational lattice
+  sum explicit and inexpensive. Later periodic HF phases should replace this
+  with physically converged real/reciprocal-space treatments where needed.
+- Citation: Ashcroft & Mermin, Ch. 8; Szabo & Ostlund, Appendix A for Gaussian
+  one-electron integral decay.
+
+## Periodic HF 1D SCF controls
+- Value: `max_iter = 100`, `conv_tol = 1e-8` on max density-matrix change.
+- File: `src/molekul/periodic.py`
+- Set by: Codex | 2026-05-29
+- Justification: Mirrors the molecular SCF iteration ceiling while using a
+  density convergence threshold appropriate for the small STO-3G H-chain
+  validation. The Phase 20b validation converges in 2 iterations for the tested
+  Gamma and 4-k meshes.
+- Citation: Szabo & Ostlund, §3.4; Ashcroft & Mermin, Ch. 8.
+
