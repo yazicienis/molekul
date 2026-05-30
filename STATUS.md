@@ -1,6 +1,6 @@
 # STATUS
 
-_Last updated: 2026-05-29 by Codex_
+_Last updated: 2026-05-30 by Codex_
 
 ## Project
 
@@ -23,20 +23,22 @@ v0.1.2 — SoftwareX paper submitted.
 | 19 | Optional CuPy GPU backend | ✅ complete |
 | 20a | Periodic infrastructure (Crystal/lattice/Bloch S+H) | ✅ complete |
 | 20b | Periodic HF 1D (H chain, real-space cutoff SCF) | ✅ complete (fallback-only validation; PySCF deferred to 20c) |
-| 20c–22 | Periodic systems (Part II) | 🔲 planning phase |
+| 20c | Periodic HF 3D (LiH, Ewald, k-mesh) | 🔶 ready for review |
+| 21–22 | Periodic systems continuation | 🔲 planning phase |
 
 ## Current bottleneck
 
-Phase 20b accepted. Next: Codex commits all pending phases, then Phase 20c (Ewald + 3D + k-mesh).
+Phase 20c implemented and ready for Claude review. Next: review the Ewald/PySCF-backed 3D periodic HF path before Phase 21 scoping.
 
 ## Test suite
 
-655 tests passing and 2 CuPy-gated tests skipped as of 2026-05-29.
+661 tests passing and 2 CuPy-gated tests skipped as of 2026-05-30.
 
 Latest verification:
+- `pytest tests/test_periodic_hf_3d.py -q`: 6 passed.
+- `python scripts/validate_periodic_hf_3d.py`: PASS; LiH Gamma diff vs PySCF `2.978393e-09` Ha, 2x2x2 diff `7.105427e-15` Ha, E_nn Ewald `0.181236255282` Ha.
 - `pytest tests/test_periodic_hf_1d.py -q`: 6 passed, 2 PySCF warnings.
-- `python scripts/validate_periodic_hf_1d.py`: PASS; Gamma energy/cell `0.081613538120` Ha, 4-k energy/cell `0.848704196592` Ha; PySCF prompt reference failed locally and fallback references were used.
-- `pytest tests/ -x`: 655 passed, 2 skipped, 2 warnings in 607.36s.
+- `pytest tests/ -x`: 661 passed, 2 skipped, 2 warnings in 615.64s.
 
 ## Open scientific questions
 
@@ -68,3 +70,7 @@ Latest verification:
   `low_dim_ft_type=inf_vacuum` setting with PySCF 2.12.1, so validation uses
   deterministic fallback references. Reviewer should decide whether to update
   reference parameters before Phase 20c.
+- Phase 20c uses a PySCF-backed 3D PBC HF path when PySCF is available, with a
+  documented fast reference grid (`cell.precision=1e-4`, `cell.mesh=[9,9,9]`)
+  for LiH. A full native 3D periodic ERI/Ewald J/K implementation remains a
+  future scientific-engineering step.

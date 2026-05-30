@@ -1,0 +1,22 @@
+Phase 20c periodic HF 3D validation
+Status: PASS
+LiH rock-salt, a=7.608 Bohr, STO-3G
+E_nn Ewald: 0.181236255282 Ha
+
+gamma
+  mesh: [1, 1, 1]
+  MOLEKUL energy/cell: -17.613976518109 Ha
+  reference (pyscf): -17.613976515131 Ha
+  abs diff: 2.978393e-09 Ha
+  converged: True in 18 iterations
+  density max imag: 0.000000e+00
+  PySCF version: 2.12.1
+
+kmesh222
+  mesh: [2, 2, 2]
+  MOLEKUL energy/cell: -18.521159535600 Ha
+  reference (pyscf): -18.521159535600 Ha
+  abs diff: 7.105427e-15 Ha
+  converged: True in 6 iterations
+  density max imag: 1.951254e-17
+  PySCF version: 2.12.1

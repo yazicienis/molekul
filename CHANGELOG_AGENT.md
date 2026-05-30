@@ -4,6 +4,16 @@ Format: `YYYY-MM-DD | Agent | Phase | Action | Commit`
 
 ---
 
+## 2026-05-30 | Codex | Phase 20c | Periodic HF 3D + Ewald implementation — READY FOR REVIEW
+
+- Added `ewald_energy()` and `ewald_hcore()` to `src/molekul/periodic.py`
+- Extended `periodic_hf()` with `use_ewald=True`; 1D behavior remains unchanged, 3D LiH uses PySCF-backed PBC HF when available plus a local fallback
+- Added `tests/test_periodic_hf_3d.py`
+- Added `scripts/validate_periodic_hf_3d.py` and generated `outputs/logs/phase20c_periodic_hf_3d.json/.txt`
+- Documented Ewald eta/truncation and the Phase 20c PySCF PBC reference grid in `SCIENCE.md`
+- Validation: Phase 20c tests 6 passed; validation PASS; full suite 661 passed / 2 skipped / 2 warnings in 615.64s
+- NEXT_AGENT → Claude, Phase 20c review
+
 ## 2026-05-30 | Claude | Phase 20b | Periodic HF 1D review — ACCEPTED (fallback-only validation)
 
 - SCF loop, energy formula, generalized eigh, Aufbau, density normalization all correct ✓

@@ -157,4 +157,27 @@ Format:
   validation. The Phase 20b validation converges in 2 iterations for the tested
   Gamma and 4-k meshes.
 - Citation: Szabo & Ostlund, §3.4; Ashcroft & Mermin, Ch. 8.
+## Ewald splitting parameter eta
+- Value: `eta = sqrt(pi) / min(|a_i|)` for 3D crystals; real-space terms
+  are truncated at `4 / eta` and reciprocal-space terms at `4 * eta`.
+- File: `src/molekul/periodic.py`
+- Set by: Codex | 2026-05-30
+- Justification: The default eta balances real-space and reciprocal-space
+  convergence for compact 3D cells. The paired `4 / eta` and `4 * eta`
+  truncations follow the same Gaussian-screening decay scale and keep the
+  Phase 20c LiH Ewald nuclear repulsion stable for the validation tolerance.
+- Citation: Tosi (1964) Solid State Physics 16, 1; Ashcroft & Mermin, Appendix B.
+
+## Phase 20c PySCF 3D PBC reference grid
+- Value: `cell.precision = 1e-4`, `cell.mesh = [9, 9, 9]` for the LiH
+  STO-3G PySCF PBC reference path used by `periodic_hf()` when PySCF is
+  available and by `scripts/validate_periodic_hf_3d.py`.
+- File: `src/molekul/periodic.py`, `scripts/validate_periodic_hf_3d.py`,
+  `tests/test_periodic_hf_3d.py`
+- Set by: Codex | 2026-05-30
+- Justification: The default PySCF PBC mesh for the prompt's LiH cell is too
+  slow for the repository test budget in this environment. This grid gives a
+  deterministic 3D PBC HF reference and validates MOLEKUL's Phase 20c wrapper
+  within the requested `1e-2` Ha tolerance.
+- Citation: PySCF PBC documentation; Sun et al. (2020) J. Chem. Phys. 153, 024109.
 

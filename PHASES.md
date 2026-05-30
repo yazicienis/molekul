@@ -36,7 +36,7 @@ Validation logs live in `outputs/logs/phaseNN_<name>.{json,txt}`.
 | 16 | UHF (unrestricted HF) | `uhf.py` | ✅ |
 | 17 | TD-DFT (Casida TDA) | `tddft.py` | ✅ |
 
-628 tests passing as of 2026-05-27.
+661 tests passing as of 2026-05-30.
 
 ---
 
@@ -56,9 +56,9 @@ Validation logs live in `outputs/logs/phaseNN_<name>.{json,txt}`.
 |---|------|-----------|--------|--------|
 | 18 | Semi-numerical RHF gradient (analytic expression + FD integral derivatives) | 4 | `prompts/phase18_analytic_grad.md` | ✅ complete |
 | 19 | GPU backend (optional CuPy) | 4, 11 | `prompts/phase19_gpu_backend.md` | ✅ complete |
-| 20a | Periodic infrastructure (Crystal, lattice, Bloch S+H) | 19 | `prompts/phase20a_periodic_infrastructure.md` | 🔶 ready for review |
-| 20b | Periodic HF 1D (H chain, real-space cutoff) | 20a | `prompts/phase20b_periodic_hf_1d.md` | 🔶 ready for review |
-| 20c | Periodic HF 3D (LiH, Ewald, k-mesh) | 20b | `prompts/phase20c_periodic_hf_3d.md` | 📋 ready |
+| 20a | Periodic infrastructure (Crystal, lattice, Bloch S+H) | 19 | `prompts/phase20a_periodic_infrastructure.md` | ✅ complete |
+| 20b | Periodic HF 1D (H chain, real-space cutoff) | 20a | `prompts/phase20b_periodic_hf_1d.md` | ✅ complete |
+| 20c | Periodic HF 3D (LiH, Ewald, k-mesh) | 20b | `prompts/phase20c_periodic_hf_3d.md` | 🔶 ready for review |
 | 21 | Periodic KS-DFT | 20c, 12 | `prompts/phase21_periodic_dft.md` | 📝 after 20c |
 | 22 | Band structure & DOS | 20c, 21 | `prompts/phase22_bands_dos.md` | 📝 after 21 |
 | 23 | Phonons (finite difference) | 18, 20b | `prompts/phase23_phonons.md` | 📝 after 22 |

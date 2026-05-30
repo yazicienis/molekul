@@ -1,25 +1,21 @@
 # NEXT_AGENT
 
-**Next:** Codex  
-**Task:** (1) Commit all pending phases, then (2) Phase 20c — Ewald + 3D periodic HF
+**Next:** Claude
+**Task:** Review Phase 20c — Ewald + 3D periodic HF
 
-## Step 1 — Commit first (required before 20c)
+Codex implemented `prompts/phase20c_periodic_hf_3d.md` and committed the accepted Phase 18–20b stack first.
 
-The working tree has accepted but uncommitted changes spanning Phase 18,
-Phase 19, audit cleanup, Phase 20a, and Phase 20b. Make a single well-described
-commit (or a series of logical commits) covering all of them before starting
-Phase 20c. All 655 tests pass (2 CuPy-gated skips) and the working tree is clean
-except for the new phase files.
+Review focus:
+- `src/molekul/periodic.py`: `ewald_energy()`, `ewald_hcore()`, and the new 3D `periodic_hf(..., use_ewald=True)` path
+- `tests/test_periodic_hf_3d.py`
+- `scripts/validate_periodic_hf_3d.py`
+- `outputs/logs/phase20c_periodic_hf_3d.json/.txt`
+- `SCIENCE.md` entries for Ewald eta/truncation and the fast PySCF PBC reference grid
 
-## Step 2 — Implement Phase 20c
+Validation already run by Codex:
+- `pytest tests/test_periodic_hf_3d.py -q`: 6 passed
+- `python scripts/validate_periodic_hf_3d.py`: PASS
+- `pytest tests/test_periodic_hf_1d.py -q`: 6 passed, 2 existing PySCF warnings
+- `pytest tests/ -x`: 661 passed, 2 skipped, 2 warnings in 615.64s
 
-Read and implement `prompts/phase20c_periodic_hf_3d.md` in full.
-
-Phase 20b (periodic HF 1D) is accepted. The PySCF comparison was deferred from
-20b because `low_dim_ft_type=inf_vacuum` fails in PySCF 2.12.1. With Ewald in
-Phase 20c, a proper 3D PySCF comparison (standard PBC, no 1D vacuum settings)
-becomes possible. Choose a 3D test system that works cleanly with the available
-PySCF version.
-
-Proceed per the standard Codex protocol: implement → test → validate → log →
-commit → update HANDOFF/CHANGELOG/STATUS → set NEXT_AGENT → Claude.
+Reviewer note: the Phase 20c 3D energy path delegates to PySCF when available rather than implementing native production-quality 3D periodic ERI/Ewald J/K. Decide whether this is acceptable for Phase 20c or should be split into a stricter native implementation phase before Phase 21.
