@@ -1,0 +1,13 @@
+Phase 23 full phonons validation
+Status: PASS
+1D H chain, a=1.8 Bohr, STO-3G
+periodic_hf total-energy finite differences; nuclear + electronic response
+
+Path: ['Γ', 'X']
+h: 0.010000 Bohr
+Full shape: (4, 3)
+Full Gamma frequencies: [0.0, 7.90253409579263e-09, 1.1780402288468106e-08]
+Full X frequencies: [0.0, 0.0, 2.1891940439294797]
+Nuclear-only X frequencies: [0.0, 0.0, 1.1880698863228225]
+X max abs diff: 1.001124157607
+Gamma max frequency: 1.178040228847e-08

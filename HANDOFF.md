@@ -1,5 +1,33 @@
 # HANDOFF
 
+## Current action (Codex — implementer, 2026-06-01, READY FOR REVIEW)
+
+Phase 23 full phonons implementation complete.
+
+- Added `periodic_force_constants()` to `src/molekul/periodic.py` using 4-point finite differences of `periodic_hf()` total energies
+- Added `phonon_band_structure_full()` reusing the Phase 22 dynamical-matrix path with full SCF force-constant blocks
+- Added `tests/test_phonons_full.py` covering shape, Gamma acoustic behavior, 3D NotImplementedError, full-vs-nuclear difference, and finite X frequency
+- Added `scripts/validate_phonons_full.py` and generated `outputs/logs/phase23_phonons_full.json/.txt`
+- Documented full periodic phonon finite-difference controls in `SCIENCE.md`
+
+Validation:
+- `pytest tests/test_phonons_full.py -q`: 5 passed
+- `python scripts/validate_phonons_full.py`: PASS
+  - Full Gamma max frequency: `1.178040228847e-08`
+  - Full X frequencies: `[0.0, 0.0, 2.1891940439294797]`
+  - Nuclear-only X frequencies: `[0.0, 0.0, 1.1880698863228225]`
+  - X max abs diff: `1.001124157607`
+- `pytest tests/test_phonons.py tests/test_phonons_full.py -q`: 9 passed
+- `pytest tests/ -x`: 682 passed, 2 skipped, 2 warnings in 634.59s
+
+Reviewer notes:
+- The current one-cell 1D `periodic_hf()` engine cannot independently displace two different image cells. `periodic_force_constants()` represents the relative displacement to cell R as a small lattice-vector perturbation before evaluating the SCF total energy. This keeps the implementation native and energy-based, and it clearly demonstrates the electronic contribution relative to Phase 22 nuclear-only phonons.
+- This is the intended natural endpoint of the current MOLEKUL phase stack unless the human decides to expand periodic HF/DFT beyond the educational 1D engine.
+
+NEXT_AGENT → Claude, Phase 23 review.
+
+---
+
 ## Current action (Claude — reviewer, 2026-06-01, ACCEPTED)
 
 Phase 22 DOS + nuclear-only phonons review passed.

@@ -1,20 +1,21 @@
 # NEXT_AGENT
 
-**Next:** Codex
-**Task:** Phase 23 — Tam Fononlar (elektronik + nükleer kuvvetler)
+**Next:** Claude
+**Task:** Review Phase 23 — full periodic-HF phonons
 
-## What to implement
+Codex implemented `prompts/phase23_phonons_full.md`.
 
-Read and implement `prompts/phase23_phonons_full.md` in full.
+Review focus:
+- `src/molekul/periodic.py`: `periodic_force_constants()` and `phonon_band_structure_full()`
+- `tests/test_phonons_full.py`
+- `scripts/validate_phonons_full.py`
+- `outputs/logs/phase23_phonons_full.json/.txt`
+- `SCIENCE.md` entry for full periodic phonon finite-difference controls
 
-Phase 22 (DOS + nuclear-only phonons) accepted. 677 tests pass.
+Validation already run by Codex:
+- `pytest tests/test_phonons_full.py -q`: 5 passed
+- `python scripts/validate_phonons_full.py`: PASS
+- `pytest tests/test_phonons.py tests/test_phonons_full.py -q`: 9 passed
+- `pytest tests/ -x`: 682 passed, 2 skipped, 2 warnings in 634.59s
 
-Key points:
-- `periodic_force_constants()`: `periodic_hf()` enerjisinden 4-noktalı FD
-- `phonon_band_structure_full()`: Phase 22'deki `phonon_band_structure()` ile aynı
-  dinamik matris ama tam kuvvet sabitleriyle
-- Test: `test_full_vs_nuclear_different()` — elektronik katkının varlığını göster
-- MOLECULES'ün doğal bitiş noktası bu faz
-
-Proceed per the standard protocol: implement → test → validate → log →
-commit → update HANDOFF/CHANGELOG/STATUS → NEXT_AGENT → Claude.
+Reviewer note: because the current periodic HF engine is one-cell/1D, relative image-cell displacement is represented as a small lattice-vector perturbation before SCF energy evaluation. This keeps Phase 23 native and energy-based, but it is still an educational force-constant model, not a production supercell phonon implementation.

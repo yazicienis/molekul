@@ -503,6 +503,18 @@ def phonon_band_structure(
         raise ValueError("r_max_factor must be positive")
     qpts, x_coords, tick_labels = kpath(crystal, special_points, path, n_points)
     blocks = _nuclear_force_constant_blocks(crystal, h, r_max_factor)
+    return _phonon_result_from_blocks(crystal, blocks, qpts, x_coords, tick_labels, path, n_points)
+
+
+def _phonon_result_from_blocks(
+    crystal: Crystal,
+    blocks: dict[tuple[float, float, float], np.ndarray],
+    qpts: np.ndarray,
+    x_coords: list[float],
+    tick_labels: list[str],
+    path: str,
+    n_points: int,
+) -> PhononResult:
     masses = np.repeat([ATOMIC_MASS[atom.Z] for atom in crystal.atoms], 3)
     mass_scale = np.sqrt(np.outer(masses, masses))
     frequencies = np.zeros((len(qpts), 3 * crystal.n_atoms), dtype=float)
@@ -522,6 +534,105 @@ def phonon_band_structure(
         tick_positions=_kpath_tick_positions(x_coords, n_segments, n_points),
         tick_labels=tick_labels,
     )
+
+
+def _scf_energy_for_lattice(
+    crystal: Crystal,
+    basis_fn: BasisSet,
+    lattice: np.ndarray,
+    r_max_factor: float,
+    scf_kwargs: dict | None,
+) -> float:
+    trial = Crystal(
+        lattice=np.asarray(lattice, dtype=float),
+        atoms=[Atom(atom.symbol, atom.coords.copy()) for atom in crystal.atoms],
+        charge=crystal.charge,
+        multiplicity=crystal.multiplicity,
+        name=crystal.name,
+    )
+    kwargs = dict(scf_kwargs or {})
+    kwargs.setdefault("r_max_factor", r_max_factor)
+    kmesh = kwargs.pop("kmesh", (1,))
+    result = periodic_hf(trial, basis_fn, monkhorst_pack(trial.lattice, kmesh), **kwargs)
+    return result.energy_per_cell
+
+
+def periodic_force_constants(
+    crystal: Crystal,
+    basis_fn: BasisSet,
+    h: float = 0.01,
+    r_max_factor: float = 4.0,
+    scf_kwargs: dict | None = None,
+) -> dict[tuple[float, float, float], np.ndarray]:
+    """Finite-difference force constants from 1D periodic HF total energy.
+
+    The current educational periodic HF engine represents one primitive cell.
+    For a 1D lattice, relative displacement of atom B in cell R is mapped to a
+    small change of the lattice vector R/n before evaluating the SCF energy.
+    This includes electronic and nuclear energy response in the same transparent
+    finite-difference path used by the rest of MOLEKUL.
+    """
+    if crystal.ndim != 1:
+        raise NotImplementedError("periodic_force_constants currently supports 1D crystals only")
+    if h <= 0.0:
+        raise ValueError("h must be positive")
+    if r_max_factor <= 0.0:
+        raise ValueError("r_max_factor must be positive")
+
+    max_lattice_len = float(np.max(np.linalg.norm(crystal.lattice, axis=1)))
+    R_vectors = crystal.lattice_vectors_in_shell(r_max_factor * max_lattice_len)
+    a_vec = crystal.lattice[0]
+    denom = float(np.dot(a_vec, a_vec))
+    n_cart = 3 * crystal.n_atoms
+    zero_key = _block_key(np.zeros(3))
+    blocks: dict[tuple[float, float, float], np.ndarray] = {zero_key: np.zeros((n_cart, n_cart), dtype=float)}
+
+    for R in R_vectors:
+        coeff = int(round(float(np.dot(R, a_vec) / denom)))
+        if coeff == 0:
+            continue
+        block = np.zeros((n_cart, n_cart), dtype=float)
+        for ia in range(crystal.n_atoms):
+            for ib in range(crystal.n_atoms):
+                for alpha in range(3):
+                    for beta in range(3):
+                        row = 3 * ia + alpha
+                        col = 3 * ib + beta
+
+                        def energy(sign_a: float, sign_b: float) -> float:
+                            relative = np.zeros(3)
+                            relative[alpha] -= sign_a * h / coeff
+                            relative[beta] += sign_b * h / coeff
+                            lattice = crystal.lattice.copy()
+                            lattice[0] = a_vec + relative
+                            return _scf_energy_for_lattice(crystal, basis_fn, lattice, r_max_factor, scf_kwargs)
+
+                        block[row, col] = (
+                            energy(1.0, 1.0)
+                            - energy(1.0, -1.0)
+                            - energy(-1.0, 1.0)
+                            + energy(-1.0, -1.0)
+                        ) / (4.0 * h * h)
+        blocks[_block_key(R)] = block
+        blocks[zero_key] -= block
+    return blocks
+
+
+def phonon_band_structure_full(
+    crystal: Crystal,
+    basis_fn: BasisSet,
+    special_points: dict[str, np.ndarray],
+    path: str,
+    n_points: int = 30,
+    h: float = 0.01,
+    r_max_factor: float = 4.0,
+) -> PhononResult:
+    """Full 1D phonon bands from periodic SCF finite-difference force constants."""
+    if crystal.ndim != 1:
+        raise NotImplementedError("phonon_band_structure_full currently supports 1D crystals only")
+    qpts, x_coords, tick_labels = kpath(crystal, special_points, path, n_points)
+    blocks = periodic_force_constants(crystal, basis_fn, h=h, r_max_factor=r_max_factor)
+    return _phonon_result_from_blocks(crystal, blocks, qpts, x_coords, tick_labels, path, n_points)
 
 
 @dataclass

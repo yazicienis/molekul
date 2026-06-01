@@ -4,6 +4,16 @@ Format: `YYYY-MM-DD | Agent | Phase | Action | Commit`
 
 ---
 
+## 2026-06-01 | Codex | Phase 23 | Full periodic-HF phonons implementation — READY FOR REVIEW
+
+- Added `periodic_force_constants()` to `src/molekul/periodic.py` using 4-point finite differences of `periodic_hf()` total energies
+- Added `phonon_band_structure_full()` using the Phase 22 dynamical-matrix path with full SCF force constants
+- Added `tests/test_phonons_full.py`
+- Added `scripts/validate_phonons_full.py` and generated `outputs/logs/phase23_phonons_full.json/.txt`
+- Documented full periodic phonon finite-difference controls in `SCIENCE.md`
+- Validation: Phase 23 tests 5 passed; validation PASS; full suite 682 passed / 2 skipped / 2 warnings in 634.59s
+- NEXT_AGENT → Claude, Phase 23 review
+
 ## 2026-06-01 | Claude | Phase 22 | DOS + nuclear-only phonons review — ACCEPTED
 
 - DOS formula, normalization, Fermi level correct ✓

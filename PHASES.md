@@ -36,7 +36,7 @@ Validation logs live in `outputs/logs/phaseNN_<name>.{json,txt}`.
 | 16 | UHF (unrestricted HF) | `uhf.py` | ✅ |
 | 17 | TD-DFT (Casida TDA) | `tddft.py` | ✅ |
 
-677 tests passing as of 2026-06-01.
+682 tests passing as of 2026-06-01.
 
 ---
 
@@ -61,7 +61,7 @@ Validation logs live in `outputs/logs/phaseNN_<name>.{json,txt}`.
 | 20c | Periodic HF 3D (LiH, Ewald, k-mesh) | 20b | `prompts/phase20c_periodic_hf_3d.md` | ✅ complete |
 | 21 | Band structure (H chain + LiH, native tight-binding) | 20c | `prompts/phase21_periodic_dft.md` | ✅ complete |
 | 22 | DOS + nuclear-only phonons | 21 | `prompts/phase22_dos_phonons.md` | ✅ complete |
-| 23 | Full phonons (nuclear + electronic force constants) | 18, 20b, 22 | `prompts/phase23_phonons_full.md` | 🔲 next |
+| 23 | Full phonons (nuclear + electronic force constants) | 18, 20b, 22 | `prompts/phase23_phonons_full.md` | 🔶 ready for review |
 
 ---
 

@@ -26,21 +26,21 @@ v0.1.2 — SoftwareX paper submitted.
 | 20c | Periodic HF 3D (Ewald E_nn + Bloch H_core; 3D SCF out of scope) | ✅ complete |
 | 21 | Band structure (H chain + LiH, native tight-binding) | ✅ complete |
 | 22 | DOS + nuclear-only phonons | ✅ complete |
-| 23 | Full phonons (nuclear + electronic force constants) | 🔲 next |
+| 23 | Full phonons (nuclear + electronic force constants) | 🔶 ready for review |
 
 ## Current bottleneck
 
-Phase 23 prompt hazır. Next: Codex Phase 23 (prompts/phase23_phonons_full.md).
+Phase 23 implemented. Next: Claude review; this is the natural endpoint unless new phases are scoped.
 
 ## Test suite
 
-677 tests passing and 2 CuPy-gated tests skipped as of 2026-06-01.
+682 tests passing and 2 CuPy-gated tests skipped as of 2026-06-01.
 
 Latest verification:
-- `pytest tests/test_dos.py tests/test_phonons.py -q`: 9 passed.
-- `python scripts/validate_dos_phonons.py`: PASS; DOS integral `0.999995741333`, phonon shape `(30, 3)`, Gamma max frequency `7.679882693324e-09`.
-- `pytest tests/test_band_structure.py tests/test_periodic_hf_1d.py -q`: 13 passed, 2 PySCF warnings.
-- `pytest tests/ -x`: 677 passed, 2 skipped, 2 warnings in 618.56s.
+- `pytest tests/test_phonons_full.py -q`: 5 passed.
+- `python scripts/validate_phonons_full.py`: PASS; Full Gamma max frequency `1.178040228847e-08`, X max abs diff vs nuclear-only `1.001124157607`.
+- `pytest tests/test_phonons.py tests/test_phonons_full.py -q`: 9 passed.
+- `pytest tests/ -x`: 682 passed, 2 skipped, 2 warnings in 634.59s.
 
 ## Open scientific questions
 
@@ -82,3 +82,7 @@ Latest verification:
 - Phase 22 phonons use nuclear-repulsion-only force constants with the acoustic
   sum rule. Electronic force constants are omitted, so these are educational
   dynamical-matrix values rather than physical production phonons.
+- Phase 23 full phonons use periodic-HF total-energy finite differences. The
+  one-cell 1D representation maps relative displacement to image cell R onto a
+  small lattice-vector perturbation, so this remains an educational native
+  model rather than production-grade supercell force constants.

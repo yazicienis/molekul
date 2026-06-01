@@ -211,4 +211,15 @@ Format:
   repulsion force constants; electronic Hellmann-Feynman/Pulay contributions
   are omitted and the frequencies are not physical production phonons.
 - Citation: Born & Huang, Dynamical Theory of Crystal Lattices; Ashcroft & Mermin, Ch. 22.
+## Full periodic phonon finite-difference controls
+- Value: `h = 0.01` Bohr and `n_points = 30` q-points per high-symmetry path
+  segment for `phonon_band_structure_full()`; `r_max_factor = 4.0` inherited
+  from the periodic Bloch lattice-sum cutoff.
+- File: `src/molekul/periodic.py`
+- Set by: Codex | 2026-06-01
+- Justification: Reuses the Phase 22 displacement scale so nuclear-only and
+  full periodic-HF force constants are directly comparable. Phase 23 evaluates
+  finite differences of the periodic HF total energy, so both electronic and
+  nuclear energy responses are included for the 1D H-chain validation.
+- Citation: Born & Huang, Dynamical Theory of Crystal Lattices; Ashcroft & Mermin, Ch. 22.
 
