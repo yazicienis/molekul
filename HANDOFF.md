@@ -1,6 +1,22 @@
 # HANDOFF
 
-## Current action (Codex — implementer, 2026-06-01, READY FOR REVIEW)
+## Current action (Claude — reviewer, 2026-06-01, ACCEPTED)
+
+Phase 22 DOS + nuclear-only phonons review passed.
+
+- DOS: Gaussian broadening 1/(σ√(2π)N_k)·Σ exp(−½((E−ε)/σ)²), integral=1 for 1-band H chain ✓
+- Fermi level = max of n_occ. band eigenvalue ✓
+- Force constants: 4-point cross FD ∂²E/(∂u_Aα ∂u_Bβ) ✓
+- Acoustic sum rule: R=0 block = −Σ_{R≠0} blocks → Γ frequencies ≈ 7.7e-9 ✓
+- Dynamical matrix D/√(m_A m_B), eigvalsh + √max(ω²,0) ✓
+- ATOMIC_MASS from constants.py, same pattern as freqs.py ✓
+- 9/9 new tests, 677/677 total pass ✓
+- Nuclear-only scope clearly documented: no Hellmann-Feynman/Pulay terms
+- NEXT_AGENT → Human (Part II complete, next: Phase 23 scoping or notebooks)
+
+---
+
+## Previous action (Codex — implementer, 2026-06-01, READY FOR REVIEW)
 
 Phase 22 DOS + nuclear-only phonons implementation complete.
 

@@ -25,11 +25,12 @@ v0.1.2 — SoftwareX paper submitted.
 | 20b | Periodic HF 1D (H chain, real-space cutoff SCF) | ✅ complete (fallback-only validation; PySCF deferred to 20c) |
 | 20c | Periodic HF 3D (Ewald E_nn + Bloch H_core; 3D SCF out of scope) | ✅ complete |
 | 21 | Band structure (H chain + LiH, native tight-binding) | ✅ complete |
-| 22 | DOS + nuclear-only phonons | 🔶 ready for review |
+| 22 | DOS + nuclear-only phonons | ✅ complete |
+| 23 | Full phonons (nuclear + electronic force constants) | 🔲 next |
 
 ## Current bottleneck
 
-Phase 22 implemented. Next: Claude review.
+Phase 23 prompt hazır. Next: Codex Phase 23 (prompts/phase23_phonons_full.md).
 
 ## Test suite
 

@@ -1,22 +1,20 @@
 # NEXT_AGENT
 
-**Next:** Claude
-**Task:** Review Phase 22 — DOS + nuclear-only phonons
+**Next:** Codex
+**Task:** Phase 23 — Tam Fononlar (elektronik + nükleer kuvvetler)
 
-Codex implemented `prompts/phase22_dos_phonons.md`.
+## What to implement
 
-Review focus:
-- `src/molekul/periodic.py`: `DOSResult`, `dos()`, `PhononResult`, `phonon_band_structure()`
-- `tests/test_dos.py`
-- `tests/test_phonons.py`
-- `scripts/validate_dos_phonons.py`
-- `outputs/logs/phase22_dos_phonons.json/.txt`
-- `SCIENCE.md` entries for DOS broadening and nuclear-only phonon finite-difference controls
+Read and implement `prompts/phase23_phonons_full.md` in full.
 
-Validation already run by Codex:
-- `pytest tests/test_dos.py tests/test_phonons.py -q`: 9 passed
-- `python scripts/validate_dos_phonons.py`: PASS
-- `pytest tests/test_band_structure.py tests/test_periodic_hf_1d.py -q`: 13 passed, 2 existing PySCF warnings
-- `pytest tests/ -x`: 677 passed, 2 skipped, 2 warnings in 618.56s
+Phase 22 (DOS + nuclear-only phonons) accepted. 677 tests pass.
 
-Reviewer note: phonons intentionally include only nuclear repulsion force constants. Electronic Hellmann-Feynman/Pulay force constants are omitted, so the resulting frequencies are educational infrastructure values, not physical production phonons.
+Key points:
+- `periodic_force_constants()`: `periodic_hf()` enerjisinden 4-noktalı FD
+- `phonon_band_structure_full()`: Phase 22'deki `phonon_band_structure()` ile aynı
+  dinamik matris ama tam kuvvet sabitleriyle
+- Test: `test_full_vs_nuclear_different()` — elektronik katkının varlığını göster
+- MOLECULES'ün doğal bitiş noktası bu faz
+
+Proceed per the standard protocol: implement → test → validate → log →
+commit → update HANDOFF/CHANGELOG/STATUS → NEXT_AGENT → Claude.

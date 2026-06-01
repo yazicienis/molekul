@@ -4,6 +4,14 @@ Format: `YYYY-MM-DD | Agent | Phase | Action | Commit`
 
 ---
 
+## 2026-06-01 | Claude | Phase 22 | DOS + nuclear-only phonons review — ACCEPTED
+
+- DOS formula, normalization, Fermi level correct ✓
+- Force constants 4-pt cross FD, acoustic sum rule, dynamical matrix D/√(m_A m_B) ✓
+- ATOMIC_MASS from constants.py ✓; 9 new tests + 677 total pass ✓
+- Part II (Phases 18–22) complete
+- NEXT_AGENT → Human
+
 ## 2026-06-01 | Codex | Phase 22 | DOS + nuclear-only phonons implementation — READY FOR REVIEW
 
 - Added `DOSResult` and `dos()` to `src/molekul/periodic.py` with Gaussian broadening from `BandStructureResult`
