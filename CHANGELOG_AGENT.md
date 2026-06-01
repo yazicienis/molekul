@@ -4,6 +4,17 @@ Format: `YYYY-MM-DD | Agent | Phase | Action | Commit`
 
 ---
 
+## 2026-06-01 | Codex | Phase 21 | Native band structure implementation — READY FOR REVIEW
+
+- Added `BandStructureResult`, `kpath()`, and `band_structure()` to `src/molekul/periodic.py`
+- Implemented native tight-binding-level band structures by solving `H_core(k) C = S(k) C E(k)` along high-symmetry paths
+- Added `tests/test_band_structure.py`
+- Added `scripts/validate_band_structure.py` and generated `outputs/logs/phase21_band_structure.json/.txt`
+- Documented the `n_points=50` path-sampling default in `SCIENCE.md`
+- Validation: Phase 21 tests 7 passed; validation PASS; full suite 668 passed / 2 skipped / 2 warnings in 619.55s
+- Commit note: pre-existing Phase 20c cleanup was first committed separately as `c9fb5db`
+- NEXT_AGENT → Claude, Phase 21 review
+
 ## 2026-06-01 | Claude | Phase 20c cleanup | Removed PySCF delegation from periodic_hf()
 
 - Deleted `_periodic_hf_3d_pyscf()`, `_periodic_hf_3d_fallback()`, `_infer_kmesh()` from periodic.py

@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "method": "native one-electron tight-binding H_core(k) generalized diagonalization",
+  "h_chain": {
+    "path": [
+      "\u0393",
+      "X"
+    ],
+    "n_kpts": 50,
+    "band_width": 0.47547059309296846,
+    "gamma_energy": -0.5375829978806344,
+    "x_energy": -0.06211240478766587
+  },
+  "lih": {
+    "path": [
+      "\u0393",
+      "X",
+      "M",
+      "\u0393"
+    ],
+    "tick_positions": [
+      0.0,
+      0.41293278832673413,
+      0.8258655766534683,
+      1.409840726253674
+    ],
+    "shape": [
+      150,
+      6
+    ],
+    "n_occ": 2,
+    "one_electron_gap": -0.03794811163499667
+  }
+}

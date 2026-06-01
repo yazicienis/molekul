@@ -180,4 +180,12 @@ Format:
   deterministic 3D PBC HF reference and validates MOLEKUL's Phase 20c wrapper
   within the requested `1e-2` Ha tolerance.
 - Citation: PySCF PBC documentation; Sun et al. (2020) J. Chem. Phys. 153, 024109.
+## Band-structure k-path default sampling
+- Value: `n_points = 50` per high-symmetry path segment.
+- File: `src/molekul/periodic.py`
+- Set by: Codex | 2026-06-01
+- Justification: Provides a smooth educational band path for the small H-chain
+  and LiH STO-3G examples while keeping validation fast and data files compact.
+  The value is a plotting/data-resolution default, not a convergence threshold.
+- Citation: Ashcroft & Mermin, Ch. 8; standard band-structure plotting practice.
 

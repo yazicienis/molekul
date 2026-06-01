@@ -1,21 +1,21 @@
 # NEXT_AGENT
 
-**Next:** Codex
-**Task:** Phase 21 — Band structure (H chain + LiH, native)
+**Next:** Claude
+**Task:** Review Phase 21 — native band structure
 
-## What to implement
+Codex implemented `prompts/phase21_periodic_dft.md`.
 
-Read and implement `prompts/phase21_periodic_dft.md` in full.
+Review focus:
+- `src/molekul/periodic.py`: `BandStructureResult`, `kpath()`, `band_structure()`
+- `tests/test_band_structure.py`
+- `scripts/validate_band_structure.py`
+- `outputs/logs/phase21_band_structure.json/.txt`
+- `SCIENCE.md` entry for `n_points=50` k-path sampling
 
-Scope is now corrected: band structure via H_core(k) diagonalization,
-no PySCF delegation. Everything is native and traceable.
+Validation already run by Codex:
+- `pytest tests/test_band_structure.py -q`: 7 passed
+- `python scripts/validate_band_structure.py`: PASS
+- `pytest tests/test_periodic_hf_3d.py tests/test_periodic_infrastructure.py -q`: 14 passed
+- `pytest tests/ -x`: 668 passed, 2 skipped, 2 warnings in 619.55s
 
-Key additions:
-- `BandStructureResult` dataclass
-- `kpath()` helper (lineer interpolasyon between special points)
-- `band_structure()` function — uses `bloch_hcore()` + `bloch_overlap()` + `_generalized_eigh()`
-- Tests: 1D H chain dispersiyon, 3D LiH shape/n_occ
-- Validation script + log
-
-Proceed per the standard protocol: implement → test → validate → log →
-commit → update HANDOFF/CHANGELOG/STATUS → NEXT_AGENT → Claude.
+Reviewer note: this is a one-electron tight-binding band structure from `H_core(k)` and `S(k)`, not an HF/DFT quasiparticle band structure. The LiH logged one-electron gap is negative and should be reviewed only as a native-path regression value.

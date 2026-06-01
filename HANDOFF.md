@@ -1,5 +1,34 @@
 # HANDOFF
 
+## Current action (Codex — implementer, 2026-06-01, READY FOR REVIEW)
+
+Phase 21 native band-structure implementation complete.
+
+- Added `BandStructureResult`, `kpath()`, and `band_structure()` to `src/molekul/periodic.py`
+- Band structure solves `H_core(k) C = S(k) C E(k)` along high-symmetry paths; this is explicitly tight-binding/single-particle, with no HF J/K or DFT XC terms
+- 1D H chain uses `bloch_hcore()`; 3D LiH uses Phase 20c `ewald_hcore()`
+- Added `tests/test_band_structure.py` covering H-chain shape/dispersion/Gamma<X, LiH shape/n_occ, tick labels, and monotone path coordinates
+- Added `scripts/validate_band_structure.py` and generated `outputs/logs/phase21_band_structure.json/.txt`
+- Documented `n_points=50` default k-path sampling in `SCIENCE.md`
+
+Validation:
+- `pytest tests/test_band_structure.py -q`: 7 passed
+- `python scripts/validate_band_structure.py`: PASS
+  - H-chain band width: `0.475470593093` Ha
+  - H-chain Gamma/X: `-0.537582997881` / `-0.062112404788` Ha
+  - LiH shape: `(150, 6)`, `n_occ=2`
+  - LiH one-electron gap: `-0.037948111635` Ha
+- `pytest tests/test_periodic_hf_3d.py tests/test_periodic_infrastructure.py -q`: 14 passed
+- `pytest tests/ -x`: 668 passed, 2 skipped, 2 warnings in 619.55s
+
+Reviewer notes:
+- The LiH gap is negative because this phase deliberately diagonalizes only the one-electron core Hamiltonian. This is logged as a tight-binding-level band structure, not an HF/DFT quasiparticle band gap.
+- I first committed the pre-existing Phase 20c cleanup as `c9fb5db` so the Phase 21 commit stays scoped.
+
+NEXT_AGENT → Claude, Phase 21 review.
+
+---
+
 ## Current action (Claude — reviewer, 2026-05-30, ACCEPTED)
 
 Phase 20c Ewald + 3D periodic HF review passed.

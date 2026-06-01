@@ -271,6 +271,104 @@ def ewald_hcore(
     shift = -ewald_energy(crystal, eta_val) / max(float(crystal.n_electrons), 1.0)
     return (H + shift * S).astype(np.complex128)
 
+
+
+@dataclass
+class BandStructureResult:
+    """Single-particle tight-binding band structure along a k-path."""
+
+    band_energies: np.ndarray
+    kpoints: np.ndarray
+    x_coords: list[float]
+    tick_positions: list[float]
+    tick_labels: list[str]
+    n_occ: int
+
+
+def _display_klabel(label: str) -> str:
+    return "Γ" if label in {"G", "Gamma", "GAMMA"} else label
+
+
+def kpath(
+    crystal: Crystal,
+    special_points: dict[str, np.ndarray],
+    path: str,
+    n_points: int,
+) -> tuple[np.ndarray, list[float], list[str]]:
+    """Build a linear high-symmetry k-path in Cartesian Bohr^-1.
+
+    `path` is a hyphen-separated label string such as `"G-X-M-G"`; each
+    segment contains `n_points` points including both endpoints.
+    """
+    if n_points <= 1:
+        raise ValueError("n_points must be greater than 1")
+    labels = path.split("-")
+    if len(labels) < 2:
+        raise ValueError("path must contain at least two special points")
+    missing = [label for label in labels if label not in special_points]
+    if missing:
+        raise ValueError(f"special point(s) missing from dictionary: {missing}")
+
+    kpoints: list[np.ndarray] = []
+    x_coords: list[float] = []
+    distance = 0.0
+    for left_label, right_label in zip(labels[:-1], labels[1:]):
+        start = np.asarray(special_points[left_label], dtype=float)
+        stop = np.asarray(special_points[right_label], dtype=float)
+        if start.shape != (3,) or stop.shape != (3,):
+            raise ValueError("special point coordinates must have shape (3,)")
+        segment = stop - start
+        segment_len = float(np.linalg.norm(segment))
+        for i in range(n_points):
+            t = i / (n_points - 1)
+            kpoints.append(start + t * segment)
+            x_coords.append(distance + t * segment_len)
+        distance += segment_len
+    return np.asarray(kpoints, dtype=float), x_coords, [_display_klabel(label) for label in labels]
+
+
+def _kpath_tick_positions(x_coords: list[float], n_segments: int, n_points: int) -> list[float]:
+    positions = [x_coords[0]]
+    for segment in range(n_segments):
+        positions.append(x_coords[(segment + 1) * n_points - 1])
+    return positions
+
+
+def band_structure(
+    crystal: Crystal,
+    basis_fn: BasisSet,
+    special_points: dict[str, np.ndarray],
+    path: str,
+    n_points: int = 50,
+) -> BandStructureResult:
+    """Compute a native one-electron tight-binding band structure.
+
+    The generalized eigenproblem H_core(k) C(k) = S(k) C(k) E(k) is solved
+    along a high-symmetry k-path. This is a tight-binding-level band structure:
+    real quasiparticle bands require HF exchange or DFT XC contributions, as in
+    production periodic electronic-structure codes.
+    """
+    kpts, x_coords, tick_labels = kpath(crystal, special_points, path, n_points)
+    S_k = bloch_overlap(crystal, basis_fn, kpts)
+    if crystal.ndim == 3:
+        H_k = ewald_hcore(crystal, basis_fn, kpts)
+    else:
+        H_k = bloch_hcore(crystal, basis_fn, kpts)
+    band_energies = np.zeros((len(kpts), basis_fn.n_basis(crystal)), dtype=float)
+    for ik in range(len(kpts)):
+        eps, _ = _generalized_eigh(H_k[ik], S_k[ik])
+        band_energies[ik] = eps
+    n_segments = len(path.split("-")) - 1
+    return BandStructureResult(
+        band_energies=band_energies,
+        kpoints=kpts,
+        x_coords=x_coords,
+        tick_positions=_kpath_tick_positions(x_coords, n_segments, n_points),
+        tick_labels=tick_labels,
+        n_occ=max(1, int(np.ceil(crystal.n_electrons / 2))),
+    )
+
+
 @dataclass
 class PeriodicHFResult:
     """Result container for cutoff periodic Hartree-Fock."""

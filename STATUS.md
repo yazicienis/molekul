@@ -1,6 +1,6 @@
 # STATUS
 
-_Last updated: 2026-05-30 by Codex_
+_Last updated: 2026-06-01 by Codex_
 
 ## Project
 
@@ -24,22 +24,22 @@ v0.1.2 — SoftwareX paper submitted.
 | 20a | Periodic infrastructure (Crystal/lattice/Bloch S+H) | ✅ complete |
 | 20b | Periodic HF 1D (H chain, real-space cutoff SCF) | ✅ complete (fallback-only validation; PySCF deferred to 20c) |
 | 20c | Periodic HF 3D (Ewald E_nn + Bloch H_core; 3D SCF out of scope) | ✅ complete |
-| 21 | Band structure (H chain + LiH, native tight-binding) | 🔲 next |
+| 21 | Band structure (H chain + LiH, native tight-binding) | 🔶 ready for review |
 | 22 | DOS + phonons | 🔲 planning phase |
 
 ## Current bottleneck
 
-Phase 20c PySCF delegation removed. Next: Codex Phase 21 (Band structure, prompts/phase21_periodic_dft.md).
+Phase 21 native band structure implemented. Next: Claude review before Phase 22 scoping.
 
 ## Test suite
 
-661 tests passing and 2 CuPy-gated tests skipped as of 2026-05-30.
+668 tests passing and 2 CuPy-gated tests skipped as of 2026-06-01.
 
 Latest verification:
-- `pytest tests/test_periodic_hf_3d.py -q`: 6 passed.
-- `python scripts/validate_periodic_hf_3d.py`: PASS; LiH Gamma diff vs PySCF `2.978393e-09` Ha, 2x2x2 diff `7.105427e-15` Ha, E_nn Ewald `0.181236255282` Ha.
-- `pytest tests/test_periodic_hf_1d.py -q`: 6 passed, 2 PySCF warnings.
-- `pytest tests/ -x`: 661 passed, 2 skipped, 2 warnings in 615.64s.
+- `pytest tests/test_band_structure.py -q`: 7 passed.
+- `python scripts/validate_band_structure.py`: PASS; H-chain band width `0.475470593093` Ha, LiH shape `(150, 6)`, n_occ `2`.
+- `pytest tests/test_periodic_hf_3d.py tests/test_periodic_infrastructure.py -q`: 14 passed.
+- `pytest tests/ -x`: 668 passed, 2 skipped, 2 warnings in 619.55s.
 
 ## Open scientific questions
 
@@ -75,3 +75,6 @@ Latest verification:
   documented fast reference grid (`cell.precision=1e-4`, `cell.mesh=[9,9,9]`)
   for LiH. A full native 3D periodic ERI/Ewald J/K implementation remains a
   future scientific-engineering step.
+- Phase 21 band structures are one-electron/tight-binding results from
+  generalized diagonalization of `H_core(k)` and `S(k)`. LiH logs a negative
+  one-electron gap, which should not be interpreted as an HF/DFT band gap.

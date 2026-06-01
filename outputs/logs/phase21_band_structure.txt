@@ -1,0 +1,16 @@
+Phase 21 native band-structure validation
+Status: PASS
+native one-electron tight-binding H_core(k) generalized diagonalization
+
+H chain
+  path: ['Γ', 'X']
+  n_kpts: 50
+  band width: 0.475470593093 Ha
+  Gamma energy: -0.537582997881 Ha
+  X energy: -0.062112404788 Ha
+
+LiH rock-salt
+  path: ['Γ', 'X', 'M', 'Γ']
+  shape: (150, 6)
+  n_occ: 2
+  one-electron gap: -0.037948111635 Ha
