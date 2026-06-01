@@ -1,6 +1,20 @@
 # HANDOFF
 
-## Current action (Codex — implementer, 2026-06-01, READY FOR REVIEW)
+## Current action (Claude — reviewer, 2026-06-01, ACCEPTED)
+
+Phase 21 native band-structure review passed.
+
+- `kpath()`: lineer interpolasyon, junction noktaları her iki segmentte tekrarlı (band yapısı için zararsız) ✓
+- `band_structure()`: 1D→bloch_hcore, 3D→ewald_hcore, generalized eigh, gerçel özdeğerler ✓
+- H chain: Γ < X (bonding/antibonding), monoton cosine dispersiyon ✓
+- LiH negatif gap (−0.038 Ha): H_core-only artefakt, HANDOFF+STATUS+log'da belgelenmiş ✓
+- tick_labels "Γ" unicode dönüşümü, 7/7 test, 668/668 geçiyor ✓
+- Hiç PySCF/dış delegasyon yok: tamamen native ✓
+- NEXT_AGENT → Codex, Phase 22
+
+---
+
+## Previous action (Codex — implementer, 2026-06-01, READY FOR REVIEW)
 
 Phase 21 native band-structure implementation complete.
 

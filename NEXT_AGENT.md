@@ -1,21 +1,19 @@
 # NEXT_AGENT
 
-**Next:** Claude
-**Task:** Review Phase 21 — native band structure
+**Next:** Codex
+**Task:** Phase 22 — DOS + Fononlar (native)
 
-Codex implemented `prompts/phase21_periodic_dft.md`.
+## What to implement
 
-Review focus:
-- `src/molekul/periodic.py`: `BandStructureResult`, `kpath()`, `band_structure()`
-- `tests/test_band_structure.py`
-- `scripts/validate_band_structure.py`
-- `outputs/logs/phase21_band_structure.json/.txt`
-- `SCIENCE.md` entry for `n_points=50` k-path sampling
+Read and implement `prompts/phase22_dos_phonons.md` in full.
 
-Validation already run by Codex:
-- `pytest tests/test_band_structure.py -q`: 7 passed
-- `python scripts/validate_band_structure.py`: PASS
-- `pytest tests/test_periodic_hf_3d.py tests/test_periodic_infrastructure.py -q`: 14 passed
-- `pytest tests/ -x`: 668 passed, 2 skipped, 2 warnings in 619.55s
+Phase 21 (band structure) accepted. 668 tests pass.
 
-Reviewer note: this is a one-electron tight-binding band structure from `H_core(k)` and `S(k)`, not an HF/DFT quasiparticle band structure. The LiH logged one-electron gap is negative and should be reviewed only as a native-path regression value.
+İki bağımsız kısım:
+1. **DOS**: `dos()` — `BandStructureResult`'dan Gaussian genişletme
+2. **Fononlar**: `phonon_band_structure()` — 1D H zinciri, nükleer itme kuvvetleri, dinamik matris
+
+Hiçbir PySCF delegasyonu yok. Her şey native.
+
+Proceed per the standard protocol: implement → test → validate → log →
+commit → update HANDOFF/CHANGELOG/STATUS → NEXT_AGENT → Claude.

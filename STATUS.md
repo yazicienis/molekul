@@ -24,12 +24,12 @@ v0.1.2 — SoftwareX paper submitted.
 | 20a | Periodic infrastructure (Crystal/lattice/Bloch S+H) | ✅ complete |
 | 20b | Periodic HF 1D (H chain, real-space cutoff SCF) | ✅ complete (fallback-only validation; PySCF deferred to 20c) |
 | 20c | Periodic HF 3D (Ewald E_nn + Bloch H_core; 3D SCF out of scope) | ✅ complete |
-| 21 | Band structure (H chain + LiH, native tight-binding) | 🔶 ready for review |
+| 21 | Band structure (H chain + LiH, native tight-binding) | ✅ complete |
 | 22 | DOS + phonons | 🔲 planning phase |
 
 ## Current bottleneck
 
-Phase 21 native band structure implemented. Next: Claude review before Phase 22 scoping.
+Phase 21 accepted. Next: Codex Phase 22 (DOS + phonons, native).
 
 ## Test suite
 
