@@ -12,6 +12,7 @@ import numpy as np
 from .atoms import Atom
 from .backend import get_xp, to_cpu, to_device
 from .basis import BasisSet
+from .constants import ATOMIC_MASS
 from .eri import _contracted_eri
 from .integrals import (
     _contracted_integral,
@@ -366,6 +367,160 @@ def band_structure(
         tick_positions=_kpath_tick_positions(x_coords, n_segments, n_points),
         tick_labels=tick_labels,
         n_occ=max(1, int(np.ceil(crystal.n_electrons / 2))),
+    )
+
+
+
+
+@dataclass
+class DOSResult:
+    """Gaussian-broadened density of states from a band structure."""
+
+    energies: np.ndarray
+    dos: np.ndarray
+    e_fermi: float
+
+
+def dos(
+    band_result: BandStructureResult,
+    n_grid: int = 500,
+    sigma: float = 0.02,
+    e_min: float | None = None,
+    e_max: float | None = None,
+) -> DOSResult:
+    """Compute a Gaussian-broadened DOS from native band energies."""
+    if n_grid <= 1:
+        raise ValueError("n_grid must be greater than 1")
+    if sigma <= 0.0:
+        raise ValueError("sigma must be positive")
+    bands = np.asarray(band_result.band_energies, dtype=float)
+    if bands.ndim != 2 or bands.size == 0:
+        raise ValueError("band energies must have shape (n_kpts, n_bands)")
+    n_kpts, n_bands = bands.shape
+    n_occ = min(max(int(band_result.n_occ), 1), n_bands)
+    e_fermi = float(np.max(bands[:, n_occ - 1]))
+    lo = float(np.min(bands) if e_min is None else e_min)
+    hi = float(np.max(bands) if e_max is None else e_max)
+    if lo >= hi:
+        raise ValueError("e_min must be smaller than e_max")
+    margin = 4.0 * sigma
+    if e_min is None:
+        lo -= margin
+    if e_max is None:
+        hi += margin
+    energies = np.linspace(lo, hi, n_grid)
+    prefactor = 1.0 / (sigma * sqrt(2.0 * pi) * n_kpts)
+    broadened = np.exp(-0.5 * ((energies[:, None, None] - bands[None, :, :]) / sigma) ** 2)
+    return DOSResult(energies=energies, dos=prefactor * np.sum(broadened, axis=(1, 2)), e_fermi=e_fermi)
+
+
+@dataclass
+class PhononResult:
+    """Nuclear-repulsion-only phonon bands along a q-path."""
+
+    frequencies: np.ndarray
+    qpoints: np.ndarray
+    x_coords: list[float]
+    tick_positions: list[float]
+    tick_labels: list[str]
+
+
+def _pair_repulsion_second_derivative(
+    atom_a: Atom,
+    atom_b: Atom,
+    R: np.ndarray,
+    alpha: int,
+    beta: int,
+    h: float,
+) -> float:
+    def pair_energy(sign_a: float, sign_b: float) -> float:
+        disp_a = np.zeros(3)
+        disp_b = np.zeros(3)
+        disp_a[alpha] = sign_a * h
+        disp_b[beta] = sign_b * h
+        delta = atom_a.coords + disp_a - (atom_b.coords + R + disp_b)
+        distance = float(np.linalg.norm(delta))
+        if distance < 1e-12:
+            return 0.0
+        return atom_a.Z * atom_b.Z / distance
+
+    return (
+        pair_energy(1.0, 1.0)
+        - pair_energy(1.0, -1.0)
+        - pair_energy(-1.0, 1.0)
+        + pair_energy(-1.0, -1.0)
+    ) / (4.0 * h * h)
+
+
+def _nuclear_force_constant_blocks(
+    crystal: Crystal,
+    h: float,
+    r_max_factor: float,
+) -> dict[tuple[float, float, float], np.ndarray]:
+    max_lattice_len = float(np.max(np.linalg.norm(crystal.lattice, axis=1)))
+    R_vectors = crystal.lattice_vectors_in_shell(r_max_factor * max_lattice_len)
+    n_cart = 3 * crystal.n_atoms
+    blocks: dict[tuple[float, float, float], np.ndarray] = {}
+    zero_key = _block_key(np.zeros(3))
+    blocks[zero_key] = np.zeros((n_cart, n_cart), dtype=float)
+    for R in R_vectors:
+        if np.linalg.norm(R) < 1e-12:
+            continue
+        block = np.zeros((n_cart, n_cart), dtype=float)
+        for ia, atom_a in enumerate(crystal.atoms):
+            for ib, atom_b in enumerate(crystal.atoms):
+                for alpha in range(3):
+                    for beta in range(3):
+                        row = 3 * ia + alpha
+                        col = 3 * ib + beta
+                        block[row, col] = _pair_repulsion_second_derivative(atom_a, atom_b, R, alpha, beta, h)
+        blocks[_block_key(R)] = block
+        blocks[zero_key] -= block
+    return blocks
+
+
+def phonon_band_structure(
+    crystal: Crystal,
+    basis_fn: BasisSet,
+    special_points: dict[str, np.ndarray],
+    path: str,
+    n_points: int = 30,
+    h: float = 0.01,
+    r_max_factor: float = 4.0,
+) -> PhononResult:
+    """Compute 1D nuclear-repulsion-only phonon bands.
+
+    This is an educational dynamical-matrix construction. It excludes electronic
+    Hellmann-Feynman/Pulay force constants, so the frequencies are not physical
+    production phonons.
+    """
+    del basis_fn
+    if crystal.ndim != 1:
+        raise NotImplementedError("phonon_band_structure currently supports 1D crystals only")
+    if h <= 0.0:
+        raise ValueError("h must be positive")
+    if r_max_factor <= 0.0:
+        raise ValueError("r_max_factor must be positive")
+    qpts, x_coords, tick_labels = kpath(crystal, special_points, path, n_points)
+    blocks = _nuclear_force_constant_blocks(crystal, h, r_max_factor)
+    masses = np.repeat([ATOMIC_MASS[atom.Z] for atom in crystal.atoms], 3)
+    mass_scale = np.sqrt(np.outer(masses, masses))
+    frequencies = np.zeros((len(qpts), 3 * crystal.n_atoms), dtype=float)
+    for iq, q in enumerate(qpts):
+        D = np.zeros((3 * crystal.n_atoms, 3 * crystal.n_atoms), dtype=np.complex128)
+        for key, block in blocks.items():
+            R = np.asarray(key, dtype=float)
+            D += np.exp(1j * float(q @ R)) * block / mass_scale
+        D = 0.5 * (D + D.conj().T)
+        omega2 = np.linalg.eigvalsh(D).real
+        frequencies[iq] = np.sqrt(np.maximum(omega2, 0.0))
+    n_segments = len(path.split("-")) - 1
+    return PhononResult(
+        frequencies=frequencies,
+        qpoints=qpts,
+        x_coords=x_coords,
+        tick_positions=_kpath_tick_positions(x_coords, n_segments, n_points),
+        tick_labels=tick_labels,
     )
 
 

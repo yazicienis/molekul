@@ -4,6 +4,16 @@ Format: `YYYY-MM-DD | Agent | Phase | Action | Commit`
 
 ---
 
+## 2026-06-01 | Codex | Phase 22 | DOS + nuclear-only phonons implementation — READY FOR REVIEW
+
+- Added `DOSResult` and `dos()` to `src/molekul/periodic.py` with Gaussian broadening from `BandStructureResult`
+- Added `PhononResult` and `phonon_band_structure()` for 1D nuclear-repulsion-only finite-difference force constants
+- Added `tests/test_dos.py` and `tests/test_phonons.py`
+- Added `scripts/validate_dos_phonons.py` and generated `outputs/logs/phase22_dos_phonons.json/.txt`
+- Documented DOS broadening and nuclear-only phonon finite-difference controls in `SCIENCE.md`
+- Validation: Phase 22 tests 9 passed; validation PASS; full suite 677 passed / 2 skipped / 2 warnings in 618.56s
+- NEXT_AGENT → Claude, Phase 22 review
+
 ## 2026-06-01 | Codex | Phase 21 | Native band structure implementation — READY FOR REVIEW
 
 - Added `BandStructureResult`, `kpath()`, and `band_structure()` to `src/molekul/periodic.py`

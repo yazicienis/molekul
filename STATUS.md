@@ -25,21 +25,21 @@ v0.1.2 — SoftwareX paper submitted.
 | 20b | Periodic HF 1D (H chain, real-space cutoff SCF) | ✅ complete (fallback-only validation; PySCF deferred to 20c) |
 | 20c | Periodic HF 3D (Ewald E_nn + Bloch H_core; 3D SCF out of scope) | ✅ complete |
 | 21 | Band structure (H chain + LiH, native tight-binding) | ✅ complete |
-| 22 | DOS + phonons | 🔲 planning phase |
+| 22 | DOS + nuclear-only phonons | 🔶 ready for review |
 
 ## Current bottleneck
 
-Phase 21 accepted. Next: Codex Phase 22 (DOS + phonons, native).
+Phase 22 implemented. Next: Claude review.
 
 ## Test suite
 
-668 tests passing and 2 CuPy-gated tests skipped as of 2026-06-01.
+677 tests passing and 2 CuPy-gated tests skipped as of 2026-06-01.
 
 Latest verification:
-- `pytest tests/test_band_structure.py -q`: 7 passed.
-- `python scripts/validate_band_structure.py`: PASS; H-chain band width `0.475470593093` Ha, LiH shape `(150, 6)`, n_occ `2`.
-- `pytest tests/test_periodic_hf_3d.py tests/test_periodic_infrastructure.py -q`: 14 passed.
-- `pytest tests/ -x`: 668 passed, 2 skipped, 2 warnings in 619.55s.
+- `pytest tests/test_dos.py tests/test_phonons.py -q`: 9 passed.
+- `python scripts/validate_dos_phonons.py`: PASS; DOS integral `0.999995741333`, phonon shape `(30, 3)`, Gamma max frequency `7.679882693324e-09`.
+- `pytest tests/test_band_structure.py tests/test_periodic_hf_1d.py -q`: 13 passed, 2 PySCF warnings.
+- `pytest tests/ -x`: 677 passed, 2 skipped, 2 warnings in 618.56s.
 
 ## Open scientific questions
 
@@ -78,3 +78,6 @@ Latest verification:
 - Phase 21 band structures are one-electron/tight-binding results from
   generalized diagonalization of `H_core(k)` and `S(k)`. LiH logs a negative
   one-electron gap, which should not be interpreted as an HF/DFT band gap.
+- Phase 22 phonons use nuclear-repulsion-only force constants with the acoustic
+  sum rule. Electronic force constants are omitted, so these are educational
+  dynamical-matrix values rather than physical production phonons.

@@ -1,19 +1,22 @@
 # NEXT_AGENT
 
-**Next:** Codex
-**Task:** Phase 22 — DOS + Fononlar (native)
+**Next:** Claude
+**Task:** Review Phase 22 — DOS + nuclear-only phonons
 
-## What to implement
+Codex implemented `prompts/phase22_dos_phonons.md`.
 
-Read and implement `prompts/phase22_dos_phonons.md` in full.
+Review focus:
+- `src/molekul/periodic.py`: `DOSResult`, `dos()`, `PhononResult`, `phonon_band_structure()`
+- `tests/test_dos.py`
+- `tests/test_phonons.py`
+- `scripts/validate_dos_phonons.py`
+- `outputs/logs/phase22_dos_phonons.json/.txt`
+- `SCIENCE.md` entries for DOS broadening and nuclear-only phonon finite-difference controls
 
-Phase 21 (band structure) accepted. 668 tests pass.
+Validation already run by Codex:
+- `pytest tests/test_dos.py tests/test_phonons.py -q`: 9 passed
+- `python scripts/validate_dos_phonons.py`: PASS
+- `pytest tests/test_band_structure.py tests/test_periodic_hf_1d.py -q`: 13 passed, 2 existing PySCF warnings
+- `pytest tests/ -x`: 677 passed, 2 skipped, 2 warnings in 618.56s
 
-İki bağımsız kısım:
-1. **DOS**: `dos()` — `BandStructureResult`'dan Gaussian genişletme
-2. **Fononlar**: `phonon_band_structure()` — 1D H zinciri, nükleer itme kuvvetleri, dinamik matris
-
-Hiçbir PySCF delegasyonu yok. Her şey native.
-
-Proceed per the standard protocol: implement → test → validate → log →
-commit → update HANDOFF/CHANGELOG/STATUS → NEXT_AGENT → Claude.
+Reviewer note: phonons intentionally include only nuclear repulsion force constants. Electronic Hellmann-Feynman/Pulay force constants are omitted, so the resulting frequencies are educational infrastructure values, not physical production phonons.

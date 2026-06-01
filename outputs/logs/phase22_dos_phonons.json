@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "dos": {
+    "n_grid": 500,
+    "sigma": 0.02,
+    "e_fermi": -0.06211240478766587,
+    "integral": 0.9999957413325893,
+    "peak_energy": -0.5233448738548233,
+    "energy_min": -0.6175829978806343,
+    "energy_max": 0.01788759521233413
+  },
+  "phonons": {
+    "scope": "1D nuclear-repulsion-only force constants; electronic force constants omitted",
+    "h": 0.01,
+    "path": [
+      "\u0393",
+      "X"
+    ],
+    "shape": [
+      30,
+      3
+    ],
+    "gamma_max_frequency": 7.679882693323606e-09,
+    "x_max_frequency": 1.1880698863228225
+  }
+}

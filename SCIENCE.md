@@ -188,4 +188,27 @@ Format:
   and LiH STO-3G examples while keeping validation fast and data files compact.
   The value is a plotting/data-resolution default, not a convergence threshold.
 - Citation: Ashcroft & Mermin, Ch. 8; standard band-structure plotting practice.
+## DOS Gaussian broadening
+- Value: `sigma = 0.02` Ha and `n_grid = 500` for Gaussian-broadened density
+  of states.
+- File: `src/molekul/periodic.py`
+- Set by: Codex | 2026-06-01
+- Justification: A 0.02 Ha width smooths the sparse educational H-chain band
+  samples without hiding the band range; 500 grid points keeps the DOS curve
+  smooth while remaining inexpensive. These are visualization defaults, not
+  electronic-structure convergence thresholds.
+- Citation: Ashcroft & Mermin, Ch. 8; standard Gaussian broadening practice for DOS plotting.
+
+## Nuclear-only phonon finite-difference controls
+- Value: `h = 0.01` Bohr and `n_points = 30` q-points per high-symmetry path
+  segment for `phonon_band_structure()`.
+- File: `src/molekul/periodic.py`
+- Set by: Codex | 2026-06-01
+- Justification: The displacement is large enough to avoid cancellation in
+  second finite differences of nuclear repulsion while remaining small relative
+  to the 1.8 Bohr H-chain lattice spacing. The q-path sampling is a compact
+  plotting default. Phase 22 phonons intentionally include only nuclear
+  repulsion force constants; electronic Hellmann-Feynman/Pulay contributions
+  are omitted and the frequencies are not physical production phonons.
+- Citation: Born & Huang, Dynamical Theory of Crystal Lattices; Ashcroft & Mermin, Ch. 22.
 

@@ -1,0 +1,17 @@
+Phase 22 DOS + phonons validation
+Status: PASS
+
+DOS
+  n_grid: 500
+  sigma: 0.020000 Ha
+  Fermi level: -0.062112404788 Ha
+  integral: 0.999995741333
+  peak energy: -0.523344873855 Ha
+
+Phonons
+  scope: 1D nuclear-repulsion-only force constants; electronic force constants omitted
+  h: 0.010000 Bohr
+  path: ['Γ', 'X']
+  shape: (30, 3)
+  Gamma max frequency: 7.679882693324e-09
+  X max frequency: 1.188069886323

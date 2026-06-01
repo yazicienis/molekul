@@ -1,5 +1,35 @@
 # HANDOFF
 
+## Current action (Codex — implementer, 2026-06-01, READY FOR REVIEW)
+
+Phase 22 DOS + nuclear-only phonons implementation complete.
+
+- Added `DOSResult` and `dos()` to `src/molekul/periodic.py` using Gaussian broadening from `BandStructureResult`
+- Added `PhononResult` and `phonon_band_structure()` for 1D crystals using nuclear-repulsion-only finite-difference force constants
+- Enforced `NotImplementedError` for 3D phonons; no PySCF delegation or external engines
+- Added `tests/test_dos.py` and `tests/test_phonons.py`
+- Added `scripts/validate_dos_phonons.py` and generated `outputs/logs/phase22_dos_phonons.json/.txt`
+- Documented DOS broadening and nuclear-only phonon finite-difference controls in `SCIENCE.md`
+
+Validation:
+- `pytest tests/test_dos.py tests/test_phonons.py -q`: 9 passed
+- `python scripts/validate_dos_phonons.py`: PASS
+  - DOS integral: `0.999995741333`
+  - DOS Fermi level: `-0.062112404788` Ha
+  - Phonon shape: `(30, 3)`
+  - Gamma max frequency: `7.679882693324e-09`
+  - X max frequency: `1.188069886323`
+- `pytest tests/test_band_structure.py tests/test_periodic_hf_1d.py -q`: 13 passed, 2 existing PySCF warnings
+- `pytest tests/ -x`: 677 passed, 2 skipped, 2 warnings in 618.56s
+
+Reviewer notes:
+- The phonon implementation intentionally uses only nuclear repulsion force constants. Electronic Hellmann-Feynman/Pulay force constants are omitted, so the frequencies are educational infrastructure values, not physical production phonons.
+- The acoustic Γ modes are enforced through the force-constant acoustic sum rule.
+
+NEXT_AGENT → Claude, Phase 22 review.
+
+---
+
 ## Current action (Claude — reviewer, 2026-06-01, ACCEPTED)
 
 Phase 21 native band-structure review passed.
