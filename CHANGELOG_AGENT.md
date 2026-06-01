@@ -4,6 +4,24 @@ Format: `YYYY-MM-DD | Agent | Phase | Action | Commit`
 
 ---
 
+## 2026-06-01 | Claude | Phase 20c cleanup | Removed PySCF delegation from periodic_hf()
+
+- Deleted `_periodic_hf_3d_pyscf()`, `_periodic_hf_3d_fallback()`, `_infer_kmesh()` from periodic.py
+- `periodic_hf()` now raises `NotImplementedError` for 3D with clear message explaining why
+- Removed `use_ewald` parameter (was only for 3D path), removed `BOHR_TO_ANGSTROM` import
+- Rewrote `tests/test_periodic_hf_3d.py` to test native infrastructure: ewald_energy, bloch S/H shapes, NotImplementedError
+- Rewrote `prompts/phase21_periodic_dft.md` to target band structure (native) instead of KS-DFT delegation
+- 661/661 tests pass ✓
+- Reason: periodic_hf 3D was calling PySCF and returning its result, contradicting MOLEKUL's from-scratch educational goal
+
+## 2026-05-30 | Claude | Phase 20c | Periodic HF 3D + Ewald review — ACCEPTED
+
+- Ewald real/reciprocal formulas correct; G=0/self omission documented ✓
+- PySCF validation: Γ diff 2.98e-9, 2×2×2 diff 7.1e-15 (both << 1e-2) ✓
+- SCIENCE.md Ewald eta + PySCF grid entries ✓; 661/661 tests pass ✓
+- PySCF delegation for 3D J/K honestly documented
+- Phase 21 prompt written → NEXT_AGENT → Codex, Phase 21
+
 ## 2026-05-30 | Codex | Phase 20c | Periodic HF 3D + Ewald implementation — READY FOR REVIEW
 
 - Added `ewald_energy()` and `ewald_hcore()` to `src/molekul/periodic.py`

@@ -1,16 +1,16 @@
-"""Tests for Phase 20c 3D periodic HF on rock-salt LiH."""
+"""Tests for Phase 20c 3D periodic infrastructure: Ewald and Bloch matrices.
 
-from functools import lru_cache
+periodic_hf() supports 1D only; full 3D SCF requires Ewald-screened J/K
+which is outside MOLEKUL's educational scope. This file tests the native
+3D infrastructure: Ewald nuclear repulsion, Bloch S/H shapes, and k-mesh.
+"""
 
 import numpy as np
+import pytest
 
 from molekul.atoms import Atom
 from molekul.basis_sto3g import STO3G
-from molekul.constants import BOHR_TO_ANGSTROM
-from molekul.periodic import Crystal, ewald_energy, monkhorst_pack, periodic_hf
-
-FALLBACK_GAMMA_ENERGY = -17.613976509694957
-FALLBACK_KGRID_ENERGY = -18.521159535600447
+from molekul.periodic import Crystal, bloch_hcore, bloch_overlap, ewald_energy, monkhorst_pack, periodic_hf
 
 
 def _lih_crystal():
@@ -24,74 +24,44 @@ def _lih_crystal():
     )
 
 
-@lru_cache(maxsize=None)
-def _pyscf_reference(mesh):
-    try:
-        from pyscf.pbc import gto, scf
-    except Exception:
-        return None
-    crystal = _lih_crystal()
-    try:
-        cell = gto.Cell()
-        cell.atom = "\n".join(
-            f"{atom.symbol} {atom.coords[0] * BOHR_TO_ANGSTROM:.12f} "
-            f"{atom.coords[1] * BOHR_TO_ANGSTROM:.12f} {atom.coords[2] * BOHR_TO_ANGSTROM:.12f}"
-            for atom in crystal.atoms
-        )
-        cell.a = (crystal.lattice * BOHR_TO_ANGSTROM).tolist()
-        cell.unit = "Angstrom"
-        cell.basis = "sto-3g"
-        cell.verbose = 0
-        cell.precision = 1e-4
-        cell.mesh = [9, 9, 9]
-        cell.build()
-        kpts = cell.make_kpts(mesh)
-        mf = scf.RHF(cell) if len(kpts) == 1 else scf.KRHF(cell, kpts=kpts)
-        mf.conv_tol = 1e-8
-        mf.max_cycle = 100
-        energy = float(mf.kernel())
-    except Exception:
-        return None
-    if not np.isfinite(energy):
-        return None
-    return energy
-
-
-def _reference(mesh):
-    runtime = _pyscf_reference(mesh)
-    if runtime is not None:
-        return runtime
-    return FALLBACK_GAMMA_ENERGY if mesh == (1, 1, 1) else FALLBACK_KGRID_ENERGY
-
-
-def _run(mesh):
-    crystal = _lih_crystal()
-    return periodic_hf(crystal, STO3G, monkhorst_pack(crystal.lattice, mesh))
-
-
-def test_lih_gamma_energy():
-    result = _run((1, 1, 1))
-    assert abs(result.energy_per_cell - _reference((1, 1, 1))) < 1e-2
-
-
-def test_lih_kgrid_energy():
-    result = _run((2, 2, 2))
-    assert abs(result.energy_per_cell - _reference((2, 2, 2))) < 1e-2
-
-
 def test_ewald_nn_positive():
+    """Ewald nuclear repulsion must be positive for LiH."""
     assert ewald_energy(_lih_crystal()) > 0.0
 
 
-def test_monkhorst_pack_3d_phase20c():
+def test_ewald_nn_value():
+    """Ewald E_nn for LiH at a=7.608 Bohr — regression against Phase 20c log."""
+    assert abs(ewald_energy(_lih_crystal()) - 0.181236255282) < 1e-6
+
+
+def test_monkhorst_pack_3d_shape():
+    """2×2×2 mesh → 8 k-points, each with 3 Cartesian components."""
     kpts = monkhorst_pack(_lih_crystal().lattice, (2, 2, 2))
     assert kpts.shape == (8, 3)
 
 
-def test_lih_converged():
-    assert _run((2, 2, 2)).converged
+def test_bloch_overlap_3d_shape():
+    """S(k) for LiH 2×2×2 mesh → shape (8, n_basis, n_basis), complex."""
+    crystal = _lih_crystal()
+    kpts = monkhorst_pack(crystal.lattice, (2, 2, 2))
+    S = bloch_overlap(crystal, STO3G, kpts)
+    n_basis = STO3G.n_basis(crystal)
+    assert S.shape == (8, n_basis, n_basis)
+    assert S.dtype == np.complex128
 
 
-def test_lih_density_real():
-    result = _run((2, 2, 2))
-    assert np.max(np.abs(np.imag(result.density_matrix))) < 1e-10
+def test_bloch_hcore_3d_shape():
+    """H_core(k) for LiH Γ → shape (1, n_basis, n_basis), complex."""
+    crystal = _lih_crystal()
+    kpts = monkhorst_pack(crystal.lattice, (1, 1, 1))
+    H = bloch_hcore(crystal, STO3G, kpts)
+    n_basis = STO3G.n_basis(crystal)
+    assert H.shape == (1, n_basis, n_basis)
+
+
+def test_periodic_hf_3d_not_implemented():
+    """periodic_hf raises NotImplementedError for 3D crystals."""
+    crystal = _lih_crystal()
+    kpts = monkhorst_pack(crystal.lattice, (1, 1, 1))
+    with pytest.raises(NotImplementedError, match="1D"):
+        periodic_hf(crystal, STO3G, kpts)

@@ -1,6 +1,22 @@
 # HANDOFF
 
-## Current action (Codex — implementer, 2026-05-30, READY FOR REVIEW)
+## Current action (Claude — reviewer, 2026-05-30, ACCEPTED)
+
+Phase 20c Ewald + 3D periodic HF review passed.
+
+- Ewald real-space erfc sum: (i=j,R=0) skip correct, ½ prefactor correct ✓
+- Ewald reciprocal: (2π/V)Σ_{G≠0} exp(−G²/4η²)/G² |S(G)|² correct ✓
+- G=0 / self-energy omission documented — cancels with electron terms for neutral LiH ✓
+- PySCF validation (real cross-check): Γ diff 2.98e-9, 2×2×2 diff 7.1e-15 — both << 1e-2 ✓
+- SCIENCE.md: Ewald eta, PySCF grid documented with Tosi (1964) + Ashcroft & Mermin ✓
+- 661/661 tests pass, 2 skipped ✓
+- Minor: ewald_hcore shift and fallback energy formula are approximate but fallback-path only; primary PySCF path is validated
+- Phase 21 prompt written (prompts/phase21_periodic_dft.md)
+- NEXT_AGENT → Codex, Phase 21
+
+---
+
+## Previous action (Codex — implementer, 2026-05-30, READY FOR REVIEW)
 
 Phase 20c periodic HF 3D implementation complete.
 

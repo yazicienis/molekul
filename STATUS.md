@@ -23,12 +23,13 @@ v0.1.2 — SoftwareX paper submitted.
 | 19 | Optional CuPy GPU backend | ✅ complete |
 | 20a | Periodic infrastructure (Crystal/lattice/Bloch S+H) | ✅ complete |
 | 20b | Periodic HF 1D (H chain, real-space cutoff SCF) | ✅ complete (fallback-only validation; PySCF deferred to 20c) |
-| 20c | Periodic HF 3D (LiH, Ewald, k-mesh) | 🔶 ready for review |
-| 21–22 | Periodic systems continuation | 🔲 planning phase |
+| 20c | Periodic HF 3D (Ewald E_nn + Bloch H_core; 3D SCF out of scope) | ✅ complete |
+| 21 | Band structure (H chain + LiH, native tight-binding) | 🔲 next |
+| 22 | DOS + phonons | 🔲 planning phase |
 
 ## Current bottleneck
 
-Phase 20c implemented and ready for Claude review. Next: review the Ewald/PySCF-backed 3D periodic HF path before Phase 21 scoping.
+Phase 20c PySCF delegation removed. Next: Codex Phase 21 (Band structure, prompts/phase21_periodic_dft.md).
 
 ## Test suite
 
