@@ -1,0 +1,272 @@
+{
+  "_provenance": "Anchor numbers generated 2026-06-03 during the notebook-improvement session, to cross-check benchmarks/validation_table.py. status='pyscf_verified' was checked against PySCF live in this run; status='molekul' is a MOLEKUL-only value that the validation table must still verify against a reference; status='experimental' (PBE) carries ~1e-3 Ha grid error and must NOT be labeled validated. Energies in Hartree, distances in Angstrom.",
+  "environment": {
+    "python": "3.13.11",
+    "numpy": "2.4.4",
+    "pyscf": "2.12.1"
+  },
+  "geometries": {
+    "H2": {
+      "atoms": [
+        [
+          "H",
+          [
+            0,
+            0,
+            0.37
+          ]
+        ],
+        [
+          "H",
+          [
+            0,
+            0,
+            -0.37
+          ]
+        ]
+      ],
+      "charge": 0,
+      "mult": 1,
+      "r_A": 0.74
+    },
+    "H2O": {
+      "atoms": [
+        [
+          "O",
+          [
+            0,
+            0,
+            0.1173
+          ]
+        ],
+        [
+          "H",
+          [
+            0.7572,
+            0,
+            -0.4692
+          ]
+        ],
+        [
+          "H",
+          [
+            -0.7572,
+            0,
+            -0.4692
+          ]
+        ]
+      ],
+      "charge": 0,
+      "mult": 1
+    },
+    "N2": {
+      "atoms": [
+        [
+          "N",
+          [
+            0,
+            0,
+            0.549
+          ]
+        ],
+        [
+          "N",
+          [
+            0,
+            0,
+            -0.549
+          ]
+        ]
+      ],
+      "charge": 0,
+      "mult": 1,
+      "r_A": 1.098
+    },
+    "F2": {
+      "atoms": [
+        [
+          "F",
+          [
+            0,
+            0,
+            0.709
+          ]
+        ],
+        [
+          "F",
+          [
+            0,
+            0,
+            -0.709
+          ]
+        ]
+      ],
+      "charge": 0,
+      "mult": 1,
+      "r_A": 1.418
+    },
+    "HeH+": {
+      "atoms": [
+        [
+          "He",
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          "H",
+          [
+            0,
+            0,
+            0.7743
+          ]
+        ]
+      ],
+      "charge": 1,
+      "mult": 1
+    },
+    "CH4": {
+      "note": "C at origin; 4 H tetrahedral at r_CH=1.087 A (corners (1,1,1),(1,-1,-1),(-1,1,-1),(-1,-1,1) scaled to 1.087 A)",
+      "charge": 0,
+      "mult": 1,
+      "r_CH_A": 1.087
+    }
+  },
+  "basis_function_counts": {
+    "H2": {
+      "STO-3G": 2,
+      "6-31G*": 4,
+      "cc-pVDZ": 10
+    },
+    "H2O": {
+      "STO-3G": 7,
+      "6-31G*": 19,
+      "cc-pVDZ": 25
+    },
+    "N2": {
+      "STO-3G": 10,
+      "6-31G*": 30,
+      "cc-pVDZ": 30
+    },
+    "CH4": {
+      "STO-3G": 9,
+      "6-31G*": 23,
+      "cc-pVDZ": 35
+    }
+  },
+  "_basis_count_note": "MOLEKUL uses 6 Cartesian d-functions per d-shell (so cc-pVDZ H2O=25, N2=30, not the 24/28 spherical-harmonic counts).",
+  "nuclear_repulsion_Ha": {
+    "H2": 0.7151,
+    "N2": 23.6154,
+    "F2": 30.228
+  },
+  "boys_F0": {
+    "0.01": 0.996677,
+    "0.1": 0.967643,
+    "1": 0.746824,
+    "5": 0.395712,
+    "20": 0.198166
+  },
+  "energies": [
+    {
+      "molecule": "H2O",
+      "basis": "STO-3G",
+      "method": "RHF",
+      "E_molekul_Ha": -74.96302315,
+      "status": "pyscf_verified",
+      "E_ref_Ha": -74.96302314,
+      "abs_dev_Ha": 9.45e-09,
+      "ref_code": "pyscf 2.12.1"
+    },
+    {
+      "molecule": "H2O",
+      "basis": "STO-3G",
+      "method": "MP2(total)",
+      "E_molekul_Ha": -74.99856879,
+      "status": "molekul",
+      "E_corr_Ha": -0.03554565
+    },
+    {
+      "molecule": "H2O",
+      "basis": "STO-3G",
+      "method": "KS-DFT(LDA)",
+      "E_molekul_Ha": -74.73201494,
+      "status": "pyscf_verified",
+      "E_ref_Ha": -74.73203885,
+      "abs_dev_Ha": 2.39e-05,
+      "ref_code": "pyscf 2.12.1"
+    },
+    {
+      "molecule": "H2O",
+      "basis": "STO-3G",
+      "method": "KS-DFT(PBE)",
+      "E_molekul_Ha": -75.22810132,
+      "status": "experimental",
+      "E_ref_Ha": -75.2255667,
+      "abs_dev_Ha": 0.00253,
+      "ref_code": "pyscf 2.12.1"
+    },
+    {
+      "molecule": "N2",
+      "basis": "STO-3G",
+      "method": "RHF",
+      "E_molekul_Ha": -107.49597501,
+      "status": "molekul"
+    },
+    {
+      "molecule": "N2",
+      "basis": "6-31G*",
+      "method": "RHF",
+      "E_molekul_Ha": -108.94262297,
+      "status": "molekul"
+    },
+    {
+      "molecule": "N2",
+      "basis": "cc-pVDZ",
+      "method": "RHF",
+      "E_molekul_Ha": -108.95469321,
+      "status": "molekul"
+    },
+    {
+      "molecule": "HeH+",
+      "basis": "STO-3G",
+      "method": "RHF",
+      "E_molekul_Ha": -2.84183806,
+      "status": "molekul",
+      "HOMO_Ha": -1.6328
+    },
+    {
+      "molecule": "HeH+",
+      "basis": "STO-3G",
+      "method": "MP2(total)",
+      "E_molekul_Ha": -2.84907631,
+      "status": "molekul",
+      "E_corr_Ha": -0.00723824
+    },
+    {
+      "molecule": "HeH+",
+      "basis": "STO-3G",
+      "method": "CCSD(total)",
+      "E_molekul_Ha": -2.8514677,
+      "status": "molekul",
+      "E_corr_Ha": -0.00962964
+    }
+  ],
+  "pipeline_smoke": {
+    "note": "13_full_workflow.ipynb ran end-to-end in ~134 s (exit 0) on a MOLEKUL-optimized water geometry (r_OH=0.9894 A, angle=100.02 deg). Evidence of executability, NOT validation anchors (non-standard geometry).",
+    "freqs_cm1": [
+      2169.9,
+      4139.8,
+      4390.9
+    ],
+    "n_imaginary": 0,
+    "mulliken_qO": -0.331,
+    "dipole_D": 1.709,
+    "mp2_corr_Ha": -0.038954,
+    "ccsd_corr_Ha": -0.054383,
+    "CIS_S1_eV": 12.486,
+    "TDDFT_LDA_S1_eV": 10.823
+  }
+}

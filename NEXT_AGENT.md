@@ -1,21 +1,33 @@
 # NEXT_AGENT
 
-**Next:** Claude
-**Task:** Review Phase 23 — full periodic-HF phonons
+**Next:** Human
+**Task:** Tüm fazlar tamamlandı — sıradaki adıma karar ver
 
-Codex implemented `prompts/phase23_phonons_full.md`.
+## Durum
 
-Review focus:
-- `src/molekul/periodic.py`: `periodic_force_constants()` and `phonon_band_structure_full()`
-- `tests/test_phonons_full.py`
-- `scripts/validate_phonons_full.py`
-- `outputs/logs/phase23_phonons_full.json/.txt`
-- `SCIENCE.md` entry for full periodic phonon finite-difference controls
+✅ **Phases 1–23 eksiksiz tamamlandı.** 682 test geçiyor.
 
-Validation already run by Codex:
-- `pytest tests/test_phonons_full.py -q`: 5 passed
-- `python scripts/validate_phonons_full.py`: PASS
-- `pytest tests/test_phonons.py tests/test_phonons_full.py -q`: 9 passed
-- `pytest tests/ -x`: 682 passed, 2 skipped, 2 warnings in 634.59s
+### Tamamlanan her şey
 
-Reviewer note: because the current periodic HF engine is one-cell/1D, relative image-cell displacement is represented as a small lattice-vector perturbation before SCF energy evaluation. This keeps Phase 23 native and energy-based, but it is still an educational force-constant model, not a production supercell phonon implementation.
+**Part I — Moleküler kuantum kimyası (Phases 1–17):**
+RHF, MP2, CCSD/CCSD(T), KS-DFT, CIS, EOM-CCSD, UHF, TD-DFT,
+geometri optimizasyonu, harmonik frekanslar, cube dosyaları,
+popülasyon analizi, 3 basis seti (STO-3G, 6-31G*, cc-pVDZ)
+
+**Part II — Periyodik sistemler + GPU (Phases 18–23):**
+- 18: Semi-numerical RHF gradient
+- 19: CuPy GPU backend
+- 20a/b/c: Periyodik HF altyapısı (Crystal, Bloch, 1D SCF, Ewald)
+- 21: Band yapısı (H zinciri + LiH, native)
+- 22: DOS + nükleer-only fononlar
+- 23: Tam fononlar (elektronik + nükleer, SCF enerjisinden FD)
+
+## Olası sonraki adımlar
+
+1. **Notebook yazımı** — PHASES.md'de planlanan, her faz için Jupyter notebook.
+   Bu tamamen senin (human) sesinin eseri olacak — ajan yazamaz.
+
+2. **Commit + release** — Bekleyen tüm değişiklikleri commit et, v0.2.0 tag at.
+
+3. **SoftwareX revision** — Hakem raporu geldiyse `paper_corrections_pending.txt`
+   uygulanır (4 madde hazır).

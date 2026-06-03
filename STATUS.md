@@ -26,11 +26,11 @@ v0.1.2 — SoftwareX paper submitted.
 | 20c | Periodic HF 3D (Ewald E_nn + Bloch H_core; 3D SCF out of scope) | ✅ complete |
 | 21 | Band structure (H chain + LiH, native tight-binding) | ✅ complete |
 | 22 | DOS + nuclear-only phonons | ✅ complete |
-| 23 | Full phonons (nuclear + electronic force constants) | 🔶 ready for review |
+| 23 | Full phonons (nuclear + electronic force constants) | ✅ complete |
 
 ## Current bottleneck
 
-Phase 23 implemented. Next: Claude review; this is the natural endpoint unless new phases are scoped.
+✅ TÜM FAZLAR TAMAMLANDI (Phases 1–23). Sıradaki: notebook yazımı (human kararı).
 
 ## Test suite
 

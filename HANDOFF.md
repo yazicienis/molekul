@@ -1,6 +1,21 @@
 # HANDOFF
 
-## Current action (Codex — implementer, 2026-06-01, READY FOR REVIEW)
+## Current action (Claude — reviewer, 2026-06-01, ACCEPTED — FINAL PHASE)
+
+Phase 23 full phonons review passed.
+
+- Lattice-distortion FD: R=n·a için a→a+(h/n) → hücre R'de h kadar net ötelem; monoatomik 1D zincir için akustik mod ile eşdeğer ✓
+- Akustik toplam kuralı: Γ max 1.18e-8 ≈ 0 ✓
+- Elektronik katkı somut: X frekansı nükleer-only 1.188 → tam 2.189 (+%84) ✓
+- test_full_vs_nuclear_different: fark 1.001 > 1e-3 ✓
+- 5/5 yeni test, 682/682 toplam ✓
+- Kapsam kısıtı (1D only) ve yaklaşımın sınırları açıkça belgelenmiş ✓
+
+TÜM FAZLAR TAMAMLANDI (Phases 1–23). NEXT_AGENT → Human.
+
+---
+
+## Previous action (Codex — implementer, 2026-06-01, READY FOR REVIEW)
 
 Phase 23 full phonons implementation complete.
 
