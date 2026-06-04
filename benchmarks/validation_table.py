@@ -211,7 +211,7 @@ METHODS: list[tuple[str, str, Callable[[Molecule, str], tuple[float, float]], st
     ("UHF", "H2", uhf_pair, "closed-shell UHF regression; total energy"),
     ("MP2", "H2", mp2_pair, "closed-shell MP2 total energy"),
     ("CCSD", "H2", ccsd_pair, "closed-shell CCSD total energy"),
-    ("CCSD(T)", "H2", ccsdt_pair, "closed-shell CCSD(T) total energy"),
+    ("CCSD(T)", "H2", ccsdt_pair, "closed-shell CCSD(T) total energy; NOTE: H2 is a 2-electron system where CCSD=FCI so the (T) correction is identically zero — confirms no crash, does not validate the triples perturbation"),
     ("KS-DFT(LDA)", "H2O", lda_pair, "closed-shell LDA total energy"),
     ("KS-DFT(PBE)", "H2O", pbe_pair, "PBE/GGA grid is experimental; total energy"),
     ("CIS", "H2", cis_pair, "first singlet excitation energy, not total energy"),
@@ -249,6 +249,8 @@ def run_cell(
         status = status_for(method, basis_name, delta)
         if status == "experimental" and "experimental" not in notes.lower():
             notes = f"{notes}; deviation/status currently experimental"
+        if delta > 1.0:
+            notes = f"{notes}; BROKEN: |ΔE|={delta:.3f} Ha — DFT cc-pVDZ integration fails in MOLEKUL; do not cite as validated"
         return Cell(
             method=method,
             basis=basis_name,
@@ -339,19 +341,22 @@ def periodic_validation() -> list[dict[str, object]]:
     band = bands.band_energies[:, 0]
     gamma = float(band[0])
     xpoint = float(band[-1])
-    bandwidth = float(np.ptp(band))
-    tight_binding_x = gamma + bandwidth
+    is_monotone = int(all(b2 > b1 for b1, b2 in zip(band, band[1:])))
     rows.append(
         {
-            "case": "H-chain band endpoint",
-            "observable": "epsilon_X - tight_binding_X",
-            "molekul": xpoint,
-            "reference": tight_binding_x,
-            "abs_delta": abs(xpoint - tight_binding_x),
-            "ref_model": "nearest-neighbor one-band tight-binding endpoint fit",
+            "case": "H-chain band monotonicity",
+            "observable": "band_is_monotone_Gamma_to_X",
+            "molekul": is_monotone,
+            "reference": 1,
+            "abs_delta": abs(is_monotone - 1),
+            "ref_model": "1D H-chain 1s band: bonding state (Gamma) must lie below antibonding state (X)",
             "wall_time_s": time.perf_counter() - start,
-            "status": "ok",
-            "notes": "Gamma-to-X band is monotone and finite; endpoint fit checks path construction.",
+            "status": "ok" if is_monotone == 1 else "fail",
+            "notes": (
+                f"Gamma={gamma:.6f} Ha, X={xpoint:.6f} Ha; band goes monotonically "
+                "bonding→antibonding as expected for 1D H-chain 1s band (STO-3G, a=1.8 bohr). "
+                "Qualitative path check only — no independent reference code for periodic HF energies."
+            ),
         }
     )
 

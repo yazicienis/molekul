@@ -6,33 +6,33 @@ Status values are `ok`, `experimental`, `unsupported`, or `skipped`.
 
 | Method | Basis | Molecule | E_molekul | E_ref | |Delta E| | Ref | Wall time (s) | Status | Notes |
 |---|---|---:|---:|---:|---:|---|---:|---|---|
-| RHF | STO-3G | H2O | -74.9630231479 | -74.9630231385 | 9.448e-09 | PySCF 2.12.1 | 0.422 | ok | closed-shell total energy |
-| RHF | 6-31G* | H2O | -76.0105049911 | -76.0105049883 | 2.879e-09 | PySCF 2.12.1 | 4.938 | ok | closed-shell total energy |
-| RHF | cc-pVDZ | H2O | -76.0271129317 | -76.0271129283 | 3.317e-09 | PySCF 2.12.1 | 17.065 | ok | closed-shell total energy |
-| UHF | STO-3G | H2 | -1.1167593041 | -1.1167593074 | 3.267e-09 | PySCF 2.12.1 | 0.197 | ok | closed-shell UHF regression; total energy |
-| UHF | 6-31G* | H2 | -1.1267553180 | -1.1267553172 | 7.608e-10 | PySCF 2.12.1 | 0.152 | ok | closed-shell UHF regression; total energy |
-| UHF | cc-pVDZ | H2 | -1.1287000929 | -1.1287000936 | 6.212e-10 | PySCF 2.12.1 | 0.176 | ok | closed-shell UHF regression; total energy |
-| MP2 | STO-3G | H2 | -1.1298973769 | -1.1298973810 | 4.081e-09 | PySCF 2.12.1 | 0.121 | ok | closed-shell MP2 total energy |
-| MP2 | 6-31G* | H2 | -1.1441365750 | -1.1441365741 | 9.564e-10 | PySCF 2.12.1 | 0.126 | ok | closed-shell MP2 total energy |
-| MP2 | cc-pVDZ | H2 | -1.1550716501 | -1.1550716512 | 1.104e-09 | PySCF 2.12.1 | 0.184 | ok | closed-shell MP2 total energy |
-| CCSD | STO-3G | H2 | -1.1372838292 | -1.1372839986 | 1.694e-07 | PySCF 2.12.1 | 0.197 | ok | closed-shell CCSD total energy |
-| CCSD | 6-31G* | H2 | -1.1516725445 | -1.1516726783 | 1.338e-07 | PySCF 2.12.1 | 0.229 | ok | closed-shell CCSD total energy |
-| CCSD | cc-pVDZ | H2 | -1.1633744888 | -1.1633744964 | 7.641e-09 | PySCF 2.12.1 | 0.418 | ok | closed-shell CCSD total energy |
-| CCSD(T) | STO-3G | H2 | -1.1372838292 | -1.1372839986 | 1.694e-07 | PySCF 2.12.1 | 0.401 | ok | closed-shell CCSD(T) total energy |
-| CCSD(T) | 6-31G* | H2 | -1.1516725445 | -1.1516726783 | 1.338e-07 | PySCF 2.12.1 | 0.290 | ok | closed-shell CCSD(T) total energy |
-| CCSD(T) | cc-pVDZ | H2 | -1.1633744888 | -1.1633744964 | 7.641e-09 | PySCF 2.12.1 | 0.556 | ok | closed-shell CCSD(T) total energy |
-| KS-DFT(LDA) | STO-3G | H2O | -74.7320149385 | -74.7320388537 | 2.392e-05 | PySCF 2.12.1 | 1.737 | ok | closed-shell LDA total energy |
-| KS-DFT(LDA) | 6-31G* | H2O | -75.8443470264 | -75.8443847694 | 3.774e-05 | PySCF 2.12.1 | 6.694 | experimental | closed-shell LDA total energy; deviation/status currently experimental |
-| KS-DFT(LDA) | cc-pVDZ | H2O | -74.3624057856 | -75.8575144870 | 1.495e+00 | PySCF 2.12.1 | 18.590 | experimental | closed-shell LDA total energy; deviation/status currently experimental |
-| KS-DFT(PBE) | STO-3G | H2O | -75.2281013191 | -75.2255666974 | 2.535e-03 | PySCF 2.12.1 | 1.918 | experimental | PBE/GGA grid is experimental; total energy |
-| KS-DFT(PBE) | 6-31G* | H2O | -76.3242788150 | -76.3218452035 | 2.434e-03 | PySCF 2.12.1 | 6.836 | experimental | PBE/GGA grid is experimental; total energy |
-| KS-DFT(PBE) | cc-pVDZ | H2O | -74.8482922516 | -76.3346982281 | 1.486e+00 | PySCF 2.12.1 | 19.096 | experimental | PBE/GGA grid is experimental; total energy |
-| CIS | STO-3G | H2 | 0.9484069962 | 0.9484068744 | 1.218e-07 | PySCF 2.12.1 | 0.101 | ok | first singlet excitation energy, not total energy |
-| CIS | 6-31G* | H2 | 0.5603392057 | 0.5603393006 | 9.491e-08 | PySCF 2.12.1 | 0.223 | ok | first singlet excitation energy, not total energy |
-| CIS | cc-pVDZ | H2 | 0.5172713762 | 0.5172713570 | 1.921e-08 | PySCF 2.12.1 | 0.290 | ok | first singlet excitation energy, not total energy |
-| TD-DFT(TDA) | STO-3G | H2 | 0.9717625521 | 0.9717624335 | 1.186e-07 | PySCF 2.12.1 | 0.818 | ok | first LDA/TDA singlet excitation energy |
-| TD-DFT(TDA) | 6-31G* | H2 | 0.5438587883 | 0.5438622429 | 3.455e-06 | PySCF 2.12.1 | 0.918 | experimental | first LDA/TDA singlet excitation energy; deviation/status currently experimental |
-| TD-DFT(TDA) | cc-pVDZ | H2 | 0.4019034607 | 0.4901673881 | 8.826e-02 | PySCF 2.12.1 | 1.402 | experimental | first LDA/TDA singlet excitation energy; deviation/status currently experimental |
-| EOM-CCSD | STO-3G | H2 | 0.9689315213 | 0.9689315656 | 4.434e-08 | PySCF 2.12.1 | 0.355 | ok | first singlet excitation energy, not total energy |
-| EOM-CCSD | 6-31G* | H2 | 0.5625950805 | 0.5625952684 | 1.879e-07 | PySCF 2.12.1 | 0.248 | ok | first singlet excitation energy, not total energy |
-| EOM-CCSD | cc-pVDZ | H2 | 0.5116481802 | 0.5116484148 | 2.346e-07 | PySCF 2.12.1 | 0.973 | ok | first singlet excitation energy, not total energy |
+| RHF | STO-3G | H2O | -74.9630231479 | -74.9630231385 | 9.448e-09 | PySCF 2.12.1 | 0.412 | ok | closed-shell total energy |
+| RHF | 6-31G* | H2O | -76.0105049911 | -76.0105049883 | 2.879e-09 | PySCF 2.12.1 | 4.866 | ok | closed-shell total energy |
+| RHF | cc-pVDZ | H2O | -76.0271129317 | -76.0271129283 | 3.317e-09 | PySCF 2.12.1 | 16.837 | ok | closed-shell total energy |
+| UHF | STO-3G | H2 | -1.1167593041 | -1.1167593074 | 3.267e-09 | PySCF 2.12.1 | 0.015 | ok | closed-shell UHF regression; total energy |
+| UHF | 6-31G* | H2 | -1.1267553180 | -1.1267553172 | 7.608e-10 | PySCF 2.12.1 | 0.128 | ok | closed-shell UHF regression; total energy |
+| UHF | cc-pVDZ | H2 | -1.1287000929 | -1.1287000936 | 6.212e-10 | PySCF 2.12.1 | 0.104 | ok | closed-shell UHF regression; total energy |
+| MP2 | STO-3G | H2 | -1.1298973769 | -1.1298973810 | 4.081e-09 | PySCF 2.12.1 | 0.168 | ok | closed-shell MP2 total energy |
+| MP2 | 6-31G* | H2 | -1.1441365750 | -1.1441365741 | 9.564e-10 | PySCF 2.12.1 | 0.149 | ok | closed-shell MP2 total energy |
+| MP2 | cc-pVDZ | H2 | -1.1550716501 | -1.1550716512 | 1.104e-09 | PySCF 2.12.1 | 0.224 | ok | closed-shell MP2 total energy |
+| CCSD | STO-3G | H2 | -1.1372838292 | -1.1372839986 | 1.694e-07 | PySCF 2.12.1 | 0.181 | ok | closed-shell CCSD total energy |
+| CCSD | 6-31G* | H2 | -1.1516725445 | -1.1516726783 | 1.338e-07 | PySCF 2.12.1 | 0.068 | ok | closed-shell CCSD total energy |
+| CCSD | cc-pVDZ | H2 | -1.1633744888 | -1.1633744964 | 7.641e-09 | PySCF 2.12.1 | 0.304 | ok | closed-shell CCSD total energy |
+| CCSD(T) | STO-3G | H2 | -1.1372838292 | -1.1372839986 | 1.694e-07 | PySCF 2.12.1 | 0.061 | ok | closed-shell CCSD(T) total energy; NOTE: H2 is a 2-electron system where CCSD=FCI so the (T) correction is identically zero — confirms no crash, does not validate the triples perturbation |
+| CCSD(T) | 6-31G* | H2 | -1.1516725445 | -1.1516726783 | 1.338e-07 | PySCF 2.12.1 | 0.126 | ok | closed-shell CCSD(T) total energy; NOTE: H2 is a 2-electron system where CCSD=FCI so the (T) correction is identically zero — confirms no crash, does not validate the triples perturbation |
+| CCSD(T) | cc-pVDZ | H2 | -1.1633744888 | -1.1633744964 | 7.641e-09 | PySCF 2.12.1 | 0.280 | ok | closed-shell CCSD(T) total energy; NOTE: H2 is a 2-electron system where CCSD=FCI so the (T) correction is identically zero — confirms no crash, does not validate the triples perturbation |
+| KS-DFT(LDA) | STO-3G | H2O | -74.7320149385 | -74.7320388537 | 2.392e-05 | PySCF 2.12.1 | 1.765 | ok | closed-shell LDA total energy |
+| KS-DFT(LDA) | 6-31G* | H2O | -75.8443470264 | -75.8443847694 | 3.774e-05 | PySCF 2.12.1 | 6.531 | experimental | closed-shell LDA total energy; deviation/status currently experimental |
+| KS-DFT(LDA) | cc-pVDZ | H2O | -74.3624057856 | -75.8575144870 | 1.495e+00 | PySCF 2.12.1 | 18.492 | experimental | closed-shell LDA total energy; deviation/status currently experimental; BROKEN: |ΔE|=1.495 Ha — DFT cc-pVDZ integration fails in MOLEKUL; do not cite as validated |
+| KS-DFT(PBE) | STO-3G | H2O | -75.2281013191 | -75.2255666974 | 2.535e-03 | PySCF 2.12.1 | 2.115 | experimental | PBE/GGA grid is experimental; total energy |
+| KS-DFT(PBE) | 6-31G* | H2O | -76.3242788150 | -76.3218452035 | 2.434e-03 | PySCF 2.12.1 | 7.094 | experimental | PBE/GGA grid is experimental; total energy |
+| KS-DFT(PBE) | cc-pVDZ | H2O | -74.8482922516 | -76.3346982281 | 1.486e+00 | PySCF 2.12.1 | 19.160 | experimental | PBE/GGA grid is experimental; total energy; BROKEN: |ΔE|=1.486 Ha — DFT cc-pVDZ integration fails in MOLEKUL; do not cite as validated |
+| CIS | STO-3G | H2 | 0.9484069962 | 0.9484068744 | 1.218e-07 | PySCF 2.12.1 | 0.073 | ok | first singlet excitation energy, not total energy |
+| CIS | 6-31G* | H2 | 0.5603392057 | 0.5603393006 | 9.491e-08 | PySCF 2.12.1 | 0.275 | ok | first singlet excitation energy, not total energy |
+| CIS | cc-pVDZ | H2 | 0.5172713762 | 0.5172713570 | 1.921e-08 | PySCF 2.12.1 | 0.274 | ok | first singlet excitation energy, not total energy |
+| TD-DFT(TDA) | STO-3G | H2 | 0.9717625521 | 0.9717624335 | 1.186e-07 | PySCF 2.12.1 | 0.731 | ok | first LDA/TDA singlet excitation energy |
+| TD-DFT(TDA) | 6-31G* | H2 | 0.5438587883 | 0.5438622429 | 3.455e-06 | PySCF 2.12.1 | 1.180 | experimental | first LDA/TDA singlet excitation energy; deviation/status currently experimental |
+| TD-DFT(TDA) | cc-pVDZ | H2 | 0.4019034607 | 0.4901673881 | 8.826e-02 | PySCF 2.12.1 | 1.520 | experimental | first LDA/TDA singlet excitation energy; deviation/status currently experimental |
+| EOM-CCSD | STO-3G | H2 | 0.9689315213 | 0.9689315656 | 4.434e-08 | PySCF 2.12.1 | 0.270 | ok | first singlet excitation energy, not total energy |
+| EOM-CCSD | 6-31G* | H2 | 0.5625950805 | 0.5625952684 | 1.879e-07 | PySCF 2.12.1 | 0.400 | ok | first singlet excitation energy, not total energy |
+| EOM-CCSD | cc-pVDZ | H2 | 0.5116481802 | 0.5116484182 | 2.380e-07 | PySCF 2.12.1 | 0.913 | ok | first singlet excitation energy, not total energy |

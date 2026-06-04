@@ -7,15 +7,15 @@
   },
   "rows": [
     {
-      "case": "H-chain band endpoint",
-      "observable": "epsilon_X - tight_binding_X",
-      "molekul": -0.06211240478766587,
-      "reference": -0.06211240478766589,
-      "abs_delta": 1.3877787807814457e-17,
-      "ref_model": "nearest-neighbor one-band tight-binding endpoint fit",
-      "wall_time_s": 0.0027571370592340827,
+      "case": "H-chain band monotonicity",
+      "observable": "band_is_monotone_Gamma_to_X",
+      "molekul": 1,
+      "reference": 1,
+      "abs_delta": 0,
+      "ref_model": "1D H-chain 1s band: bonding state (Gamma) must lie below antibonding state (X)",
+      "wall_time_s": 0.0028456629952415824,
       "status": "ok",
-      "notes": "Gamma-to-X band is monotone and finite; endpoint fit checks path construction."
+      "notes": "Gamma=-0.537583 Ha, X=-0.062112 Ha; band goes monotonically bonding\u2192antibonding as expected for 1D H-chain 1s band (STO-3G, a=1.8 bohr). Qualitative path check only \u2014 no independent reference code for periodic HF energies."
     },
     {
       "case": "H-chain full phonon Gamma",
@@ -24,7 +24,7 @@
       "reference": 0.0,
       "abs_delta": 1.1780402288468106e-08,
       "ref_model": "analytic acoustic translational-invariance sum rule",
-      "wall_time_s": 12.947199495043606,
+      "wall_time_s": 12.83760537696071,
       "status": "ok",
       "notes": "Finite-difference full periodic-HF force constants; acoustic mode should vanish at Gamma."
     }

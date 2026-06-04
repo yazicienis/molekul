@@ -8,12 +8,18 @@ constants → integrals → SCF → MP2/CC → DFT → excited states → gradie
 periodic/phonons, plus a 14-notebook curriculum in `notebooks/` (00–13). It is **not** a
 production alternative to PySCF/Psi4 — never pitch it as one.
 
-## Current focus
+## Current focus — JOSE (DECIDED, do not reopen)
 The SoftwareX submission was **rejected** (niche already served by PySCF, Psi4NumPy,
-eChem, SlowQuant, DQC, pyfock). We are repositioning for **JOSE** (Journal of Open
-Source Education). The full plan and the sequenced agent prompts live in
-**`prompts/jose_resubmission.md`**. Verified anchor numbers live in
-**`benchmarks/seed_numbers.json`**.
+eChem, SlowQuant, DQC, pyfock). On 2026-06-04 the user **considered and rejected**
+the IF-bearing alternatives (JCE, AJP/EJP, and Elsevier/Wiley/Springer education
+journals — Education for Chem. Engineers, CAEE, Heliyon, J. Sci. Educ. & Tech.) and
+**confirmed the JOSE path** (Journal of Open Source Education). Do not re-litigate the
+venue unless the user reopens it.
+
+Plan + sequenced agent prompts: **`prompts/jose_resubmission.md`**.
+Verified anchor numbers: **`benchmarks/seed_numbers.json`**.
+
+**M1 PASSED (2026-06-04).** Validation tables committed. 23 cells ok, 7 experimental (DFT/TD-DFT non-STO-3G). cc-pVDZ DFT is broken (|ΔE|≈1.5 Ha, labeled in table). CCSD(T) tested only on H2 — (T) correction is zero for 2-electron system; tables note this. **Immediate next action: M2** — user gives Codex prompt ③.
 
 ## Two-agent workflow
 Codex = implementer (writes code/prose). **Claude (me) = supervisor / auditor**: I
