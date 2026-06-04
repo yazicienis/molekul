@@ -1,0 +1,32 @@
+{
+  "provenance": {
+    "generator": "benchmarks/validation_table.py",
+    "python": "3.13.11",
+    "numpy": "2.4.4",
+    "pyscf": "2.12.1"
+  },
+  "rows": [
+    {
+      "case": "H-chain band endpoint",
+      "observable": "epsilon_X - tight_binding_X",
+      "molekul": -0.06211240478766587,
+      "reference": -0.06211240478766589,
+      "abs_delta": 1.3877787807814457e-17,
+      "ref_model": "nearest-neighbor one-band tight-binding endpoint fit",
+      "wall_time_s": 0.0027571370592340827,
+      "status": "ok",
+      "notes": "Gamma-to-X band is monotone and finite; endpoint fit checks path construction."
+    },
+    {
+      "case": "H-chain full phonon Gamma",
+      "observable": "max_abs_frequency_Gamma_cm-1",
+      "molekul": 1.1780402288468106e-08,
+      "reference": 0.0,
+      "abs_delta": 1.1780402288468106e-08,
+      "ref_model": "analytic acoustic translational-invariance sum rule",
+      "wall_time_s": 12.947199495043606,
+      "status": "ok",
+      "notes": "Finite-difference full periodic-HF force constants; acoustic mode should vanish at Gamma."
+    }
+  ]
+}
