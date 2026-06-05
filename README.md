@@ -3,7 +3,7 @@
 A notebook-based teaching platform for ab initio quantum chemistry in pure Python.
 
 [![CI](https://github.com/yazicienis/molekul/actions/workflows/ci.yml/badge.svg)](https://github.com/yazicienis/molekul/actions/workflows/ci.yml)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19763107.svg)](https://doi.org/10.5281/zenodo.19763107)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20558145.svg)](https://doi.org/10.5281/zenodo.20558145)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## Overview

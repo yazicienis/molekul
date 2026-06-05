@@ -31,10 +31,9 @@ Target release: v0.2.0
 
 ## Zenodo archive
 
-- Existing Zenodo concept DOI: `10.5281/zenodo.19763107`.
-- Version-specific v0.2.0 DOI: **must be minted in Zenodo after publishing the v0.2.0 archive/release**.
-- Do not replace this with a guessed DOI. The DOI is assigned by Zenodo only after upload/release.
+- Concept DOI: `10.5281/zenodo.19763107`
+- **Version-specific DOI (v0.2.0): `10.5281/zenodo.20558145`**
 
 ## Final external action
 
-After this commit is pushed, push tag `v0.2.0`, publish the GitHub/Zenodo archive, copy the version-specific DOI into `CITATION.cff`, `README.md`, `paper.md`, and this bundle file if JOSE requires the version DOI rather than the concept DOI.
+All DOIs updated. Bundle is ready for JOSE submission.
