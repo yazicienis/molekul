@@ -38,7 +38,7 @@ profiling/*.prof
 profiling/*.out
 .claude/
 papers/
-notebooks/
+# notebooks/ — tracked (JOSE submission requires executable notebooks in repo)
 outputs/gpu_speedup.png
 *.spl
 *.toc
