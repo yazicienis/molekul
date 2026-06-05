@@ -30,6 +30,7 @@ htmlcov/
 outputs/*.json
 outputs/*.xyz
 outputs/*.cube
+outputs/cubes/*.cube
 !outputs/.gitkeep
 *.ipynb_checkpoints/
 .DS_Store

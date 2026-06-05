@@ -147,11 +147,11 @@ If you use MOLEKUL, please cite:
 ```bibtex
 @software{yazici2026molekul,
   author  = {Yazici, Enis},
-  title   = {{MOLEKUL}: A Pure-Python Ab Initio Quantum Chemistry Platform},
+  title   = {{MOLEKUL}: A notebook-based teaching platform for ab initio quantum chemistry in pure Python},
   year    = {2026},
   doi     = {10.5281/zenodo.19763107},
   url     = {https://github.com/yazicienis/molekul},
-  version = {v0.1.2}
+  version = {v0.2.0}
 }
 ```
 

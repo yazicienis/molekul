@@ -13,4 +13,4 @@ Approximations in use:
 - Harmonic frequency analysis and IR intensities (Phase 10)
 """
 
-__version__ = "0.2.0.dev0"
+__version__ = "0.2.0"
