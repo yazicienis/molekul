@@ -44,3 +44,4 @@ MOLEKUL is distributed under the MIT license. The repository includes tests, scr
 # Acknowledgements
 
 The author is employed by SRH University of Applied Sciences Heidelberg. This affiliation is not a competing interest. The author declares no competing financial interests or personal relationships that could have influenced this work.
+
