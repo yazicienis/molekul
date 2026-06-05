@@ -149,7 +149,7 @@ If you use MOLEKUL, please cite:
   author  = {Yazici, Enis},
   title   = {{MOLEKUL}: A notebook-based teaching platform for ab initio quantum chemistry in pure Python},
   year    = {2026},
-  doi     = {10.5281/zenodo.19763107},
+  doi     = {10.5281/zenodo.20558145},
   url     = {https://github.com/yazicienis/molekul},
   version = {v0.2.0}
 }
