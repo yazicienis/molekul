@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Enis Yazici
+
 """
 Physical constants and conversion factors.
 All values in atomic units (Hartree, Bohr) unless noted.

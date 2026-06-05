@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Enis Yazici
+
 """Periodic crystal utilities and one-electron Bloch-sum integrals."""
 
 from __future__ import annotations

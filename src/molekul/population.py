@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Enis Yazici
+
 """
 Mulliken population analysis and molecular dipole moment.
 

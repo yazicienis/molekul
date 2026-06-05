@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Enis Yazici
+
 """
 Configuration Interaction Singles (CIS) for excited states.
 

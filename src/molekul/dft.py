@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Enis Yazici
+
 """
 Kohn-Sham DFT with LDA (Slater+VWN) and GGA (PBE) functionals.
 

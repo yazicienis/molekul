@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Enis Yazici
+
 """Equation-of-motion CCSD excitation energies.
 
 This module forms the EOM-CCSD-EE effective Hamiltonian by explicitly

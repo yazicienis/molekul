@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Enis Yazici
+
 """
 Restricted Hartree-Fock (RHF) SCF with DIIS convergence acceleration.
 

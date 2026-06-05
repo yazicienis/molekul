@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Enis Yazici
+
 """Time-dependent DFT in the Tamm-Dancoff approximation."""
 
 from __future__ import annotations

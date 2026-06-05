@@ -1,6 +1,6 @@
 # MOLEKUL
 
-A pure-Python ab initio quantum chemistry platform for education and reproducible benchmarking.
+A notebook-based teaching platform for ab initio quantum chemistry in pure Python.
 
 [![CI](https://github.com/yazicienis/molekul/actions/workflows/ci.yml/badge.svg)](https://github.com/yazicienis/molekul/actions/workflows/ci.yml)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19763107.svg)](https://doi.org/10.5281/zenodo.19763107)
@@ -8,18 +8,18 @@ A pure-Python ab initio quantum chemistry platform for education and reproducibl
 
 ## Overview
 
-MOLEKUL is a pure-Python ab initio quantum chemistry platform covering
-single-reference methods from RHF to CCSD(T), DFT, and excited-state methods.
-Every algorithmic step — from primitive integral evaluation to amplitude
-equations — is traceable to a named function and a standard reference.
+MOLEKUL is a notebook-based teaching platform for ab initio quantum chemistry.
+It pairs a small pure-Python library with a 14-notebook curriculum that walks
+from atoms, constants, and Gaussian integrals to SCF, correlation, DFT, excited
+states, gradients, visualization, population analysis, and model periodic systems.
 
-**Validated against PySCF** at each phase of development.
+MOLEKUL is **not** a production alternative to PySCF, Psi4, ORCA, or similar
+research codes. It favors readable NumPy implementations and small validated
+examples that students can step through in a debugger.
 
-> **Version note:** v0.1.2 (SoftwareX paper, Zenodo DOI) covers Phases 1–9
-> (RHF, MP2, geometry, population, basis sets). The current HEAD (`0.2.0.dev0`, Phase 19,
-> 641 tests plus 2 CuPy-gated skips) additionally includes CCSD, CCSD(T),
-> KS-DFT, CIS, EOM-CCSD, UHF, TD-DFT, semi-numerical RHF gradients,
-> and an optional CuPy backend.
+**Validated against PySCF** where an independent molecular reference is appropriate.
+The generated validation tables live in `benchmarks/validation_table.md` and
+`benchmarks/periodic_validation.md`.
 
 ## Features
 
@@ -29,12 +29,12 @@ equations — is traceable to a named function and a standard reference.
 | UHF (unrestricted, paired DIIS, ⟨S²⟩) | ✅ validated |
 | MP2 correlation energy | ✅ validated |
 | CCSD spin-orbital | ✅ validated |
-| CCSD(T) perturbative triples | ✅ validated |
-| KS-DFT (LDA/Slater+VWN validated; PBE experimental) | ✅/experimental |
+| CCSD(T) driver | ✅ for two-electron regression; triples correction not independently validated |
+| KS-DFT (LDA/PBE) | STO-3G LDA ok; wider-basis/PBE and cc-pVDZ grid behavior experimental |
 | CIS excited states | ✅ validated |
 | EOM-CCSD excited states (EE) | ✅ validated |
-| TD-DFT TDA (LDA kernel validated; PBE experimental) | ✅/experimental |
-| STO-3G, 6-31G\*, cc-pVDZ (H–F) | ✅ built-in |
+| TD-DFT TDA | STO-3G LDA ok; wider-basis/PBE behavior experimental |
+| STO-3G, 6-31G\*, cc-pVDZ | STO-3G H-Ne; 6-31G\*/cc-pVDZ H, He, C, N, O, F |
 | Mulliken & Löwdin population analysis | ✅ |
 | Electric dipole moment | ✅ |
 | Geometry optimizer (numerical gradients) | ✅ |
@@ -49,7 +49,36 @@ cd molekul
 pip install -e ".[dev]"
 ```
 
-**Requirements:** Python ≥ 3.10, NumPy. Core electronic-structure routines are NumPy-only; geometry optimization uses SciPy (`scipy.optimize.minimize`). No compiled extensions required.
+**Requirements:** Python ≥ 3.10, NumPy. Core electronic-structure routines are implemented with NumPy; geometry optimization uses SciPy (`scipy.optimize.minimize`). No compiled extensions are required by the MOLEKUL core implementation.
+
+
+## Notebook course map
+
+Install the notebook extra and start with the index notebook:
+
+```bash
+pip install -e ".[notebooks]"
+jupyter lab notebooks/00_index.ipynb
+```
+
+The notebooks are the primary teaching interface. They mirror `notebooks/README.md`:
+
+| # | Notebook | Topic |
+|---|----------|-------|
+| 00 | `00_index.ipynb` | environment check and roadmap |
+| 01 | `01_atoms_molecules_constants.ipynb` | atoms, molecules, units, nuclear repulsion |
+| 02 | `02_one_electron_integrals.ipynb` | overlap, kinetic, nuclear attraction, Boys function |
+| 03 | `03_basis_sets.ipynb` | STO-3G, 6-31G\*, cc-pVDZ basis sets |
+| 04 | `04_hartree_fock_scf.ipynb` | RHF, DIIS, density matrices, energy components |
+| 05 | `05_geometry_optimization.ipynb` | potential-energy scans and SciPy-backed optimization |
+| 06 | `06_visualization_population.ipynb` | cube files, Mulliken/Lowdin charges, dipoles |
+| 07 | `07_mp2_harmonic_frequencies.ipynb` | MP2 and finite-difference harmonic frequencies |
+| 08 | `08_coupled_cluster.ipynb` | CCSD and CCSD(T) on tiny systems |
+| 09 | `09_density_functional_theory.ipynb` | LDA/PBE Kohn-Sham DFT and grid limitations |
+| 10 | `10_excited_states.ipynb` | UHF, CIS, TD-DFT/TDA, EOM-CCSD |
+| 11 | `11_gradients_gpu.ipynb` | semi-numerical gradients and optional CuPy backend |
+| 12 | `12_periodic_systems_phonons.ipynb` | 1D bands, DOS, and phonons |
+| 13 | `13_full_workflow.ipynb` | capstone workflow |
 
 ## Quick start
 
@@ -80,22 +109,22 @@ print(f"MP2 energy: {mp2_result.energy_total:.8f} Eh")   # -74.99844951 Eh
 ## Running tests
 
 ```bash
-pytest tests/          # 641 tests, plus 2 CuPy-gated skips on CPU-only systems
+pytest tests/
 ```
 
 ## Validation
 
 ```bash
-python scripts/benchmark_14mol.py   # RHF vs PySCF, 14 molecules
+python benchmarks/validation_table.py
 ```
 
-Results are logged to `outputs/logs/benchmark_14mol.json`.
+Results are regenerated in `benchmarks/validation_table.md` and `benchmarks/periodic_validation.md`.
 
 ## Project structure
 
 ```
 src/molekul/       Core library
-tests/             641 automated tests
+tests/             Automated regression and validation tests
 scripts/           Benchmark and validation scripts
 outputs/logs/      JSON benchmark logs
 examples/          Example XYZ geometries
